@@ -1,0 +1,1262 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BoosterVerse</title>
+<meta name="description" content="BoosterVerse — ouvre des boosters et collectionne 100 000 créatures uniques, directement dans ton navigateur.">
+<style>
+@font-face{font-family:'SF Pro';font-weight:400;font-style:normal;font-display:swap;
+  src:local('SF Pro Text'),local('SF Pro Display'),local('SFProText-Regular'),local('SF Pro')}
+@font-face{font-family:'SF Pro';font-weight:700;font-style:normal;font-display:swap;
+  src:local('SF Pro Text Bold'),local('SF Pro Display Bold'),local('SFProText-Bold'),local('SFProDisplay-Bold')}
+@font-face{font-family:'SF Pro Thin';font-weight:100;font-style:normal;font-display:swap;
+  src:local('SF Pro Display Thin'),local('SFProDisplay-Thin'),local('SF Pro Thin')}
+@font-face{font-family:'Aalto';font-weight:400;font-style:normal;font-display:swap;
+  src:local('Aalto'),local('Aalto Regular'),local('Aalto-Regular')}
+
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
+
+:root{font-family:'SF Pro',Arial,sans-serif;color:#fff;background:#090807;font-synthesis:none;
+  --gutter:clamp(18px,1.95vw,28px);
+  --common:#cfcac2;--rare:#5fb4ff;--epic:#b77bff;--legendary:#ffc93c;
+  --ease-out:cubic-bezier(.22,1,.36,1);--ease-expo:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090807}
+button{font:inherit;color:inherit}
+@media(hover:hover) and (pointer:fine){html,body,button,a,[data-cursor]{cursor:none!important}}
+
+/* ---------- base scene (same language as Planet Jumping) ---------- */
+.app{position:relative;width:100%;height:100%;min-height:540px;overflow:hidden;background:#0a0908}
+.bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease}
+.bg-video.is-visible{opacity:.85}
+.shade{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 42%,transparent 20%,rgba(0,0,0,.45) 75%),
+             linear-gradient(to bottom,rgba(0,0,0,.25) 0%,transparent 30%,transparent 50%,rgba(0,0,0,.9) 100%)}
+.chrome{position:absolute;z-index:4}
+
+.header{left:var(--gutter);right:var(--gutter);top:clamp(18px,3.1vh,28px);display:flex;justify-content:flex-end;align-items:center;z-index:40}
+.header-actions{display:flex;align-items:center;gap:10px}
+.nav{display:flex;align-items:center;height:42px;padding:4px 5px;border:1px solid rgba(255,255,255,.45);
+  background:rgba(255,255,255,.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:999px}
+.nav a,.nav button{color:#fff;text-decoration:none;padding:8px 19px;border-radius:999px;line-height:1;font-size:16px;border:0;background:transparent;cursor:pointer}
+.nav .active{background:#fff;color:#000}
+.pill{height:42px;padding:0 20px;border:0;border-radius:999px;background:#fff;color:#000;cursor:pointer;font-size:16px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.pill.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.pill:disabled{opacity:.55}
+.pill b{font-weight:700}
+
+.floating-logo{position:fixed;z-index:62;left:50%;top:50%;width:59px;height:58px;transform:translate(-50%,-50%);
+  transition:left 2s var(--ease-expo),top 2s var(--ease-expo),width 2s var(--ease-expo),height 2s var(--ease-expo),transform 2s var(--ease-expo)}
+.floating-logo.is-docked{left:var(--gutter);top:clamp(18px,3.1vh,28px);width:37px;height:36px;transform:none}
+.floating-logo.is-settled{z-index:41}
+
+/* preloader */
+.preloader{position:fixed;inset:0;z-index:60;background:#000;transition:opacity 1s ease,visibility 1s}
+.preloader.is-done{opacity:0;visibility:hidden}
+.preloader-label{position:fixed;z-index:61;left:50%;top:calc(50% + 52px);transform:translateX(-50%);font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.7;white-space:nowrap;transition:opacity .4s}
+.preloader.is-done~.preloader-label{opacity:0}
+.preloader-count{position:fixed;z-index:61;left:50%;bottom:clamp(22px,3.1vh,28px);display:flex;align-items:flex-end;gap:4px;transform:translateX(-50%);line-height:1}
+.preloader-count>span:first-child{font-family:'SF Pro Thin','SF Pro',Arial,sans-serif;font-size:64px;font-weight:100}
+.preloader-count .percent{font-size:24px;padding-bottom:4px}
+.preloader-count.is-leaving{animation:preload-count-out .75s var(--ease-out) both}
+@keyframes preload-count-out{to{opacity:0;filter:blur(7px);transform:translate(-50%,-34px)}}
+
+/* ---------- home ---------- */
+.side{left:var(--gutter);top:50%;transform:translateY(-43%);display:flex;flex-direction:column;gap:6px;font-size:16px}
+.side h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:400;opacity:.7;margin:0 0 6px}
+.side-item{display:flex;align-items:center;gap:8px;min-height:20px}
+.side-item i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.side-item span{opacity:.6;margin-left:auto;padding-left:16px;font-variant-numeric:tabular-nums}
+
+.stage{left:50%;top:47%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center}
+.stage-heading{display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:14px;font-size:16px;gap:16px}
+.stage-heading strong{font-size:18px;margin-left:8px}
+.cta-row{margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:72px}
+.cta{height:50px;padding:0 28px;font-size:17px;font-weight:700}
+.cta-note{font-size:13px;opacity:.7;font-variant-numeric:tabular-nums}
+
+.home-content{left:clamp(28px,4vw,58px);right:clamp(28px,3vw,44px);bottom:clamp(24px,3vh,30px);
+  display:flex;justify-content:space-between;align-items:flex-end;gap:40px}
+.home-content h1{flex:1;min-width:0;font-family:Aalto,'Arial Narrow',sans-serif;font-weight:400;line-height:.72;margin:0 0 -.04em;
+  white-space:nowrap;font-size:120px}
+.home-content dl{width:min(400px,30vw);flex:none;margin:0;font-size:15px}
+.fact{display:grid;grid-template-columns:128px 1fr;gap:16px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.48)}
+.fact:last-child{border-bottom:0}
+.fact dt{font-weight:700}
+.fact dd{margin:0;font-variant-numeric:tabular-nums}
+
+/* intro */
+body:not(.intro-ready) .header,body:not(.intro-ready) .side,body:not(.intro-ready) .stage,
+body:not(.intro-ready) .home-content h1,body:not(.intro-ready) .fact{opacity:0}
+.intro-ready .header{animation:reveal-down .9s var(--ease-out) .1s both}
+.intro-ready .side{animation:reveal-side .9s var(--ease-out) .65s both}
+.intro-ready .stage{animation:stage-in 1.1s var(--ease-expo) .3s both}
+.intro-ready .home-content h1{animation:title-rise 1.05s var(--ease-expo) .5s both}
+.intro-ready .fact{animation:fact-rise .72s var(--ease-out) both}
+.intro-ready .fact:nth-child(1){animation-delay:.9s}.intro-ready .fact:nth-child(2){animation-delay:1.05s}
+.intro-ready .fact:nth-child(3){animation-delay:1.2s}.intro-ready .fact:nth-child(4){animation-delay:1.35s}
+@keyframes reveal-down{from{opacity:0;filter:blur(8px);transform:translateY(-18px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+@keyframes reveal-side{from{opacity:0;filter:blur(8px);transform:translate(-20px,-43%)}to{opacity:1;filter:blur(0);transform:translate(0,-43%)}}
+@keyframes stage-in{from{opacity:0;filter:blur(12px);transform:translate(-50%,-44%) scale(.92)}to{opacity:1;filter:blur(0);transform:translate(-50%,-50%) scale(1)}}
+@keyframes title-rise{from{opacity:0;filter:blur(12px);transform:translateY(42px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+@keyframes fact-rise{from{opacity:0;filter:blur(7px);transform:translateY(18px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+
+/* ---------- booster pack ---------- */
+.pack-wrap{perspective:1100px}
+.pack{--pw:min(220px,46vw,30vh);--rx:0deg;--ry:0deg;position:relative;width:var(--pw);height:calc(var(--pw)*1.43);
+  transform:rotateX(var(--rx)) rotateY(var(--ry));transform-style:preserve-3d;border:0;padding:0;background:none;display:block}
+.pack-body,.pack-top{position:absolute;left:0;right:0;overflow:hidden;
+  background:linear-gradient(160deg,#ffb27a 0%,#e5532c 32%,#9b2412 70%,#3d0b06 100%)}
+.pack-body{top:11%;bottom:0;border-radius:0 0 16px 16px;box-shadow:0 30px 60px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.2)}
+.pack-top{top:0;height:11.4%;border-radius:16px 16px 0 0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);transform-origin:90% 100%}
+.pack-top:after,.pack-body:after{content:'';position:absolute;left:0;right:0;height:10px;
+  background:repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0 4px,rgba(255,255,255,.15) 4px 8px)}
+.pack-top:after{top:6px}
+.pack-body:after{bottom:6px}
+.pack-tear{position:absolute;left:4%;right:4%;top:11%;height:0;border-top:2px dashed rgba(255,255,255,.55);z-index:2}
+.pack-shine{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.75) 45%,transparent 60%);background-size:250% 100%;
+  animation:shine 3.6s ease-in-out infinite}
+@keyframes shine{0%{background-position:120% 0}60%,100%{background-position:-60% 0}}
+.pack-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:10% 8% 12%;text-align:center}
+.pack-inner img{width:20%;margin-top:2%}
+.pack-brand{font-family:Aalto,'Arial Narrow',sans-serif;font-stretch:condensed;font-size:calc(var(--pw)*.095);line-height:.8;margin-top:6%;letter-spacing:.01em}
+.pack-sub{font-size:calc(var(--pw)*.052);letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-top:4%}
+.pack-art{flex:1;width:86%;min-height:0;display:grid;place-items:center;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+.pack-art svg{width:100%;height:100%}
+.pack-count{font-size:calc(var(--pw)*.06);font-weight:700;background:rgba(0,0,0,.35);padding:.35em .9em;border-radius:999px}
+.pack.is-idle{animation:pack-float 4s ease-in-out infinite}
+@keyframes pack-float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+.pack.is-shaking{animation:pack-shake .55s ease-in-out both}
+@keyframes pack-shake{0%,100%{translate:0 0;rotate:0deg}20%{translate:-6px 0;rotate:-3deg}40%{translate:6px 0;rotate:3deg}60%{translate:-4px 0;rotate:-2deg}80%{translate:4px 0;rotate:1deg}}
+.pack.is-torn .pack-top{animation:tear-off .75s var(--ease-out) forwards}
+.pack.is-torn .pack-tear{opacity:0}
+.pack.is-torn .pack-body{animation:pack-drop .8s .35s cubic-bezier(.55,0,.7,.2) forwards}
+@keyframes tear-off{to{transform:translate(70%,-160%) rotate(28deg);opacity:0}}
+@keyframes pack-drop{to{transform:translateY(90%) rotate(-4deg);opacity:0}}
+.pack-light{position:absolute;left:50%;top:11%;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%);
+  background:#fff;box-shadow:0 0 60px 40px rgba(255,236,190,.9);opacity:0;pointer-events:none}
+.pack.is-torn .pack-light{animation:pack-light .9s ease-out forwards}
+@keyframes pack-light{30%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(6)}}
+
+/* ---------- cards ---------- */
+.card{--w:220px;--frame:linear-gradient(145deg,#e4e0d9,#8e8a84);position:relative;width:var(--w);height:calc(var(--w)*1.4);
+  font-size:calc(var(--w)/15);border-radius:.9em;padding:.32em;background:var(--frame);color:#fff;text-align:left;
+  box-shadow:0 .9em 2em rgba(0,0,0,.45);flex:none;isolation:isolate}
+.card .face{position:relative;height:100%;border-radius:.66em;overflow:hidden;display:flex;flex-direction:column;padding:.6em .62em .5em;
+  background:radial-gradient(circle at 50% 36%,var(--el-glow) 0,transparent 62%),linear-gradient(165deg,#221d2b 0%,#0e0c13 100%)}
+.card-top{display:flex;justify-content:space-between;align-items:baseline;gap:.4em;line-height:1.1}
+.card-name{font-size:1.18em;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-hp{font-weight:700;white-space:nowrap;font-size:1.05em}
+.card-hp small,.card-stats small{font-size:.62em;opacity:.7;font-weight:400;letter-spacing:.06em;margin-right:.2em}
+.card-art{position:relative;flex:1;min-height:0;margin:.45em 0 .45em;border-radius:.5em;overflow:hidden;
+  background:radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--el) 45%,transparent) 0,transparent 66%),
+             linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.card-art:before{content:'';position:absolute;left:22%;right:22%;bottom:7%;height:7%;border-radius:50%;background:rgba(0,0,0,.35);filter:blur(3px)}
+.card-art svg{position:absolute;inset:4% 6% 2%;width:88%;height:94%}
+.creature{animation:bob 3.2s ease-in-out infinite;transform-origin:100px 190px}
+@keyframes bob{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-4px) scale(1.015,.985)}}
+.card-meta{display:flex;justify-content:space-between;align-items:center;gap:.4em;font-size:.78em}
+.el-badge,.rar-badge{display:inline-flex;align-items:center;gap:.35em;padding:.28em .6em;border-radius:999px;white-space:nowrap}
+.el-badge{background:color-mix(in srgb,var(--el) 30%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--el) 70%,transparent)}
+.el-badge svg{width:1.05em;height:1.05em;fill:var(--el)}
+.rar-badge{background:rgba(255,255,255,.1);font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:.9em;color:var(--rc)}
+.card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.3em;margin-top:.45em;font-weight:700;font-size:1em}
+.card-stats span{background:rgba(255,255,255,.07);border-radius:.4em;padding:.25em .3em;text-align:center;white-space:nowrap}
+.card-foot{display:flex;justify-content:space-between;margin-top:.45em;font-size:.66em;opacity:.7;font-variant-numeric:tabular-nums;white-space:nowrap;gap:.5em}
+
+.r-common{--rc:#e9e5de}
+.r-rare{--rc:#8ccaff;--frame:linear-gradient(145deg,#bfe3ff,#3d8ce0 45%,#9fd4ff 75%,#2a6bc0);
+  box-shadow:0 .9em 2em rgba(0,0,0,.45),0 0 1.4em rgba(80,170,255,.4)}
+.r-epic{--rc:#d4b0ff;--frame:linear-gradient(145deg,#ffb3ec,#9a63ff 35%,#5ee0ff 70%,#ff9be6);
+  box-shadow:0 .9em 2em rgba(0,0,0,.45),0 0 1.8em rgba(183,123,255,.55)}
+.r-legendary{--rc:#ffd66b;--frame:conic-gradient(from var(--a),#fff6c4,#ffc93c,#b8860b,#ffe680,#fff8dc,#d99a1e,#fff6c4);
+  box-shadow:0 .9em 2em rgba(0,0,0,.45),0 0 2.4em rgba(255,201,60,.6);animation:gold-spin 4s linear infinite}
+@keyframes gold-spin{to{--a:360deg}}
+.r-legendary .creature{filter:drop-shadow(0 0 6px rgba(255,214,107,.85))}
+.r-legendary .card-name{background:linear-gradient(90deg,#fff6c4,#ffc93c,#fff6c4);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.holo{position:absolute;inset:.32em;border-radius:.66em;pointer-events:none;z-index:2;mix-blend-mode:color-dodge;opacity:.45;
+  background:linear-gradient(115deg,transparent 20%,rgba(255,110,200,.55) 32%,rgba(120,210,255,.55) 42%,rgba(150,255,170,.5) 52%,rgba(255,240,120,.5) 62%,transparent 74%);
+  background-size:300% 300%;animation:holo 5s linear infinite}
+.r-legendary .holo{opacity:.3;background:linear-gradient(115deg,transparent 25%,rgba(255,240,180,.8) 45%,rgba(255,200,80,.5) 55%,transparent 70%);background-size:300% 300%}
+@keyframes holo{from{background-position:100% 100%}to{background-position:-100% -100%}}
+.sparkle{position:absolute;width:.7em;height:.7em;z-index:1;pointer-events:none;animation:twinkle 2.4s ease-in-out infinite}
+.sparkle:before,.sparkle:after{content:'';position:absolute;left:50%;top:50%;background:#fff;border-radius:2px;transform:translate(-50%,-50%)}
+.sparkle:before{width:100%;height:16%}.sparkle:after{width:16%;height:100%}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
+
+/* card back */
+.card-back{--frame:linear-gradient(145deg,#ffb27a,#9b2412)}
+.card-back .face{align-items:center;justify-content:center;gap:.8em;
+  background:radial-gradient(circle at 50% 45%,rgba(255,140,80,.35),transparent 60%),
+    repeating-radial-gradient(circle at 50% 45%,rgba(255,255,255,.06) 0 .1em,transparent .1em 1.6em),linear-gradient(165deg,#2a1414,#0e0808)}
+.card-back img{width:30%}
+.card-back .back-brand{font-family:Aalto,'Arial Narrow',sans-serif;font-stretch:condensed;font-size:1.45em;line-height:.8;letter-spacing:.02em}
+.card-back .back-sub{font-size:.7em;letter-spacing:.2em;text-transform:uppercase;opacity:.7}
+.card-back.pre-rare{box-shadow:0 .9em 2em rgba(0,0,0,.45),0 0 2em rgba(80,170,255,.75)}
+.card-back.pre-epic{box-shadow:0 .9em 2em rgba(0,0,0,.45),0 0 2.4em rgba(183,123,255,.9);animation:pre-pulse 1.2s ease-in-out infinite}
+.card-back.pre-legendary{box-shadow:0 .9em 2em rgba(0,0,0,.45),0 0 3em rgba(255,201,60,1);animation:pre-pulse .8s ease-in-out infinite}
+@keyframes pre-pulse{50%{filter:brightness(1.25)}}
+
+/* ---------- opening overlay ---------- */
+.opening{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(6,5,8,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
+.opening.is-open{opacity:1;visibility:visible}
+.open-stage{position:relative;display:grid;place-items:center;perspective:1200px}
+.open-hint{margin-top:26px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;opacity:.75;text-align:center;min-height:1.4em}
+.open-skip{position:absolute;right:var(--gutter);bottom:clamp(18px,3vh,28px)}
+.open-close{position:absolute;right:var(--gutter);top:clamp(18px,3.1vh,28px)}
+.stack{--cw:min(260px,62vw,42vh);position:relative;width:var(--cw);height:calc(var(--cw)*1.4);--rx:0deg;--ry:0deg;
+  transform:rotateX(var(--rx)) rotateY(var(--ry))}
+.flip{position:absolute;inset:0;perspective:1400px;border:0;padding:0;background:none;transition:transform .45s var(--ease-out)}
+.flip .card{--w:var(--cw)}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s var(--ease-expo)}
+.flip.is-flipped .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flip-face.front{transform:rotateY(180deg)}
+.flip.is-entering{animation:card-rise .7s var(--ease-expo) both}
+@keyframes card-rise{from{opacity:0;transform:translateY(55%) scale(.7)}to{opacity:1;transform:none}}
+.flip.is-gone{animation:card-away .55s cubic-bezier(.55,0,.7,.2) forwards;pointer-events:none}
+@keyframes card-away{to{opacity:0;transform:translate(-30%,-120%) rotate(-14deg) scale(.6)}}
+.tray{display:flex;gap:8px;margin-top:22px;min-height:76px;align-items:flex-end}
+.tray .card{--w:54px;animation:tray-in .5s var(--ease-out) both;box-shadow:0 6px 14px rgba(0,0,0,.4)}
+.tray .card *{animation:none!important}
+.tray .card .face{padding:0}
+.tray .card .face>*{display:none}
+.tray .card .card-art{display:block;margin:0;border-radius:.6em;flex:1}
+@keyframes tray-in{from{opacity:0;transform:translateY(16px) scale(.6)}to{opacity:1;transform:none}}
+.reveal-label{position:absolute;left:50%;top:-18px;transform:translate(-50%,-100%);font-family:Aalto,'Arial Narrow',sans-serif;
+  font-size:clamp(40px,7vw,72px);line-height:.8;white-space:nowrap;pointer-events:none;opacity:0;z-index:5}
+.reveal-label.is-on{animation:label-pop 1.6s var(--ease-expo) both}
+@keyframes label-pop{0%{opacity:0;transform:translate(-50%,-60%) scale(.6);filter:blur(10px)}25%{opacity:1;transform:translate(-50%,-100%) scale(1);filter:blur(0)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-120%)}}
+
+.fx{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;z-index:-1}
+.rays{position:absolute;left:50%;top:50%;width:150vmax;height:150vmax;transform:translate(-50%,-50%);border-radius:50%;opacity:0;
+  background:repeating-conic-gradient(from 0deg,var(--ray) 0 6deg,transparent 6deg 18deg);
+  -webkit-mask:radial-gradient(circle,#000 0,transparent 55%);mask:radial-gradient(circle,#000 0,transparent 55%);transition:opacity .6s}
+.rays.is-on{opacity:.55;animation:rays 14s linear infinite}
+@keyframes rays{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.particle{position:absolute;left:0;top:0;width:var(--s);height:var(--s);border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);
+  animation:burst var(--d) cubic-bezier(.1,.8,.3,1) forwards}
+@keyframes burst{from{transform:translate(-50%,-50%) scale(1);opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(0);opacity:0}}
+.ring{position:absolute;left:0;top:0;width:40px;height:40px;border-radius:50%;border:3px solid var(--c);transform:translate(-50%,-50%);animation:ring .9s ease-out forwards}
+@keyframes ring{to{width:520px;height:520px;opacity:0;border-width:1px}}
+.flash{position:fixed;inset:0;z-index:55;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 50%,rgba(255,240,190,.95),rgba(255,201,60,.4) 40%,transparent 75%)}
+.flash.is-on{animation:flash 1.1s ease-out}
+@keyframes flash{12%{opacity:1}100%{opacity:0}}
+
+.summary{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:min(980px,94vw)}
+.summary .slot{position:relative;animation:fact-rise .6s var(--ease-out) both;border:0;padding:0;background:none}
+.summary .card{--w:min(170px,28vw,24vh)}
+.badge-new{position:absolute;z-index:5;top:-8px;right:-6px;background:#fff;color:#000;font-size:11px;font-weight:700;letter-spacing:.08em;padding:4px 8px;border-radius:999px}
+.summary-actions{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap;justify-content:center}
+
+/* ---------- collection ---------- */
+.collection{position:fixed;inset:0;z-index:30;overflow-y:auto;overscroll-behavior:contain;
+  background:rgba(8,7,10,.88);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  padding:96px clamp(18px,4vw,58px) 60px;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
+body.view-collection .collection{opacity:1;visibility:visible}
+.col-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:22px}
+.col-head h2{font-family:Aalto,'Arial Narrow',sans-serif;font-weight:400;font-size:clamp(64px,10vw,140px);line-height:.72;margin:0}
+.col-progress{width:min(447px,100%)}
+.col-progress .big{font-size:15px;display:flex;justify-content:space-between;gap:16px;padding-bottom:10px}
+.bar{height:6px;border-radius:999px;background:rgba(255,255,255,.15);overflow:hidden}
+.bar i{display:block;height:100%;min-width:3px;background:#fff;border-radius:999px}
+.rar-progress{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 22px}
+.rar-progress div{border-top:1px solid rgba(255,255,255,.48);padding-top:8px;font-size:13px}
+.rar-progress b{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--c);margin-bottom:2px}
+.filters{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:24px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips>span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin-right:4px}
+.chip{height:34px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.06);cursor:pointer;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.chip.active{background:#fff;color:#000;border-color:#fff}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.grid{--w:170px;display:grid;grid-template-columns:repeat(auto-fill,var(--w));gap:18px 14px;justify-content:center}
+.grid .slot{position:relative;border:0;padding:0;background:none;cursor:pointer;transition:transform .35s var(--ease-out)}
+.grid .slot:hover{transform:translateY(-6px)}
+.grid .card{--w:inherit}
+.dup{position:absolute;z-index:5;bottom:-7px;right:-5px;background:#fff;color:#000;font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px}
+.empty{text-align:center;padding:60px 20px;opacity:.85}
+.empty p{margin:0 0 18px}
+
+/* ---------- detail ---------- */
+.detail{position:fixed;inset:0;z-index:58;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;
+  background:rgba(6,5,8,.8);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+.detail.is-open{opacity:1;visibility:visible}
+.detail-card{perspective:1100px}
+.detail-card .card{--w:min(300px,74vw,50vh);--rx:0deg;--ry:0deg;transform:rotateX(var(--rx)) rotateY(var(--ry))}
+.detail-info{margin-top:20px;text-align:center;font-size:14px;max-width:440px;line-height:1.5;opacity:.85}
+.detail-actions{display:flex;gap:10px;margin-top:16px}
+
+.toast{position:fixed;left:50%;bottom:30px;z-index:90;transform:translate(-50%,20px);background:#fff;color:#000;padding:12px 20px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .3s,transform .4s var(--ease-out);pointer-events:none;white-space:nowrap}
+.toast.is-on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- cursor ---------- */
+.custom-cursor{position:fixed;left:0;top:0;z-index:100;width:1px;height:1px;pointer-events:none;opacity:0;transition:opacity .2s ease}
+.custom-cursor.is-visible{opacity:1}
+.cursor-dot,.cursor-orbit{position:absolute;left:0;top:0;border-radius:50%;transform:translate(-50%,-50%)}
+.cursor-dot{width:12px;height:12px;background:#fff}
+.cursor-orbit{width:36px;height:36px;border:1px solid #fff;background:rgba(255,255,255,.4);transition:transform .3s var(--ease-out)}
+.custom-cursor.is-enter .cursor-orbit{transform:translate(-50%,-50%) scale(1.16)}
+.cursor-label{position:absolute;top:26px;left:0;transform:translateX(-50%) translateY(-4px);font:16px/1.2 'SF Pro',Arial,sans-serif;white-space:nowrap;opacity:0;
+  transition:opacity .2s ease,transform .3s var(--ease-out)}
+.custom-cursor.is-enter .cursor-label{opacity:1;transform:translateX(-50%) translateY(0)}
+body:not(.preload-complete) .custom-cursor{opacity:0!important}
+
+/* ---------- responsive ---------- */
+@media(max-width:900px){
+  .side{font-size:14px}
+  .home-content dl{width:43vw}
+  .fact{grid-template-columns:110px 1fr}
+  .count-pill{display:none}
+}
+@media(max-width:640px){
+  .app{min-height:600px}
+  .side{display:none}
+  .nav a,.nav button{padding:8px 12px;font-size:14px}
+  .nav{height:38px}
+  .stage{top:43%}
+  .stage-heading{font-size:14px}.stage-heading strong{font-size:16px}
+  .home-content{left:18px;right:18px;bottom:18px;display:block}
+  .home-content h1{margin-bottom:14px}
+  .home-content dl{width:100%;font-size:13px}
+  .fact{grid-template-columns:92px 1fr;padding:5px 0}
+  .fact.optional{display:none}
+  .rar-progress{grid-template-columns:repeat(2,1fr)}
+  .grid{--w:calc((100vw - 36px - 12px)/2);gap:16px 12px}
+  .collection{padding-top:80px}
+  .open-skip{left:50%;right:auto;transform:translateX(-50%)}
+}
+@media(max-height:640px) and (min-width:641px){.fact.optional{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+<main class="app" id="app">
+  <video class="bg-video" id="bg-video" src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/3c83091e-4046-4fd6-adbb-2edb728be79a.mp4" muted playsinline preload="auto" loop aria-hidden="true"></video>
+  <div class="shade" aria-hidden="true"></div>
+
+  <header class="header chrome">
+    <div class="header-actions">
+      <nav class="nav" aria-label="Navigation principale">
+        <button type="button" class="active" data-view="home">Booster</button><button type="button" data-view="collection">Collection</button><a href="index.html">Planètes</a>
+      </nav>
+      <button class="pill count-pill" type="button" data-view="collection"><b id="count-pill">0</b> cartes</button>
+    </div>
+  </header>
+
+  <aside class="side chrome" aria-label="Chances par carte">
+    <h2>Chances</h2>
+    <div id="odds"></div>
+  </aside>
+
+  <section class="stage chrome" aria-label="Booster">
+    <div class="stage-heading">
+      <span>Booster :</span>
+      <span><span>[S1]</span> <strong>Mars</strong></span>
+    </div>
+    <div class="pack-wrap"><button class="pack is-idle" id="home-pack" type="button" data-cursor="Ouvrir" aria-label="Ouvrir un booster"></button></div>
+    <div class="cta-row">
+      <button class="pill cta" id="cta" type="button">Ouvrir un booster</button>
+      <span class="cta-note" id="cta-note"></span>
+    </div>
+  </section>
+
+  <section class="home-content chrome">
+    <h1 id="home-title">BOOSTERVERSE</h1>
+    <dl>
+      <div class="fact optional"><dt>Univers :</dt><dd>100 000 créatures uniques, toutes générées dans ton navigateur.</dd></div>
+      <div class="fact"><dt>Collection :</dt><dd id="fact-collection">0 / 100 000</dd></div>
+      <div class="fact"><dt>Prochain :</dt><dd id="fact-next">Booster gratuit disponible</dd></div>
+      <div class="fact optional"><dt>Ouverts :</dt><dd id="fact-opened">0 booster</dd></div>
+    </dl>
+  </section>
+
+  <section class="collection" id="collection" aria-label="Ma collection">
+    <div class="col-head">
+      <h2>COLLECTION</h2>
+      <div class="col-progress">
+        <div class="big"><span id="col-unique">0 / 100 000 créatures</span><span id="col-pct">0 %</span></div>
+        <div class="bar"><i id="col-bar" style="width:0"></i></div>
+      </div>
+    </div>
+    <div class="rar-progress" id="rar-progress"></div>
+    <div class="filters">
+      <div class="chips" id="f-rarity"><span>Rareté</span></div>
+      <div class="chips" id="f-element"><span>Élément</span></div>
+      <div class="chips" id="f-sort"><span>Tri</span></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <div class="opening" id="opening" role="dialog" aria-modal="true" aria-label="Ouverture du booster">
+    <div class="open-stage" id="open-stage"></div>
+    <div class="open-hint" id="open-hint"></div>
+    <div class="tray" id="tray"></div>
+    <button class="pill ghost open-skip" id="open-skip" type="button">Tout révéler</button>
+  </div>
+  <div class="flash" id="flash" aria-hidden="true"></div>
+
+  <div class="detail" id="detail" role="dialog" aria-modal="true" aria-label="Détail de la carte">
+    <div class="detail-card" id="detail-card"></div>
+    <div class="detail-info" id="detail-info"></div>
+    <div class="detail-actions">
+      <button class="pill" id="share" type="button">Partager</button>
+      <button class="pill ghost" id="detail-close" type="button">Fermer</button>
+    </div>
+  </div>
+
+  <div class="preloader" id="preloader"></div>
+  <div class="preloader-label" id="preloader-label">Génération de 100 000 créatures</div>
+  <img class="floating-logo" id="floating-logo" src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/eb7e0f53-50cd-4af5-abc4-8b9a52cdc01b.svg" alt="Ubernatural">
+  <div class="preloader-count" id="preloader-count" aria-live="polite"><span id="preloader-value">0</span><span class="percent">%</span></div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="custom-cursor" aria-hidden="true"><span class="cursor-orbit"></span><span class="cursor-dot"></span><span class="cursor-label">Ouvrir</span></div>
+</main>
+
+<script>
+(() => {
+'use strict';
+
+/* =====================================================================
+   CONFIG — tout l'équilibrage se règle ici
+   ===================================================================== */
+const LOGO = 'https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/eb7e0f53-50cd-4af5-abc4-8b9a52cdc01b.svg';
+const CONFIG = {
+  total: 100000,                 // cartes numérotées de la saison 1
+  freeEveryMs: 60 * 60 * 1000,   // un booster gratuit par heure
+  packSize: 5,
+  odds: { common: .60, rare: .25, epic: .12, legendary: .03 },
+  guaranteeRareLastSlot: true,   // la 5e carte est au moins Rare
+  copies: { common: 1000, rare: 250, epic: 50, legendary: 10 },
+  storageKey: 'boosterverse:v1'
+};
+const DEV = new URLSearchParams(location.search).has('dev'); // ?dev=1 : pas d'attente entre boosters
+
+const RKEYS = ['common', 'rare', 'epic', 'legendary'];
+const RNAMES = { common: 'Commune', rare: 'Rare', epic: 'Épique', legendary: 'Légendaire' };
+const RCOLORS = { common: '#cfcac2', rare: '#5fb4ff', epic: '#b77bff', legendary: '#ffc93c' };
+
+/* =====================================================================
+   PIÈCES — prototype : 5 corps, 5 têtes, 6 palettes, 4 éléments
+   (+ yeux, bouches, motifs, accessoires pour atteindre > 100 000 combinaisons)
+   ===================================================================== */
+const BODIES = [
+  { key: 'boule',   name: 'Boule',   tier: 0, hp: 6,  atk: 0, def: 4 },
+  { key: 'poire',   name: 'Poire',   tier: 0, hp: 10, atk: 0, def: 2 },
+  { key: 'mochi',   name: 'Mochi',   tier: 0, hp: 4,  atk: 0, def: 12 },
+  { key: 'haricot', name: 'Haricot', tier: 1, hp: 0,  atk: 10, def: 0 },
+  { key: 'nuage',   name: 'Nuage',   tier: 2, hp: 18, atk: 2, def: 6 }
+];
+const HEADS = [
+  { key: 'ours',     name: 'Ours',     tier: 0, hp: 4, atk: 0, def: 4 },
+  { key: 'chat',     name: 'Chat',     tier: 0, hp: 0, atk: 6, def: 0 },
+  { key: 'lapin',    name: 'Lapin',    tier: 1, hp: 6, atk: 2, def: 0 },
+  { key: 'antennes', name: 'Antennes', tier: 1, hp: 0, atk: 4, def: 4 },
+  { key: 'cornes',   name: 'Cornes',   tier: 2, hp: 2, atk: 10, def: 4 }
+];
+const PALETTES = [
+  { name: 'Pêche',   tier: 0, body: '#ffb38a', belly: '#ffe6d4', dark: '#b65c39' },
+  { name: 'Menthe',  tier: 0, body: '#8fe3c0', belly: '#e6fbf1', dark: '#3a8f70' },
+  { name: 'Lavande', tier: 0, body: '#b9a6ff', belly: '#efe9ff', dark: '#6450c0' },
+  { name: 'Ciel',    tier: 0, body: '#8cc8ff', belly: '#e4f3ff', dark: '#3d77b8' },
+  { name: 'Bonbon',  tier: 1, body: '#ff9fd0', belly: '#ffe6f3', dark: '#b8467f' },
+  { name: 'Aurore',  tier: 3, body: '#ffb36e', belly: '#fff3dc', dark: '#a8456e', grad: ['#ffe07a', '#ff7eb3', '#9a7bff'] }
+];
+const ICONS = {
+  fire: 'M12 2c.9 3.6 4.9 5.6 4.9 10.6A4.9 4.9 0 0 1 12 17.5a4.9 4.9 0 0 1-4.9-4.9c0-2.6 1.6-3.6 1.9-6.3 1.9 1.1 2.8 2.9 2.8 4.8 1.2-1.4 1.3-3.6.2-9.1zM12 22a3 3 0 0 1-3-3c0-1.6 1.5-2.4 3-4.5 1.5 2.1 3 2.9 3 4.5a3 3 0 0 1-3 3z',
+  water: 'M12 2.2C9.3 6.6 5.8 10 5.8 14.3a6.2 6.2 0 0 0 12.4 0C18.2 10 14.7 6.6 12 2.2zm-2.6 13.2a.9.9 0 0 1 .9.9 2.1 2.1 0 0 0 2.1 2.1.9.9 0 1 1 0 1.8 3.9 3.9 0 0 1-3.9-3.9.9.9 0 0 1 .9-.9z',
+  plant: 'M20.5 3.5C11 3.2 4.5 8 4.5 15.2c0 1.9.6 3.6 1.3 4.8.5-3.7 3.4-7.7 8.7-9.9-4.3 3-6.6 6.4-7.3 9.6 1 .5 2.2.8 3.4.8 7.3 0 10.6-7.6 9.9-17z',
+  bolt: 'M13.5 2 4 13.6h6.6L9.4 22l9.6-12.1h-6.7z'
+};
+const ELEMENTS = [
+  { key: 'fire',  name: 'Feu',    tier: 0, color: '#ff6b3d', glow: 'rgba(255,107,61,.32)', hp: 0,  atk: 12, def: 0 },
+  { key: 'water', name: 'Eau',    tier: 0, color: '#3db8ff', glow: 'rgba(61,184,255,.3)',  hp: 6,  atk: 2,  def: 8 },
+  { key: 'plant', name: 'Plante', tier: 0, color: '#5fd068', glow: 'rgba(95,208,104,.3)',  hp: 14, atk: 0,  def: 4 },
+  { key: 'bolt',  name: 'Foudre', tier: 1, color: '#ffd23d', glow: 'rgba(255,210,61,.32)', hp: 0,  atk: 9,  def: 3 }
+];
+const EYES = [
+  { key: 'points',   name: 'Points',   tier: 0 },
+  { key: 'joyeux',   name: 'Joyeux',   tier: 0 },
+  { key: 'endormis', name: 'Endormis', tier: 1 },
+  { key: 'etoiles',  name: 'Étoiles',  tier: 2 }
+];
+const MOUTHS = [
+  { key: 'sourire', name: 'Sourire', tier: 0 },
+  { key: 'o',       name: 'Ô',       tier: 0 },
+  { key: 'croc',    name: 'Croc',    tier: 1 }
+];
+const PATTERNS = [
+  { key: 'uni',     name: 'Uni',     tier: 0 },
+  { key: 'ventre',  name: 'Ventre',  tier: 0 },
+  { key: 'taches',  name: 'Taches',  tier: 1 },
+  { key: 'rayures', name: 'Rayures', tier: 1 }
+];
+const ACCESSORIES = [
+  { key: 'aucun',    name: 'Aucun',    tier: 0 },
+  { key: 'noeud',    name: 'Nœud',     tier: 0 },
+  { key: 'lunettes', name: 'Lunettes', tier: 1 },
+  { key: 'echarpe',  name: 'Écharpe',  tier: 1 },
+  { key: 'ailes',    name: 'Ailes',    tier: 2 },
+  { key: 'couronne', name: 'Couronne', tier: 3 }
+];
+const GROUPS = [BODIES, HEADS, PALETTES, ELEMENTS, EYES, MOUTHS, PATTERNS, ACCESSORIES];
+const RADICES = GROUPS.map(g => g.length);
+const COMBOS = RADICES.reduce((a, b) => a * b, 1); // 172 800 combinaisons
+
+// 47 syllabes -> 47³ = 103 823 noms, un nom unique par numéro de carte
+const SYL = ['mo', 'ki', 'bu', 'fla', 'nix', 'tes', 'sa', 'la', 'zu', 'pi', 'ro', 'ny', 'ka', 'lu', 'mi', 'vo',
+  'ra', 'po', 'zo', 'fi', 'gu', 'ba', 'chi', 'do', 'el', 'fen', 'gri', 'ho', 'jo', 'ku', 'lin', 'mu',
+  'nu', 'pa', 'qui', 'ri', 'su', 'ta', 'tu', 'va', 'wi', 'xa', 'yo', 'ze', 'bo', 'ke', 'ru'];
+const NAME_SPACE = SYL.length ** 3;
+
+/* ---------- génération déterministe ---------- */
+function hash01(n) {
+  let x = (n | 0) ^ 0x9e3779b9;
+  x = Math.imul(x ^ (x >>> 16), 0x85ebca6b);
+  x = Math.imul(x ^ (x >>> 13), 0xc2b2ae35);
+  x ^= x >>> 16;
+  return (x >>> 0) / 4294967296;
+}
+// Bijection numéro -> combinaison (multiplicateur premier avec COMBOS => deux cartes n'ont jamais les mêmes pièces)
+function partsOf(n) {
+  let i = ((n - 1) * 104729 + 12345) % COMBOS;
+  const parts = [];
+  for (const r of RADICES) { parts.push(i % r); i = Math.floor(i / r); }
+  return parts;
+}
+function nameOf(n) {
+  let m = ((n - 1) * 7919 + 4111) % NAME_SPACE;
+  let s = '';
+  for (let k = 0; k < 3; k++) { s += SYL[m % SYL.length]; m = Math.floor(m / SYL.length); }
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+function scoreOf(parts) {
+  let s = 0;
+  for (let g = 0; g < GROUPS.length; g++) { const t = GROUPS[g][parts[g]].tier; s += t === 3 ? 12 : t * t; } // les pièces rares pèsent beaucoup plus
+  return s;
+}
+
+const rarityTable = new Uint8Array(CONFIG.total + 1);
+const buckets = { common: [], rare: [], epic: [], legendary: [] };
+
+// Rareté "naturelle" : on classe les 100 000 cartes par score de pièces, puis 3 % / 12 % / 25 % / 60 %.
+function* buildRarityTable() {
+  const T = CONFIG.total;
+  const keys = new Float64Array(T);
+  const CHUNK = 5000;
+  for (let n = 1; n <= T; n++) {
+    keys[n - 1] = scoreOf(partsOf(n)) + hash01(n) * .999;
+    if (n % CHUNK === 0) yield n / T * .85;
+  }
+  const order = new Uint32Array(T);
+  for (let i = 0; i < T; i++) order[i] = i;
+  order.sort((a, b) => keys[b] - keys[a]);
+  yield .95;
+  const cut = { legendary: Math.round(T * CONFIG.odds.legendary), epic: Math.round(T * CONFIG.odds.epic), rare: Math.round(T * CONFIG.odds.rare) };
+  for (let i = 0; i < T; i++) {
+    const n = order[i] + 1;
+    const r = i < cut.legendary ? 3 : i < cut.legendary + cut.epic ? 2 : i < cut.legendary + cut.epic + cut.rare ? 1 : 0;
+    rarityTable[n] = r;
+    buckets[RKEYS[r]].push(n);
+  }
+  yield 1;
+}
+
+const cache = new Map();
+function creature(n) {
+  if (cache.has(n)) return cache.get(n);
+  const p = partsOf(n);
+  const ri = rarityTable[n];
+  const c = {
+    n, name: nameOf(n), rarity: RKEYS[ri],
+    body: BODIES[p[0]], head: HEADS[p[1]], palette: PALETTES[p[2]], element: ELEMENTS[p[3]],
+    eyes: EYES[p[4]], mouth: MOUTHS[p[5]], pattern: PATTERNS[p[6]], acc: ACCESSORIES[p[7]]
+  };
+  const mult = [1, 1.08, 1.18, 1.32][ri];
+  const bonus = c.acc.tier * 4;
+  const v = k => Math.round((hash01(n * 31 + k) - .5) * 10);
+  c.hp = Math.round((50 + c.body.hp + c.head.hp + c.element.hp + bonus + v(1)) * mult);
+  c.atk = Math.round((26 + c.body.atk + c.head.atk + c.element.atk + bonus + v(2)) * mult);
+  c.def = Math.round((24 + c.body.def + c.head.def + c.element.def + bonus + v(3)) * mult);
+  c.power = c.hp + c.atk + c.def;
+  cache.set(n, c);
+  return c;
+}
+
+/* =====================================================================
+   RENDU SVG DES CRÉATURES (style mignon et rond)
+   ===================================================================== */
+let uidSeq = 0;
+const INK = '#2a1d2e';
+
+function starPoints(cx, cy, R, r) {
+  const pts = [];
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 ? r : R;
+    pts.push((cx + Math.cos(a) * rad).toFixed(1) + ',' + (cy + Math.sin(a) * rad).toFixed(1));
+  }
+  return pts.join(' ');
+}
+function mirror(svg) { return svg + `<g transform="translate(200 0) scale(-1 1)">${svg}</g>`; }
+
+function creatureSVG(c) {
+  const u = 'u' + (++uidSeq);
+  const P = c.palette, E = c.element;
+  const fill = P.grad ? `url(#${u}g)` : P.body;
+  const st = `stroke="${P.dark}" stroke-width="3" stroke-linejoin="round"`;
+  let defs = `<clipPath id="${u}h"><ellipse cx="100" cy="86" rx="56" ry="48"/></clipPath>`;
+  if (P.grad) {
+    defs += `<linearGradient id="${u}g" x1="0" y1="0" x2="1" y2="1">${P.grad.map((col, i) =>
+      `<stop offset="${i / (P.grad.length - 1)}" stop-color="${col}"/>`).join('')}</linearGradient>`;
+  }
+  const out = [];
+
+  // Ailes (derrière)
+  if (c.acc.key === 'ailes') {
+    out.push(mirror(`<path d="M72 134 C42 96 8 106 16 134 C22 156 52 160 74 146Z" fill="#fff" fill-opacity=".94" stroke="#bcd6ff" stroke-width="3" stroke-linejoin="round"/><path d="M60 128 C46 118 32 118 26 126 M62 140 C48 136 36 138 30 144" fill="none" stroke="#bcd6ff" stroke-width="2.5" stroke-linecap="round"/>`));
+  }
+
+  // Corps
+  const feet = (x1, x2, y, rx, ry) => `<ellipse cx="${x1}" cy="${y}" rx="${rx}" ry="${ry}" fill="${P.dark}"/><ellipse cx="${x2}" cy="${y}" rx="${rx}" ry="${ry}" fill="${P.dark}"/>`;
+  let belly;
+  switch (c.body.key) {
+    case 'boule':
+      out.push(feet(80, 120, 179, 13, 8) + `<ellipse cx="100" cy="146" rx="42" ry="34" fill="${fill}" ${st}/>`);
+      belly = [100, 152, 24, 20]; break;
+    case 'poire':
+      out.push(feet(78, 122, 182, 13, 7) + `<path d="M100 114 C128 114 148 148 143 166 C139 184 61 184 57 166 C52 148 72 114 100 114Z" fill="${fill}" ${st}/>`);
+      belly = [100, 160, 26, 17]; break;
+    case 'mochi':
+      out.push(feet(74, 126, 182, 11, 6) + `<ellipse cx="100" cy="156" rx="58" ry="28" fill="${fill}" ${st}/>`);
+      belly = [100, 161, 34, 14]; break;
+    case 'haricot':
+      out.push(feet(86, 114, 185, 11, 7) +
+        `<ellipse cx="68" cy="146" rx="8" ry="15" transform="rotate(22 68 146)" fill="${fill}" ${st}/><ellipse cx="132" cy="146" rx="8" ry="15" transform="rotate(-22 132 146)" fill="${fill}" ${st}/>` +
+        `<ellipse cx="100" cy="148" rx="31" ry="38" fill="${fill}" ${st}/>`);
+      belly = [100, 155, 18, 24]; break;
+    case 'nuage': {
+      const circ = [[100, 150, 36], [68, 160, 22], [132, 160, 22], [84, 176, 17], [116, 176, 17]];
+      out.push(circ.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${P.dark}" stroke="${P.dark}" stroke-width="6"/>`).join('') +
+        circ.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}"/>`).join(''));
+      belly = [100, 162, 26, 16]; break;
+    }
+  }
+  if (c.pattern.key === 'ventre') out.push(`<ellipse cx="${belly[0]}" cy="${belly[1]}" rx="${belly[2]}" ry="${belly[3]}" fill="${P.belly}"/>`);
+
+  // Écharpe sous la tête ? non : elle passe devant le cou, on la dessine après la tête.
+  // Oreilles / attributs de tête (derrière la tête)
+  switch (c.head.key) {
+    case 'ours':
+      out.push(mirror(`<circle cx="60" cy="50" r="15" fill="${fill}" ${st}/><circle cx="60" cy="50" r="7.5" fill="${P.belly}"/>`)); break;
+    case 'chat':
+      out.push(mirror(`<path d="M54 68 L60 22 L94 44 Z" fill="${fill}" ${st}/><path d="M63 56 L66 34 L83 46 Z" fill="${P.belly}"/>`)); break;
+    case 'lapin':
+      out.push(mirror(`<ellipse cx="76" cy="32" rx="12" ry="32" transform="rotate(-14 76 32)" fill="${fill}" ${st}/><ellipse cx="76" cy="34" rx="5.5" ry="22" transform="rotate(-14 76 34)" fill="${P.belly}"/>`)); break;
+    case 'antennes':
+      out.push(mirror(`<path d="M86 44 Q80 24 70 14" fill="none" stroke="${P.dark}" stroke-width="3.5" stroke-linecap="round"/><circle cx="70" cy="14" r="7.5" fill="${E.color}" stroke="${P.dark}" stroke-width="2.5"/>`)); break;
+    case 'cornes':
+      out.push(mirror(`<path d="M70 52 Q56 26 72 12 Q76 34 88 44Z" fill="#fff2d2" ${st}/>`)); break;
+  }
+
+  // Tête
+  out.push(`<ellipse cx="100" cy="86" rx="56" ry="48" fill="${fill}" ${st}/>`);
+  if (c.pattern.key === 'taches') {
+    out.push(`<g clip-path="url(#${u}h)" fill="${P.dark}" fill-opacity=".28"><circle cx="70" cy="60" r="8"/><circle cx="130" cy="64" r="10"/><circle cx="112" cy="46" r="5"/><circle cx="150" cy="96" r="7"/></g>`);
+  } else if (c.pattern.key === 'rayures') {
+    out.push(`<g clip-path="url(#${u}h)" fill="none" stroke="${P.dark}" stroke-opacity=".3" stroke-width="6" stroke-linecap="round"><path d="M86 34 Q90 48 86 60"/><path d="M100 32 V62"/><path d="M114 34 Q110 48 114 60"/></g>`);
+  } else if (c.pattern.key === 'ventre') {
+    out.push(`<ellipse cx="100" cy="108" rx="24" ry="14" fill="${P.belly}" opacity=".85"/>`);
+  }
+
+  // Visage
+  out.push(`<ellipse cx="66" cy="104" rx="9" ry="5.5" fill="#ff6f91" fill-opacity=".42"/><ellipse cx="134" cy="104" rx="9" ry="5.5" fill="#ff6f91" fill-opacity=".42"/>`);
+  switch (c.eyes.key) {
+    case 'points':
+      out.push(mirror(`<ellipse cx="80" cy="90" rx="7.5" ry="9.5" fill="${INK}"/><circle cx="82.6" cy="86" r="3" fill="#fff"/>`)); break;
+    case 'joyeux':
+      out.push(mirror(`<path d="M72 93 Q80 83 88 93" fill="none" stroke="${INK}" stroke-width="4.5" stroke-linecap="round"/>`)); break;
+    case 'endormis':
+      out.push(mirror(`<path d="M72 89 Q80 97 88 89" fill="none" stroke="${INK}" stroke-width="4.5" stroke-linecap="round"/><path d="M71 87 L67 84" stroke="${INK}" stroke-width="2.5" stroke-linecap="round"/>`)); break;
+    case 'etoiles':
+      out.push(mirror(`<polygon points="${starPoints(80, 90, 11, 4.6)}" fill="${INK}" stroke="${INK}" stroke-width="1.5" stroke-linejoin="round"/><circle cx="82" cy="87" r="2.2" fill="#fff"/>`)); break;
+  }
+  switch (c.mouth.key) {
+    case 'sourire':
+      out.push(`<path d="M93 104 Q100 112 107 104" fill="none" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>`); break;
+    case 'o':
+      out.push(`<ellipse cx="100" cy="108" rx="5" ry="6" fill="${INK}"/><ellipse cx="100" cy="111" rx="3" ry="2" fill="#ff7b9c"/>`); break;
+    case 'croc':
+      out.push(`<path d="M102 106.5 L104 112.5 L106 106" fill="#fff" stroke="${INK}" stroke-width="1.5" stroke-linejoin="round"/><path d="M91 104 Q95.5 110 100 104 Q104.5 110 109 104" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`); break;
+  }
+
+  // Accessoires (devant)
+  switch (c.acc.key) {
+    case 'noeud':
+      out.push(`<g transform="rotate(14 140 46)"><path d="M140 46 L121 33 L123 59 Z M140 46 L159 33 L157 59 Z" fill="#ff5d8f" stroke="#b52f5c" stroke-width="2.5" stroke-linejoin="round"/><circle cx="140" cy="46" r="6" fill="#ff8fb0" stroke="#b52f5c" stroke-width="2.5"/></g>`); break;
+    case 'lunettes':
+      out.push(`<g fill="rgba(255,255,255,.18)" stroke="${INK}" stroke-width="3.5"><circle cx="80" cy="90" r="15"/><circle cx="120" cy="90" r="15"/></g><path d="M95 88 Q100 84 105 88 M65 88 L46 82 M135 88 L154 82" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/>`); break;
+    case 'echarpe':
+      out.push(`<path d="M52 124 Q100 146 148 124 L150 137 Q100 160 50 137Z" fill="${E.color}" stroke="rgba(0,0,0,.28)" stroke-width="2.5" stroke-linejoin="round"/><path d="M122 140 L134 170 L120 173 L111 144Z" fill="${E.color}" stroke="rgba(0,0,0,.28)" stroke-width="2.5" stroke-linejoin="round"/>`); break;
+    case 'couronne':
+      out.push(`<path d="M74 46 L76 16 L88 31 L100 8 L112 31 L124 16 L126 46 Z" fill="#ffd34d" stroke="#b8860b" stroke-width="2.5" stroke-linejoin="round"/><circle cx="100" cy="30" r="4.5" fill="#ff4d6d"/><circle cx="84" cy="38" r="3" fill="#4dc3ff"/><circle cx="116" cy="38" r="3" fill="#5fd068"/>`); break;
+  }
+
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>${defs}</defs><g class="creature">${out.join('')}</g></svg>`;
+}
+
+/* =====================================================================
+   CARTES
+   ===================================================================== */
+const fmt = n => n.toLocaleString('fr-FR');
+const iconSVG = key => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[key]}"/></svg>`;
+
+function sparkles(n) {
+  let s = '';
+  for (let i = 0; i < 6; i++) {
+    const x = 6 + hash01(n * 13 + i) * 82, y = 4 + hash01(n * 17 + i) * 70;
+    s += `<span class="sparkle" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%;animation-delay:${(i * .4).toFixed(1)}s"></span>`;
+  }
+  return s;
+}
+
+function cardHTML(n) {
+  const c = creature(n);
+  const fancy = c.rarity === 'epic' || c.rarity === 'legendary';
+  return `<div class="card r-${c.rarity}" style="--el:${c.element.color};--el-glow:${c.element.glow}">
+    <div class="face">
+      <div class="card-top"><span class="card-name">${c.name}</span><span class="card-hp"><small>PV</small>${c.hp}</span></div>
+      <div class="card-art">${creatureSVG(c)}${c.rarity === 'legendary' ? sparkles(n) : ''}</div>
+      <div class="card-meta"><span class="el-badge">${iconSVG(c.element.key)}${c.element.name}</span><span class="rar-badge">${RNAMES[c.rarity]}</span></div>
+      <div class="card-stats"><span><small>ATK</small>${c.atk}</span><span><small>DEF</small>${c.def}</span><span><small>PUI</small>${c.power}</span></div>
+      <div class="card-foot"><span>n° ${fmt(n)} / ${fmt(CONFIG.total)}</span><span>${fmt(CONFIG.copies[c.rarity])} ex.</span></div>
+    </div>${fancy ? '<div class="holo"></div>' : ''}
+  </div>`;
+}
+
+function backHTML(rarity) {
+  const pre = rarity === 'common' ? '' : ' pre-' + rarity;
+  return `<div class="card card-back${pre}"><div class="face"><img src="${LOGO}" alt=""><div class="back-brand">BOOSTERVERSE</div><div class="back-sub">Saison 1 · Mars</div></div></div>`;
+}
+
+function packHTML(sample) {
+  return `<span class="pack-top"></span><span class="pack-body"><span class="pack-shine"></span>
+    <span class="pack-inner"><img src="${LOGO}" alt=""><span class="pack-brand">BOOSTERVERSE</span>
+    <span class="pack-sub">Saison 1 · Mars</span><span class="pack-art">${sample ? creatureSVG(creature(sample)) : ''}</span>
+    <span class="pack-count">5 cartes</span></span></span><span class="pack-tear"></span><span class="pack-light"></span>`;
+}
+
+/* =====================================================================
+   SAUVEGARDE (navigateur, sans compte)
+   ===================================================================== */
+let save = { owned: {}, nextFree: 0, opened: 0, cards: 0 };
+function loadSave() {
+  try {
+    const raw = localStorage.getItem(CONFIG.storageKey);
+    if (raw) save = Object.assign(save, JSON.parse(raw));
+  } catch (e) { /* stockage indisponible : la partie reste jouable */ }
+}
+function persist() {
+  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(save)); } catch (e) {}
+}
+const ownedCount = () => Object.keys(save.owned).length;
+const canOpen = () => DEV || Date.now() >= save.nextFree;
+
+/* =====================================================================
+   TIRAGE
+   ===================================================================== */
+function rollRarity() {
+  const r = Math.random();
+  let acc = 0;
+  for (const k of RKEYS) { acc += CONFIG.odds[k]; if (r < acc) return k; }
+  return 'common';
+}
+function drawPack() {
+  const cards = [];
+  for (let i = 0; i < CONFIG.packSize; i++) {
+    let k = rollRarity();
+    if (CONFIG.guaranteeRareLastSlot && i === CONFIG.packSize - 1 && k === 'common') k = 'rare';
+    const b = buckets[k];
+    cards.push(b[Math.floor(Math.random() * b.length)]);
+  }
+  // Révélation dans l'ordre croissant de rareté : la meilleure carte arrive en dernier
+  return cards.sort((a, b) => rarityTable[a] - rarityTable[b]);
+}
+
+/* =====================================================================
+   DOM / UI
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const body = document.body;
+const homePack = $('home-pack');
+const cta = $('cta');
+const ctaNote = $('cta-note');
+const opening = $('opening');
+const openStage = $('open-stage');
+const openHint = $('open-hint');
+const openSkip = $('open-skip');
+const tray = $('tray');
+const flashEl = $('flash');
+const detail = $('detail');
+const cursor = document.querySelector('.custom-cursor');
+const cursorLabel = document.querySelector('.cursor-label');
+const toastEl = $('toast');
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+let toastTimer;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('is-on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('is-on'), 2400);
+}
+
+function formatDuration(ms) {
+  const s = Math.max(0, Math.ceil(ms / 1000));
+  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+  const pad = v => String(v).padStart(2, '0');
+  return (h ? h + ':' : '') + pad(m) + ':' + pad(sec);
+}
+
+function updateHome() {
+  const owned = ownedCount();
+  $('count-pill').textContent = fmt(save.cards);
+  $('fact-collection').textContent = `${fmt(owned)} / ${fmt(CONFIG.total)} créatures`;
+  $('fact-opened').textContent = `${fmt(save.opened)} booster${save.opened > 1 ? 's' : ''}`;
+  if (canOpen()) {
+    cta.disabled = false;
+    cta.textContent = 'Ouvrir un booster';
+    ctaNote.textContent = DEV ? 'Mode test : boosters illimités' : 'Booster gratuit disponible';
+    $('fact-next').textContent = 'Booster gratuit disponible';
+    homePack.classList.add('is-idle');
+  } else {
+    const left = formatDuration(save.nextFree - Date.now());
+    cta.disabled = true;
+    cta.textContent = 'Prochain booster dans ' + left;
+    ctaNote.textContent = 'Un booster gratuit toutes les heures';
+    $('fact-next').textContent = 'Dans ' + left;
+    homePack.classList.remove('is-idle');
+  }
+}
+
+function fitTitle() {
+  const h1 = $('home-title');
+  h1.style.fontSize = '100px';
+  const avail = h1.clientWidth, need = h1.scrollWidth;
+  const max = innerWidth <= 640 ? 160 : 210;
+  h1.style.fontSize = Math.max(40, Math.min(max, 100 * avail / Math.max(1, need))) + 'px';
+}
+
+/* ---------- vues ---------- */
+function setView(view) {
+  body.classList.toggle('view-collection', view === 'collection');
+  document.querySelectorAll('.nav [data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+  if (view === 'collection') renderCollection();
+}
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+
+/* ---------- collection ---------- */
+const filters = { rarity: 'all', element: 'all', sort: 'recent' };
+
+function buildChips(id, key, items) {
+  const el = $(id);
+  el.insertAdjacentHTML('beforeend', items.map(([v, label, color]) =>
+    `<button type="button" class="chip${filters[key] === v ? ' active' : ''}" data-v="${v}">${color ? `<i style="--c:${color}"></i>` : ''}${label}</button>`).join(''));
+  el.addEventListener('click', e => {
+    const b = e.target.closest('.chip');
+    if (!b) return;
+    filters[key] = b.dataset.v;
+    el.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === b));
+    renderCollection();
+  });
+}
+
+function renderCollection() {
+  const nums = Object.keys(save.owned).map(Number);
+  const owned = nums.length;
+  $('col-unique').textContent = `${fmt(owned)} / ${fmt(CONFIG.total)} créatures`;
+  const pct = owned / CONFIG.total * 100;
+  $('col-pct').textContent = (pct < 1 ? pct.toFixed(3) : pct.toFixed(1)).replace('.', ',') + ' %';
+  $('col-bar').style.width = pct + '%';
+
+  const per = { common: 0, rare: 0, epic: 0, legendary: 0 };
+  nums.forEach(n => per[RKEYS[rarityTable[n]]]++);
+  $('rar-progress').innerHTML = RKEYS.map(k =>
+    `<div style="--c:${RCOLORS[k]}"><b>${RNAMES[k]}</b>${fmt(per[k])} / ${fmt(buckets[k].length)}</div>`).join('');
+
+  let list = nums.filter(n => {
+    const c = creature(n);
+    return (filters.rarity === 'all' || c.rarity === filters.rarity) && (filters.element === 'all' || c.element.key === filters.element);
+  });
+  if (filters.sort === 'recent') list.sort((a, b) => save.owned[b].t - save.owned[a].t || b - a);
+  else if (filters.sort === 'rarity') list.sort((a, b) => rarityTable[b] - rarityTable[a] || creature(b).power - creature(a).power);
+  else list.sort((a, b) => a - b);
+
+  const grid = $('grid');
+  if (!owned) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p>Ta collection est vide pour l'instant.</p><button class="pill" type="button" data-go-home>Ouvrir mon premier booster</button></div>`;
+  } else if (!list.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p>Aucune créature ne correspond à ces filtres… encore.</p></div>`;
+  } else {
+    grid.innerHTML = list.map(n => {
+      const cnt = save.owned[n].c;
+      return `<button type="button" class="slot" data-n="${n}" data-cursor="Voir" aria-label="${creature(n).name}">${cardHTML(n)}${cnt > 1 ? `<span class="dup">×${cnt}</span>` : ''}</button>`;
+    }).join('');
+  }
+}
+$('grid').addEventListener('click', e => {
+  if (e.target.closest('[data-go-home]')) { setView('home'); return; }
+  const slot = e.target.closest('.slot');
+  if (slot) openDetail(+slot.dataset.n);
+});
+
+/* ---------- détail ---------- */
+let detailN = 0;
+function openDetail(n) {
+  detailN = n;
+  const c = creature(n);
+  $('detail-card').innerHTML = cardHTML(n);
+  const cnt = save.owned[n] ? save.owned[n].c : 0;
+  $('detail-info').innerHTML = `<strong>${c.name}</strong> — ${RNAMES[c.rarity]} · ${c.element.name}<br>
+    Corps ${c.body.name} · Tête ${c.head.name} · Palette ${c.palette.name} · Yeux ${c.eyes.name} · Motif ${c.pattern.name}${c.acc.key !== 'aucun' ? ' · ' + c.acc.name : ''}<br>
+    ${cnt ? `Possédée ×${cnt} · ` : ''}${fmt(CONFIG.copies[c.rarity])} exemplaires existent`;
+  detail.classList.add('is-open');
+  setTilt($('detail-card').querySelector('.card'), 22, 18);
+}
+function closeDetail() {
+  detail.classList.remove('is-open');
+  setTilt(body.classList.contains('view-collection') ? null : homePack);
+}
+$('detail-close').addEventListener('click', closeDetail);
+detail.addEventListener('click', e => { if (e.target === detail) closeDetail(); });
+$('share').addEventListener('click', async () => {
+  const c = creature(detailN);
+  const text = `J'ai obtenu ${c.name}, carte ${RNAMES[c.rarity]} n° ${fmt(c.n)} / ${fmt(CONFIG.total)} sur BoosterVerse !`;
+  try {
+    if (navigator.share) { await navigator.share({ title: 'BoosterVerse', text, url: location.href.split('?')[0] }); return; }
+    await navigator.clipboard.writeText(text + ' ' + location.href.split('?')[0]);
+    toast('Texte copié — colle-le où tu veux !');
+  } catch (e) {
+    if (e && e.name !== 'AbortError') toast(text);
+  }
+});
+
+/* =====================================================================
+   OUVERTURE DE BOOSTER
+   ===================================================================== */
+let session = null; // { cards, isNew, index, flips, busy }
+let sampleLegend = 0;
+
+function startOpening() {
+  if (session) return;
+  if (!canOpen()) { toast('Prochain booster gratuit dans ' + formatDuration(save.nextFree - Date.now())); return; }
+
+  const cards = drawPack();
+  const isNew = [];
+  const now = Date.now();
+  cards.forEach((n, i) => {
+    isNew.push(!save.owned[n]);
+    if (save.owned[n]) save.owned[n].c++;
+    else save.owned[n] = { c: 1, t: now + i };
+  });
+  save.opened++;
+  save.cards += cards.length;
+  save.nextFree = now + CONFIG.freeEveryMs;
+  persist(); // la collection est sauvegardée tout de suite, même si on recharge pendant l'animation
+  updateHome();
+
+  session = { cards, isNew, index: 0, flips: [], busy: false, phase: 'pack' };
+  tray.innerHTML = '';
+  openSkip.style.display = 'none';
+  openStage.innerHTML = `<div class="pack-wrap"><button class="pack is-idle" id="open-pack" type="button" data-cursor="Déchirer" aria-label="Déchirer le booster" style="--pw:min(260px,58vw,40vh)">${packHTML(sampleLegend)}</button></div>`;
+  openHint.textContent = 'Touche le booster pour l\'ouvrir';
+  opening.classList.add('is-open');
+  const pack = $('open-pack');
+  setTilt(pack, 26, 22);
+  pack.addEventListener('click', tearPack, { once: true });
+  setTimeout(() => pack.focus({ preventScroll: true }), 50);
+}
+
+async function tearPack() {
+  const pack = $('open-pack');
+  pack.classList.remove('is-idle');
+  openHint.textContent = '';
+  pack.classList.add('is-shaking');
+  vibrate(20);
+  await sleep(520);
+  pack.classList.add('is-torn');
+  vibrate([30, 30, 40]);
+  await sleep(950);
+  buildStack();
+}
+
+function buildStack() {
+  const s = session;
+  s.phase = 'reveal';
+  openStage.innerHTML = `<div class="fx" id="fx"><div class="rays" id="rays"></div></div><div class="reveal-label" id="reveal-label"></div><div class="stack" id="stack"></div>`;
+  const stack = $('stack');
+  // Première carte au-dessus de la pile
+  s.cards.forEach((n, i) => {
+    const r = creature(n).rarity;
+    const flip = document.createElement('button');
+    flip.type = 'button';
+    flip.className = 'flip is-entering';
+    flip.dataset.cursor = 'Révéler';
+    flip.setAttribute('aria-label', `Révéler la carte ${i + 1}`);
+    flip.style.zIndex = String(20 - i);
+    flip.style.animationDelay = (i * .07) + 's';
+    flip.innerHTML = `<div class="flip-inner"><div class="flip-face back">${backHTML(r)}</div><div class="flip-face front">${cardHTML(n)}</div></div>`;
+    flip.addEventListener('animationend', () => flip.classList.remove('is-entering'), { once: true });
+    flip.addEventListener('click', onCardTap);
+    stack.appendChild(flip);
+    s.flips.push(flip);
+  });
+  layoutStack();
+  setTilt(stack, 16, 12);
+  openHint.textContent = 'Touche la carte pour la révéler';
+  openSkip.style.display = '';
+}
+
+function layoutStack() {
+  const s = session;
+  s.flips.forEach((f, i) => {
+    if (f.classList.contains('is-gone')) return;
+    const d = i - s.index;
+    f.style.transform = d > 0 ? `translate(${d * 4}px, ${d * -5}px) rotate(${d * 1.2}deg)` : '';
+    f.disabled = d !== 0;
+  });
+}
+
+function onCardTap(e) {
+  const s = session;
+  if (!s || s.busy || s.phase !== 'reveal') return;
+  const flip = e.currentTarget;
+  if (s.flips[s.index] !== flip) return;
+  if (!flip.classList.contains('is-flipped')) revealCurrent();
+  else dismissCurrent();
+}
+
+function revealCurrent() {
+  const s = session;
+  const flip = s.flips[s.index];
+  const n = s.cards[s.index];
+  const r = creature(n).rarity;
+  flip.classList.add('is-flipped');
+  flip.dataset.cursor = 'Suivante';
+  openHint.textContent = (s.isNew[s.index] ? 'Nouvelle créature ! · ' : '') + (s.index < s.cards.length - 1 ? 'Touche pour continuer' : 'Touche pour voir ton booster');
+  setTimeout(() => rarityFx(r), 260);
+}
+
+async function dismissCurrent() {
+  const s = session;
+  s.busy = true;
+  const flip = s.flips[s.index];
+  const n = s.cards[s.index];
+  flip.classList.add('is-gone');
+  $('rays').className = 'rays';
+  tray.insertAdjacentHTML('beforeend', cardHTML(n));
+  s.index++;
+  await sleep(220);
+  s.busy = false;
+  if (s.index >= s.cards.length) { await sleep(250); showSummary(); return; }
+  layoutStack();
+  openHint.textContent = 'Touche la carte pour la révéler';
+}
+
+function rarityFx(r) {
+  const fx = $('fx'), rays = $('rays'), label = $('reveal-label');
+  if (!fx) return;
+  const color = RCOLORS[r];
+  if (r === 'common') { vibrate(10); return; }
+  rays.style.setProperty('--ray', color + (r === 'legendary' ? 'cc' : '88'));
+  rays.className = 'rays is-on';
+  const ring = document.createElement('span');
+  ring.className = 'ring';
+  ring.style.setProperty('--c', color);
+  fx.appendChild(ring);
+  setTimeout(() => ring.remove(), 1000);
+  const count = r === 'legendary' ? 56 : r === 'epic' ? 30 : 12;
+  const palette = r === 'legendary' ? ['#fff6c4', '#ffc93c', '#ffe680', '#ffffff'] : r === 'epic' ? ['#b77bff', '#ff9be6', '#5ee0ff'] : ['#5fb4ff', '#bfe3ff'];
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('span');
+    const a = Math.random() * Math.PI * 2, dist = 140 + Math.random() * (r === 'legendary' ? 360 : 220);
+    p.className = 'particle';
+    p.style.cssText = `--dx:${Math.cos(a) * dist}px;--dy:${Math.sin(a) * dist}px;--s:${4 + Math.random() * 7}px;--c:${palette[i % palette.length]};--d:${.8 + Math.random() * .7}s`;
+    fx.appendChild(p);
+    setTimeout(() => p.remove(), 1600);
+  }
+  if (r === 'epic' || r === 'legendary') {
+    label.textContent = RNAMES[r].toUpperCase() + (r === 'legendary' ? ' !' : '');
+    label.style.color = color;
+    label.classList.remove('is-on');
+    void label.offsetWidth;
+    label.classList.add('is-on');
+  }
+  if (r === 'legendary') {
+    flashEl.classList.remove('is-on');
+    void flashEl.offsetWidth;
+    flashEl.classList.add('is-on');
+    vibrate([40, 60, 40, 60, 120]);
+  } else vibrate(r === 'epic' ? [30, 40, 60] : 25);
+}
+
+function vibrate(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
+
+function showSummary() {
+  const s = session;
+  s.phase = 'summary';
+  openSkip.style.display = 'none';
+  tray.innerHTML = '';
+  openHint.textContent = '';
+  setTilt(null);
+  const best = s.cards[s.cards.length - 1];
+  openStage.innerHTML = `<div class="summary">${s.cards.map((n, i) =>
+    `<button type="button" class="slot" data-n="${n}" data-cursor="Voir" style="animation-delay:${i * .08}s">${cardHTML(n)}${s.isNew[i] ? '<span class="badge-new">NOUVEAU</span>' : ''}</button>`).join('')}</div>
+    <div class="summary-actions">
+      <button class="pill" type="button" data-act="collection">Voir ma collection</button>
+      ${rarityTable[best] >= 2 ? `<button class="pill ghost" type="button" data-act="share" data-n="${best}">Partager ma ${RNAMES[creature(best).rarity].toLowerCase()}</button>` : ''}
+      <button class="pill ghost" type="button" data-act="close">${canOpen() ? 'Ouvrir un autre booster' : 'Terminer'}</button>
+    </div>`;
+  const newCount = s.isNew.filter(Boolean).length;
+  openHint.textContent = `${newCount} nouvelle${newCount > 1 ? 's' : ''} créature${newCount > 1 ? 's' : ''} · ${fmt(ownedCount())} / ${fmt(CONFIG.total)}`;
+}
+
+openStage.addEventListener('click', e => {
+  if (!session || session.phase !== 'summary') return;
+  const act = e.target.closest('[data-act]');
+  const slot = e.target.closest('.slot');
+  if (act) {
+    const a = act.dataset.act;
+    if (a === 'collection') { closeOpening(); setView('collection'); }
+    else if (a === 'share') { openDetail(+act.dataset.n); $('share').click(); }
+    else { const again = canOpen(); closeOpening(); if (again) setTimeout(startOpening, 500); }
+  } else if (slot) openDetail(+slot.dataset.n);
+});
+
+openSkip.addEventListener('click', async () => {
+  const s = session;
+  if (!s || s.phase !== 'reveal' || s.busy) return;
+  s.busy = true;
+  s.flips.slice(s.index).forEach(f => f.classList.add('is-flipped'));
+  rarityFx(creature(s.cards[s.cards.length - 1]).rarity);
+  await sleep(1100);
+  s.busy = false;
+  showSummary();
+});
+
+function closeOpening() {
+  opening.classList.remove('is-open');
+  session = null;
+  setTilt(body.classList.contains('view-collection') ? null : homePack);
+  setTimeout(() => { if (!session) { openStage.innerHTML = ''; tray.innerHTML = ''; } }, 450);
+  updateHome();
+}
+
+homePack.addEventListener('click', startOpening);
+cta.addEventListener('click', startOpening);
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (detail.classList.contains('is-open')) closeDetail();
+  else if (session && session.phase === 'summary') closeOpening();
+  else if (body.classList.contains('view-collection')) setView('home');
+});
+
+/* =====================================================================
+   TILT 3D + CURSEUR (repris de Planet Jumping)
+   ===================================================================== */
+const tilt = { el: null, maxX: 20, maxY: 24, tx: 0, ty: 0, rx: 0, ry: 0 };
+function setTilt(el, maxY = 24, maxX = 20) {
+  if (tilt.el && tilt.el !== el) { tilt.el.style.setProperty('--rx', '0deg'); tilt.el.style.setProperty('--ry', '0deg'); }
+  tilt.el = el; tilt.maxY = maxY; tilt.maxX = maxX; tilt.rx = tilt.ry = 0;
+}
+
+let px = -100, py = -100, cx = -100, cy = -100, pointerIn = false;
+window.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+  px = e.clientX; py = e.clientY; pointerIn = true;
+  if (!cursor.classList.contains('is-visible')) { cx = px; cy = py; cursor.classList.add('is-visible'); }
+  const t = e.target.closest && e.target.closest('[data-cursor]');
+  if (t && !t.disabled) { cursorLabel.textContent = t.dataset.cursor; cursor.classList.add('is-enter'); }
+  else cursor.classList.remove('is-enter');
+});
+document.addEventListener('mouseleave', () => { cursor.classList.remove('is-visible'); pointerIn = false; });
+
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(40, now - last);
+  last = now;
+  cx += (px - cx) * .2; cy += (py - cy) * .2;
+  cursor.style.transform = `translate3d(${cx}px,${cy}px,0)`;
+  if (tilt.el) {
+    tilt.ty = pointerIn ? (px / innerWidth - .5) * tilt.maxY * 2 * .78 : 0;
+    tilt.tx = pointerIn ? (py / innerHeight - .5) * -tilt.maxX * 2 * .78 : 0;
+    const k = Math.min(1, dt * .009);
+    tilt.rx += (tilt.tx - tilt.rx) * k;
+    tilt.ry += (tilt.ty - tilt.ry) * k;
+    tilt.el.style.setProperty('--rx', tilt.rx.toFixed(2) + 'deg');
+    tilt.el.style.setProperty('--ry', tilt.ry.toFixed(2) + 'deg');
+  }
+  requestAnimationFrame(loop);
+}
+
+/* =====================================================================
+   DÉMARRAGE : préchargement = génération réelle des 100 000 cartes
+   ===================================================================== */
+async function boot() {
+  loadSave();
+  const value = $('preloader-value');
+  const t0 = performance.now(), MIN = 1800;
+  const gen = buildRarityTable();
+  let progress = 0;
+  await new Promise(resolve => {
+    const step = () => {
+      const until = performance.now() + 12;
+      let r;
+      while (performance.now() < until && !(r = gen.next()).done) progress = r.value;
+      if (r && r.done) progress = 1;
+      const shown = Math.min(progress, (performance.now() - t0) / MIN);
+      value.textContent = String(Math.round(shown * 100));
+      if (shown >= 1) resolve(); else requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+
+  sampleLegend = buckets.legendary[Math.floor(hash01(Date.now() >> 16) * buckets.legendary.length)];
+  homePack.innerHTML = packHTML(sampleLegend);
+  $('odds').innerHTML = RKEYS.map(k => `<div class="side-item"><i style="--c:${RCOLORS[k]}"></i>${RNAMES[k]}<span>${String(Math.round(CONFIG.odds[k] * 100))} %</span></div>`).join('');
+  buildChips('f-rarity', 'rarity', [['all', 'Toutes'], ...RKEYS.map(k => [k, RNAMES[k], RCOLORS[k]])]);
+  buildChips('f-element', 'element', [['all', 'Tous'], ...ELEMENTS.map(e => [e.key, e.name, e.color])]);
+  buildChips('f-sort', 'sort', [['recent', 'Récentes'], ['rarity', 'Rareté'], ['number', 'Numéro']]);
+  updateHome();
+  fitTitle();
+  setInterval(updateHome, 1000);
+
+  value.textContent = '100';
+  $('preloader-count').classList.add('is-leaving');
+  $('floating-logo').classList.add('is-docked');
+  $('preloader').classList.add('is-done');
+  body.classList.add('preload-complete');
+  const bg = $('bg-video');
+  const p = bg.play();
+  if (p) p.catch(() => {});
+  bg.classList.add('is-visible');
+  setTimeout(() => body.classList.add('intro-ready'), 350);
+  setTimeout(() => $('preloader-count').remove(), 750);
+  setTimeout(() => $('floating-logo').classList.add('is-settled'), 2000);
+  setTilt(homePack);
+}
+
+window.addEventListener('resize', fitTitle);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitle);
+requestAnimationFrame(loop);
+boot();
+})();
+</script>
+</body>
+</html>
