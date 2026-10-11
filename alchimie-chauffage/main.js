@@ -30,9 +30,6 @@ const CONFIG = {
   legalUrl: '#', // [MENTIONS LÉGALES À COMPLÉTER]
   privacyUrl: '#', // [POLITIQUE VIE PRIVÉE À COMPLÉTER]
 
-  // Formulaire : laisser vide pour la démo (aucun envoi).
-  // Plus tard : "https://formspree.io/f/VOTRE_ID"
-  FORM_ENDPOINT: '',
 };
 
 const isPlaceholder = (v) => !v || /COMPLÉTER/i.test(String(v));
@@ -247,7 +244,7 @@ function initAnimations() {
     });
   }
 
-  // Les cartes du formulaire et de la carte s'allument
+  // La carte s'allume
   gsap.from('.map-frame', {
     clipPath: 'inset(12% 12% 12% 12% round 28px)', duration: 1.4, ease: 'expo.out',
     scrollTrigger: { trigger: '.zone__maps', start: 'top 85%', once: true },
@@ -319,95 +316,9 @@ function initCarousel() {
 }
 
 /* --------------------------------------------------------------------------
-   Formulaire de devis (démo : pas de backend)
-   -------------------------------------------------------------------------- */
-function initForm() {
-  const form = document.getElementById('quote-form');
-  if (!form) return;
-
-  const validate = () => {
-    let ok = true;
-    form.querySelectorAll('.field').forEach((f) => f.classList.remove('is-invalid'));
-    ['nom', 'telephone', 'commune'].forEach((name) => {
-      const input = form.elements[name];
-      const valid = name === 'telephone'
-        ? input.value.replace(/\D/g, '').length >= 9
-        : input.value.trim().length >= 2;
-      if (!valid) { input.closest('.field').classList.add('is-invalid'); ok = false; }
-    });
-    if (!form.querySelector('input[name="type"]:checked')) {
-      form.querySelector('.field--choices').classList.add('is-invalid');
-      ok = false;
-    }
-    if (!ok) {
-      const first = form.querySelector('.is-invalid input');
-      if (first) first.focus();
-      if (window.gsap && !reducedMotion) {
-        window.gsap.fromTo(form, { x: -8 }, { x: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
-      }
-    }
-    return ok;
-  };
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-    form.classList.add('is-sending');
-
-    try {
-      if (CONFIG.FORM_ENDPOINT) {
-        // Branchement Formspree (ou autre) : envoi réel
-        await fetch(CONFIG.FORM_ENDPOINT, {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: new FormData(form),
-        });
-      } else {
-        // DÉMO : on simule un envoi
-        await new Promise((r) => setTimeout(r, 700));
-      }
-    } finally {
-      form.classList.remove('is-sending');
-      form.classList.add('is-sent');
-      document.getElementById('form-reset').focus({ preventScroll: true });
-    }
-  });
-
-  document.getElementById('form-reset').addEventListener('click', () => {
-    form.reset();
-    form.classList.remove('is-sent');
-  });
-}
-
-/* --------------------------------------------------------------------------
-   HERO 3D : « cœur de chaleur » + braises qui montent (three.js)
+   HERO 3D : flamme + braises qui montent (three.js)
    Chargé à la demande, après le premier affichage, pour rester rapide.
    -------------------------------------------------------------------------- */
-const NOISE_GLSL = /* glsl */ `
-vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
-vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
-vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
-vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
-float snoise(vec3 v){
-  const vec2 C=vec2(1.0/6.0,1.0/3.0);const vec4 D=vec4(0.0,0.5,1.0,2.0);
-  vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);
-  vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.0-g;vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);
-  vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;
-  i=mod289(i);
-  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
-  float n_=0.142857142857;vec3 ns=n_*D.wyz-D.xzx;
-  vec4 j=p-49.0*floor(p*ns.z*ns.z);vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.0*x_);
-  vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.0-abs(x)-abs(y);
-  vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);
-  vec4 s0=floor(b0)*2.0+1.0;vec4 s1=floor(b1)*2.0+1.0;vec4 sh=-step(h,vec4(0.0));
-  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
-  vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
-  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
-  p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
-  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);m=m*m;
-  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
-}`;
-
 async function initHero3D() {
   if (reducedMotion) return;
   const canvas = document.getElementById('hero-canvas');
@@ -422,7 +333,6 @@ async function initHero3D() {
 
   const lite = isSmall || lowPower;
   const EMBERS = lite ? 650 : 2200;
-  const CORE_DETAIL = lite ? 24 : 64;
 
   let renderer;
   try {
@@ -441,67 +351,76 @@ async function initHero3D() {
   const group = new THREE.Group();
   scene.add(group);
 
-  /* --- Cœur de chaleur : sphère en fusion déformée par du bruit --- */
-  const coreUniforms = {
+  /* --- La flamme : shader de bruit (fbm) sur un plan, base bleue comme un brûleur --- */
+  const flameUniforms = {
     uTime: { value: 0 },
     uHeat: { value: 1 },
+    uLean: { value: new THREE.Vector2() },
   };
-  const core = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.1, CORE_DETAIL),
+  const flame = new THREE.Mesh(
+    new THREE.PlaneGeometry(3.6, 5.2),
     new THREE.ShaderMaterial({
-      uniforms: coreUniforms,
-      vertexShader: /* glsl */ `
-        ${NOISE_GLSL}
-        uniform float uTime;
-        varying float vDisp;
-        varying vec3 vNormal;
-        varying vec3 vView;
-        void main(){
-          vec3 p = position;
-          float n = snoise(p * 1.1 + vec3(0.0, -uTime * 0.45, uTime * 0.12));
-          float n2 = snoise(p * 2.6 + vec3(uTime * 0.2, -uTime * 0.7, 0.0)) * 0.35;
-          float d = (n + n2) * 0.16;
-          // la matière « monte » comme une flamme
-          float lift = max(0.0, normal.y) * (0.25 + 0.25 * snoise(vec3(p.xz * 1.4, uTime * 0.6)));
-          p += normal * (d + lift * 0.28);
-          vDisp = d + lift * 0.5;
-          vec4 mv = modelViewMatrix * vec4(p, 1.0);
-          vNormal = normalize(normalMatrix * normal);
-          vView = normalize(-mv.xyz);
-          gl_Position = projectionMatrix * mv;
-        }`,
+      transparent: true,
+      depthWrite: false,
+      // addition pure : la flamme éclaire sans rendre le fond opaque
+      blending: THREE.CustomBlending,
+      blendSrc: THREE.OneFactor,
+      blendDst: THREE.OneFactor,
+      blendSrcAlpha: THREE.OneFactor,
+      blendDstAlpha: THREE.OneFactor,
+      uniforms: flameUniforms,
+      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
       fragmentShader: /* glsl */ `
-        uniform float uHeat;
-        varying float vDisp;
-        varying vec3 vNormal;
-        varying vec3 vView;
+        uniform float uTime; uniform float uHeat; uniform vec2 uLean;
+        varying vec2 vUv;
+        float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+        float noise(vec2 p){
+          vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
+          return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+        }
+        float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++){ v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }
         void main(){
-          float t = clamp(vDisp * 1.8 + 0.38, 0.0, 1.0);
-          vec3 deep = vec3(0.22, 0.03, 0.0);
-          vec3 ember = vec3(1.0, 0.416, 0.102);
-          vec3 amber = vec3(1.0, 0.702, 0.278);
-          vec3 white = vec3(1.0, 0.93, 0.8);
-          vec3 col = mix(deep, ember, smoothstep(0.0, 0.5, t));
-          col = mix(col, amber, smoothstep(0.45, 0.8, t));
-          col = mix(col, white, smoothstep(0.88, 1.0, t) * 0.5);
-          float fres = pow(1.0 - max(dot(vNormal, vView), 0.0), 2.5);
-          col = col * 0.82 + vec3(1.0, 0.42, 0.12) * fres * 0.6;
-          // reflet froid discret : contraste chaud / froid
-          col += vec3(0.227, 0.627, 1.0) * pow(fres, 4.0) * 0.35 * max(0.0, -vNormal.y + 0.3);
-          gl_FragColor = vec4(col * uHeat, 1.0);
+          vec2 p = vUv - vec2(0.5, 0.0);
+          float y = p.y;
+          // la flamme penche avec la souris, surtout en haut
+          p.x -= uLean.x * y * y * 0.4;
+          float n = fbm(vec2(p.x * 3.0, y * 2.4 - uTime * 1.5));
+          float n2 = fbm(vec2(p.x * 7.0 + 3.1, y * 5.0 - uTime * 2.8));
+          p.x += (n - 0.5) * 0.24 * y + (n2 - 0.5) * 0.07 * y;
+          // profil en goutte : large en bas, pointe vacillante en haut
+          float width = 0.22 * pow(smoothstep(0.0, 0.2, y), 0.55) * (1.0 - smoothstep(0.12, 0.92, y) * 0.96);
+          width *= 0.85 + 0.35 * n;
+          float d = abs(p.x) / max(width, 0.001);
+          float base = smoothstep(0.03, 0.1, y);
+          float tip = 1.0 - smoothstep(0.5 + 0.3 * n2, 0.95, y);
+          float f = (1.0 - smoothstep(0.5, 1.0, d)) * tip * base;
+          float core = (1.0 - smoothstep(0.0, 0.6, d)) * (1.0 - smoothstep(0.12, 0.55, y)) * base;
+          vec3 col = mix(vec3(0.7, 0.07, 0.0), vec3(1.0, 0.416, 0.102), smoothstep(0.0, 0.55, f));
+          col = mix(col, vec3(1.0, 0.702, 0.278), smoothstep(0.55, 1.0, f));
+          col = mix(col, vec3(1.0, 0.95, 0.82), core * 0.85);
+          // pied bleu (brûleur) : contraste chaud / froid
+          float blue = (1.0 - smoothstep(0.06, 0.2, y)) * (1.0 - smoothstep(0.35, 1.0, d)) * base;
+          col = mix(col, vec3(0.227, 0.627, 1.0), blue * 0.8);
+          float alpha = clamp(f + blue * 0.5, 0.0, 1.0);
+          // halo doux autour de la flamme
+          float glow = exp(-abs(p.x) * 7.0) * exp(-abs(y - 0.32) * 3.5) * 0.28;
+          col = col * alpha + vec3(1.0, 0.42, 0.12) * glow;
+          col *= uHeat;
+          gl_FragColor = vec4(col, max(col.r, max(col.g, col.b)));
         }`,
     })
   );
-  group.add(core);
+  flame.position.y = 0.3;
+  group.add(flame);
 
-  /* --- Halo lumineux derrière le cœur --- */
+  /* --- Halo lumineux derrière la flamme --- */
   const glow = new THREE.Mesh(
     new THREE.PlaneGeometry(9, 9),
     new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
-      uniforms: { uTime: coreUniforms.uTime, uHeat: coreUniforms.uHeat },
+      uniforms: { uTime: flameUniforms.uTime, uHeat: flameUniforms.uHeat },
       vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
       fragmentShader: /* glsl */ `
         uniform float uTime; uniform float uHeat; varying vec2 vUv;
@@ -599,8 +518,8 @@ async function initHero3D() {
     } else {
       // portrait (mobile) : cœur en haut, texte en bas
       layout.x = 0;
-      layout.y = 2.35;
-      layout.scale = 0.62;
+      layout.y = 2.25;
+      layout.scale = 0.6;
     }
   };
   resize();
@@ -632,17 +551,16 @@ async function initHero3D() {
     mouse.y += (mouse.ty - mouse.y) * 0.05;
     const scroll = Math.min(1, window.scrollY / window.innerHeight);
 
-    coreUniforms.uTime.value = elapsed;
+    flameUniforms.uTime.value = elapsed;
     emberUniforms.uTime.value = elapsed;
     emberUniforms.uMouse.value.set(mouse.x, mouse.y);
     emberUniforms.uScroll.value = scroll;
-    coreUniforms.uHeat.value = 1 - scroll * 0.35;
+    flameUniforms.uHeat.value = 1 - scroll * 0.35;
 
     const s = layout.scale * (1 + scroll * 0.25);
     group.scale.setScalar(s);
     group.position.set(layout.x + mouse.x * 0.25, layout.y + scroll * 1.6 + mouse.y * 0.15, 0);
-    core.rotation.y = elapsed * 0.15 + mouse.x * 0.5;
-    core.rotation.x = -mouse.y * 0.35;
+    flameUniforms.uLean.value.set(mouse.x, mouse.y);
     embers.rotation.y = mouse.x * 0.25;
 
     renderer.render(scene, camera);
@@ -668,7 +586,6 @@ initCounters();
 initAnimations();
 initCardGlow();
 initCarousel();
-initForm();
 
 // La 3D démarre une fois la page affichée (meilleur score Lighthouse)
 const start3D = () => {

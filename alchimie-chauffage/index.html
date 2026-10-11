@@ -324,65 +324,27 @@
       <div class="quote__glow" aria-hidden="true"></div>
       <div class="container quote__grid">
         <div class="quote__intro">
-          <p class="eyebrow reveal">Devis gratuit</p>
-          <h2 class="section__title reveal" id="quote-title">Parlons de<br><span class="grad">votre chauffage.</span></h2>
-          <p class="lead reveal">Décrivez votre besoin : on vous rappelle rapidement. Pour une panne urgente, le plus simple reste de nous appeler.</p>
-          <a class="quote__phone reveal" href="tel:+32479535503" data-cfg-href="phoneHref">
-            <span class="quote__phone-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg></span>
-            <span><small>Appel direct</small><strong data-cfg="phone">0479 53 55 03</strong></span>
-          </a>
+          <p class="eyebrow reveal">Contact</p>
+          <h2 class="section__title reveal" id="quote-title">Un souci de<br>chauffage&nbsp;?<br><span class="grad nowrap">Appelez-nous.</span></h2>
+          <p class="lead reveal">Un appel et on s'occupe du reste : on écoute votre problème et on vous dit honnêtement ce qu'il faut faire.</p>
         </div>
 
-        <!--
-          FORMULAIRE : en démo, aucun envoi réel (voir main.js > initForm).
-          Pour brancher plus tard :
-            • Formspree : mettre action="https://formspree.io/f/VOTRE_ID" method="POST"
-              et renseigner CONFIG.FORM_ENDPOINT dans main.js (envoi en fetch, l'animation reste).
-            • mailto : action="mailto:adresse@client.be" method="post" enctype="text/plain"
-              (moins fiable, dépend du logiciel mail du visiteur).
-        -->
-        <form class="form glass reveal" id="quote-form" novalidate>
-          <div class="form__row">
-            <label class="field">
-              <span>Nom</span>
-              <input type="text" name="nom" autocomplete="name" required placeholder="Votre nom">
-            </label>
-            <label class="field">
-              <span>Téléphone</span>
-              <input type="tel" name="telephone" autocomplete="tel" inputmode="tel" required placeholder="04xx xx xx xx">
-            </label>
-          </div>
-          <label class="field">
-            <span>Commune</span>
-            <input type="text" name="commune" list="communes" autocomplete="address-level2" required placeholder="Ex. Nivelles">
-            <datalist id="communes">
-              <option value="Nivelles"><option value="Waterloo"><option value="Braine-l'Alleud"><option value="Genappe"><option value="Ittre"><option value="Seneffe"><option value="Tubize">
-            </datalist>
-          </label>
-          <fieldset class="field field--choices">
-            <legend>Type de demande</legend>
-            <div class="choices">
-              <label class="choice"><input type="radio" name="type" value="installation" required><span>Installation</span></label>
-              <label class="choice"><input type="radio" name="type" value="entretien"><span>Entretien</span></label>
-              <label class="choice"><input type="radio" name="type" value="panne"><span>Panne</span></label>
-            </div>
-          </fieldset>
-          <label class="field">
-            <span>Message</span>
-            <textarea name="message" rows="4" placeholder="Marque de la chaudière, symptôme, disponibilités…"></textarea>
-          </label>
-          <button class="btn btn--fire btn--lg btn--block form__submit" type="submit">
-            <span class="form__submit-label">Envoyer ma demande</span>
-          </button>
-          <p class="form__note">Démo : aucune donnée n'est envoyée.</p>
-
-          <div class="form__success" role="status" aria-live="polite">
-            <svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="34"/><path d="M25 41l10 10 20-22"/></svg>
-            <p class="form__success-title">Demande envoyée ✓</p>
-            <p>Merci ! Nous vous rappelons très vite.</p>
-            <button type="button" class="btn btn--glass btn--sm" id="form-reset">Nouvelle demande</button>
-          </div>
-        </form>
+        <div class="call-card glass reveal">
+          <span class="call-card__flame" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path fill="url(#lg-flame)" d="M24 3c3 10 14 14 14 28a14 14 0 0 1-28 0c0-7 3-11 7-14 0 5 2 9 5 10-2-9 0-17 2-24z"/></svg>
+          </span>
+          <p class="call-card__label">Un simple appel suffit</p>
+          <a class="call-card__number" href="tel:+32479535503" data-cfg-href="phoneHref" data-cfg="phone">0479 53 55 03</a>
+          <ul class="call-card__points">
+            <li>Devis gratuit</li>
+            <li>Installation, entretien ou panne</li>
+            <li>Nivelles et Brabant wallon</li>
+          </ul>
+          <a class="btn btn--fire btn--lg btn--block" href="tel:+32479535503" data-cfg-href="phoneHref">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+            Appeler maintenant
+          </a>
+        </div>
       </div>
     </section>
   </main>
