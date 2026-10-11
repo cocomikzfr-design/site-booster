@@ -6,13 +6,15 @@ Deux pages statiques autonomes (HTML, CSS et JS dans un seul fichier, sans build
 |---------|---------|
 | `index.html` | **Planet Jumping** : expérience spatiale immersive. Préchargement vidéo vers Mars, portail en canvas avec faux 3D qui suit la souris, voyages Mars → Terre → Vénus. Le bouton « Menu » mène à BoosterVerse. |
 | `booster.html` | **BoosterVerse** : prototype jouable du jeu de cartes à collectionner (100 000 créatures générées en SVG, ouverture de boosters, raretés, collection, booster gratuit toutes les heures). Il reprend la même base visuelle que Planet Jumping. |
+| `alchimie-chauffage/` | **L'Alchimie du Chauffage** : site vitrine démo pour un chauffagiste de Nivelles (hero three.js, GSAP + ScrollTrigger, Lenis). Les infos à compléter sont dans l'objet `CONFIG` en haut de `main.js`. |
 | `docs/BOOSTERVERSE.md` | Description complète du projet BoosterVerse : concept, raretés, boucle de jeu, feuille de route, modèle économique, risques. |
 
 ## Lancer en local
 
 ```bash
 python3 -m http.server 8000
-# puis ouvrir http://localhost:8000/ ou http://localhost:8000/booster.html
+# puis ouvrir http://localhost:8000/, http://localhost:8000/booster.html
+# ou http://localhost:8000/alchimie-chauffage/
 ```
 
 Les vidéos, l'image et le logo sont chargés depuis le CDN CloudFront indiqué dans le cahier des charges.
