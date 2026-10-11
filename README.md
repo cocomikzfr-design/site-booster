@@ -6,13 +6,14 @@ Deux pages statiques autonomes (HTML, CSS et JS dans un seul fichier, sans build
 |---------|---------|
 | `index.html` | **Planet Jumping** : expérience spatiale immersive. Préchargement vidéo vers Mars, portail en canvas avec faux 3D qui suit la souris, voyages Mars → Terre → Vénus. Le bouton « Menu » mène à BoosterVerse. |
 | `booster.html` | **BoosterVerse** : prototype jouable du jeu de cartes à collectionner (100 000 créatures générées en SVG, ouverture de boosters, raretés, collection, booster gratuit toutes les heures). Il reprend la même base visuelle que Planet Jumping. |
+| `studio/` | **Site Booster Studio** : page de vente pour Fiverr (« je crée votre site web »). Scroll cinématique sur 3 écrans, formules en carrousel infini, bouton « Commander sur Fiverr », bascule FR / EN. `index.html` + `styles.css` + `script.js`, images et police chargées à distance. |
 | `docs/BOOSTERVERSE.md` | Description complète du projet BoosterVerse : concept, raretés, boucle de jeu, feuille de route, modèle économique, risques. |
 
 ## Lancer en local
 
 ```bash
 python3 -m http.server 8000
-# puis ouvrir http://localhost:8000/ ou http://localhost:8000/booster.html
+# puis ouvrir http://localhost:8000/, http://localhost:8000/booster.html ou http://localhost:8000/studio/
 ```
 
 Les vidéos, l'image et le logo sont chargés depuis le CDN CloudFront indiqué dans le cahier des charges.
@@ -22,3 +23,8 @@ Les vidéos, l'image et le logo sont chargés depuis le CDN CloudFront indiqué 
 - `booster.html?dev=1` : boosters illimités, pour tester sans attendre une heure.
 - L'équilibrage (chances, délai, carte rare garantie, exemplaires) se règle dans l'objet `CONFIG` en haut du script.
 - La collection est sauvegardée dans le navigateur (`localStorage`, clé `boosterverse:v1`).
+
+## Astuces Studio (page Fiverr)
+
+- Mets le lien de ton gig Fiverr dans la constante `FIVERR_URL` en haut de `studio/script.js`.
+- Les textes français sont dans `studio/index.html`, les textes anglais dans l'objet `translations.en` de `studio/script.js`.
