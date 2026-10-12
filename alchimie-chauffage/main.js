@@ -262,11 +262,11 @@ function initScrollEffects() {
   // Le contenu du hero s'éloigne en scrollant
   gsap.to('.hero__content', {
     yPercent: -14, opacity: 0, ease: 'none',
-    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom 20%', scrub: true },
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: '55% top', scrub: true },
   });
 
   // Services : la carte du dessous recule quand la suivante arrive
-  const cards = gsap.utils.toArray('.svc');
+  const cards = isSmall ? [] : gsap.utils.toArray('.svc');
   cards.forEach((card, i) => {
     const next = cards[i + 1];
     if (!next) return;
@@ -459,6 +459,21 @@ function initRadarMotion() {
 }
 
 /* --------------------------------------------------------------------------
+   Bouton d'appel flottant : caché quand un gros bouton d'appel est déjà visible
+   -------------------------------------------------------------------------- */
+function initFab() {
+  const fab = document.querySelector('.fab-call');
+  const zones = document.querySelectorAll('.hero__actions, .cta__actions');
+  if (!fab || !zones.length || !('IntersectionObserver' in window)) return;
+  const shown = new Set();
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => (e.isIntersecting ? shown.add(e.target) : shown.delete(e.target)));
+    fab.classList.toggle('is-hidden', shown.size > 0);
+  });
+  zones.forEach((z) => io.observe(z));
+}
+
+/* --------------------------------------------------------------------------
    Toucher la flamme : elle s'emballe (version CSS ; la 3D a son propre effet)
    -------------------------------------------------------------------------- */
 function initFlameTouch() {
@@ -611,7 +626,7 @@ async function initHero3D() {
           vec2 p = vUv - vec2(0.5, 0.0);
           float y = p.y;
           // hors de la zone de la flamme : rien à calculer
-          float reach = 0.34 + y * 0.12 + abs(uLean.x) * y * y * 0.45;
+          float reach = min(0.49, 0.4 + y * 0.1 + abs(uLean.x) * y * y * 0.45);
           if (abs(p.x) > reach || y > 1.0) { gl_FragColor = vec4(0.0); return; }
           float edgeFade = 1.0 - smoothstep(reach - 0.12, reach, abs(p.x));
           float t = uTime * (1.0 + uBoost * 0.8);
@@ -622,11 +637,11 @@ async function initHero3D() {
           float n = fbm(vec2(p.x * 3.2, y * 2.6 - t * 1.8) + q * 1.4);
           float n2 = fbm(vec2(p.x * 7.0 + 3.1, y * 5.5 - t * 3.0) + q);
           p.x += (n - 0.5) * 0.3 * y + (n2 - 0.5) * 0.08 * y;
-          float H = 0.78 + uBoost * 0.16;
+          float H = 0.74 + 0.04 * sin(t * 3.1) + 0.03 * sin(t * 7.7 + 1.0) + uBoost * 0.16;
           float yy = y / H;
-          // profil en goutte, base arrondie, pointe vacillante
-          float w = 0.19 * pow(smoothstep(0.0, 0.2, yy), 0.5) * pow(max(1.0 - yy, 0.0), 0.85);
-          w *= 0.85 + 0.45 * n + uBoost * 0.15;
+          // profil en goutte : base ronde et large, pointe fine qui vacille
+          float w = 0.25 * pow(smoothstep(0.0, 0.24, yy), 0.45) * pow(max(1.0 - yy, 0.0), 1.15);
+          w *= 0.8 + 0.5 * n + uBoost * 0.15;
           float d = abs(p.x) / max(w, 0.001);
           float base = smoothstep(0.035, 0.11, y);
           float shape = 1.0 - smoothstep(0.45, 1.0, d + (n - 0.5) * 0.7 * yy);
@@ -634,13 +649,17 @@ async function initHero3D() {
           float body = shape * tip * base;
           // langues de feu qui se détachent en haut
           float tongues = smoothstep(0.62, 0.95, n2 + n * 0.35) * smoothstep(0.35, 0.7, yy) * (1.0 - smoothstep(0.95, 1.25, yy)) * (1.0 - smoothstep(0.5, 1.4, d));
-          // cœur blanc-jaune
-          float core = (1.0 - smoothstep(0.0, 0.5, d)) * (1.0 - smoothstep(0.08, 0.5, yy)) * base;
-          float heat = clamp(body * (0.55 + 0.45 * n) + core * 0.55 + tongues * 0.5, 0.0, 1.0);
-          vec3 col = ramp(heat) * (body + tongues * 0.8);
+          // cœur jaune-blanc, court et bas (comme un vrai feu)
+          float core = (1.0 - smoothstep(0.0, 0.55, d)) * (1.0 - smoothstep(0.05, 0.34, yy)) * base;
+          // plus on monte, plus la flamme refroidit : jaune → orange → rouge
+          float cool = mix(1.0, 0.38, smoothstep(0.12, 0.9, yy));
+          float heat = clamp((body * (0.5 + 0.5 * n) + tongues * 0.45) * cool + core * 0.42, 0.0, 0.93);
+          // bords plus sombres et irréguliers
+          float rim = smoothstep(1.0, 0.55, d);
+          vec3 col = ramp(heat) * (body * (0.55 + 0.45 * rim) + tongues * 0.8);
           // pied bleu (brûleur) : contraste chaud / froid
           float blue = (1.0 - smoothstep(0.05, 0.19, y)) * (1.0 - smoothstep(0.3, 1.0, d)) * smoothstep(0.02, 0.07, y);
-          col += vec3(0.16, 0.48, 1.0) * blue * 0.9;
+          col += vec3(0.16, 0.48, 1.0) * blue * 1.25;
           // halo doux
           float glow = exp(-abs(p.x) * 6.5) * exp(-abs(y - 0.3) * 3.2);
           col += vec3(1.0, 0.38, 0.1) * glow * edgeFade * (0.22 + uBoost * 0.25);
@@ -752,14 +771,14 @@ async function initHero3D() {
     if (camera.aspect > 1.1) {
       // paysage : flamme à droite, texte à gauche
       const halfW = camera.position.z * Math.tan((camera.fov * Math.PI) / 360) * camera.aspect;
-      layout.x = halfW * 0.6;
+      layout.x = halfW * 0.64;
       layout.y = -0.1;
       layout.scale = camera.aspect < 1.45 ? 0.95 : 1.12;
     } else {
       // portrait (mobile) : flamme en haut, texte en bas
       layout.x = 0;
-      layout.y = 2.25;
-      layout.scale = 0.54;
+      layout.y = 1.96;
+      layout.scale = 0.56;
     }
   };
   resize();
@@ -853,6 +872,7 @@ initInView();
 initRadarMotion();
 initCursor();
 initFlameTouch();
+initFab();
 
 // GSAP et la 3D démarrent une fois la page affichée (meilleur score Lighthouse)
 const start3D = () => {
