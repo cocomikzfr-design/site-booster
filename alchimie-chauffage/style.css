@@ -612,6 +612,79 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .svc__art .accent { stroke: var(--amber); stroke-width: 3.2; }
 .svc__art .cold { stroke: var(--cold); stroke-width: 3; }
 
+/* ---------- Manifeste : les mots s'allument au scroll ---------- */
+.manifesto { padding-block: clamp(84px, 13vw, 170px); }
+.manifesto__text {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.75rem, 4.8vw, 3.8rem);
+  line-height: 1.16; letter-spacing: -0.025em;
+  max-width: 21ch;
+}
+.manifesto__text em { font-style: normal; }
+.js-anim .manifesto__text .mw { color: #6a6058; transition: color 0.45s ease, text-shadow 0.45s ease; }
+.js-anim .manifesto__text .mw.on { color: var(--ink); }
+.js-anim .manifesto__text em .mw.on { color: var(--amber); text-shadow: 0 0 28px rgba(255, 120, 40, 0.55); }
+
+/* ---------- Services : morphing de particules 3D ---------- */
+.morph { position: relative; height: 430vh; }
+.morph[hidden] { display: none; }
+.services.has-morph { padding-bottom: 0; }
+.services.has-morph .stack {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+.morph__sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+.morph__glow {
+  position: absolute; z-index: -2; left: 72%; top: 50%;
+  width: 90vmax; height: 90vmax; transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(255, 106, 26, 0.2), rgba(255, 106, 26, 0.05) 50%, transparent 72%);
+  pointer-events: none;
+}
+.morph__canvas { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s ease; touch-action: pan-y; }
+.morph__canvas.is-ready { opacity: 1; }
+.morph__ui {
+  height: 100%;
+  display: flex; flex-direction: column; justify-content: center;
+  padding-top: var(--topbar-h);
+  pointer-events: none;
+}
+.morph__text { position: relative; width: min(100%, 470px); min-height: 300px; }
+.morph__step {
+  position: absolute; left: 0; right: 0; top: 50%;
+  transform: translateY(calc(-50% + 30px));
+  opacity: 0;
+  transition: opacity 0.6s var(--ease), transform 0.8s var(--ease);
+}
+.morph__step.is-active { opacity: 1; transform: translateY(-50%); }
+.morph__step.is-past { transform: translateY(calc(-50% - 30px)); }
+.morph__num {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(2.6rem, 6vw, 5rem); line-height: 1;
+  color: transparent; -webkit-text-stroke: 1px rgba(255, 179, 71, 0.6);
+  margin-bottom: 14px;
+}
+.morph__step h3 {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.7rem, 3.6vw, 3rem); line-height: 1.04; letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.morph__step > p:not(.morph__num) { color: var(--ink-2); font-size: 1.05rem; max-width: 40ch; }
+.morph__step .svc__list { margin-top: 20px; }
+.morph__progress {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 26px; width: min(100%, 470px);
+  font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.morph__progress #morph-count { color: var(--amber); }
+.morph__progress i { flex: 1; height: 2px; background: rgba(255, 230, 210, 0.15); border-radius: 2px; overflow: hidden; }
+.morph__progress b { display: block; height: 100%; background: var(--grad); transform-origin: 0 50%; transform: scaleX(0); }
+
 /* ---------- Thermostat : du froid au confort ---------- */
 .thermo { position: relative; height: 420vh; }
 .thermo__sticky {
@@ -660,6 +733,29 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .thermo__cold span:nth-child(14) { left: 92%; animation-delay: -2.5s; width: 2px; height: 2px; }
 .thermo__cold span:nth-child(15) { left: 97%; animation-delay: -5.5s; animation-duration: 12s; }
 .thermo__cold span:nth-child(16) { left: 2%; animation-delay: -7.5s; width: 3px; height: 3px; }
+.thermo__warm span {
+  position: absolute; bottom: -10px;
+  width: 4px; height: 6px; border-radius: 50%;
+  background: #ffc46b; box-shadow: 0 0 8px 1px rgba(255, 106, 26, 0.9);
+  animation: rise 7s linear infinite;
+}
+.thermo__warm span:nth-child(1) { left: 6%; animation-delay: -1s; }
+.thermo__warm span:nth-child(2) { left: 15%; animation-delay: -4s; animation-duration: 9s; }
+.thermo__warm span:nth-child(3) { left: 24%; animation-delay: -2.5s; }
+.thermo__warm span:nth-child(4) { left: 33%; animation-delay: -6s; animation-duration: 8s; }
+.thermo__warm span:nth-child(5) { left: 44%; animation-delay: -3.2s; }
+.thermo__warm span:nth-child(6) { left: 53%; animation-delay: -5.4s; animation-duration: 10s; }
+.thermo__warm span:nth-child(7) { left: 61%; animation-delay: -0.6s; }
+.thermo__warm span:nth-child(8) { left: 69%; animation-delay: -4.6s; animation-duration: 8.5s; }
+.thermo__warm span:nth-child(9) { left: 77%; animation-delay: -2s; }
+.thermo__warm span:nth-child(10) { left: 84%; animation-delay: -6.6s; animation-duration: 9.5s; }
+.thermo__warm span:nth-child(11) { left: 91%; animation-delay: -3.8s; }
+.thermo__warm span:nth-child(12) { left: 97%; animation-delay: -5s; animation-duration: 7.5s; }
+@keyframes rise {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translate(-30px, -100vh) scale(0.4); opacity: 0; }
+}
 @keyframes snow {
   0% { transform: translate(0, 0); opacity: 0; }
   10% { opacity: 1; }
@@ -1069,6 +1165,20 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .svc__art svg { stroke-width: 3; filter: drop-shadow(0 0 10px rgba(255, 106, 26, 0.45)); }
   .svc__num { font-size: 2.6rem; margin-bottom: 14px; }
 
+  .morph { height: 400vh; }
+  .morph__glow { left: 50%; top: 34%; width: 120vw; height: 120vw; }
+  .morph__ui { justify-content: flex-end; padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+  .morph__text { min-height: 250px; width: 100%; }
+  .morph__step { top: auto; bottom: 0; transform: translateY(30px); }
+  .morph__step.is-active { transform: none; }
+  .morph__step.is-past { transform: translateY(-30px); }
+  .morph__num { font-size: 2.2rem; margin-bottom: 8px; }
+  .morph__step h3 { font-size: 1.65rem; margin-bottom: 10px; }
+  .morph__step > p:not(.morph__num) { font-size: 0.98rem; }
+  .morph__step .svc__list { margin-top: 14px; }
+  .morph__step .svc__list li { font-size: 0.8rem; padding: 6px 12px; }
+  .morph__progress { margin-top: 18px; width: 100%; }
+
   .thermo { height: 380vh; }
   .thermo__grid {
     grid-template-columns: 1fr;
@@ -1158,7 +1268,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .trust { -webkit-mask-image: none; mask-image: none; }
   .thermo { height: auto; }
   .thermo__sticky { position: relative; height: auto; padding-block: var(--section); }
-  .thermo__cold { display: none; }
+  .thermo__cold, .thermo__warm span { display: none; }
   .thermo__warm { opacity: 1; }
   .dial { --p: 1; --tc: var(--amber); --knob: var(--ember); }
   .step, .step.is-active { position: relative; opacity: 1; transform: none; }

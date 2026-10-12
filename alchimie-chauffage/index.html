@@ -189,6 +189,13 @@
       </div>
     </section>
 
+    <!-- MANIFESTE : les mots s'allument au fil du scroll -->
+    <section class="manifesto" aria-label="Notre promesse">
+      <div class="container">
+        <p class="manifesto__text" id="manifesto">Une panne de chauffage, c'est l'hiver qui entre dans la maison. Nous, on rallume le confort&nbsp;: <em>vite</em>, <em>proprement</em>, <em>honnêtement</em>.</p>
+      </div>
+    </section>
+
     <!-- 3. SERVICES : cartes empilées au scroll -->
     <section class="section services" id="services" aria-labelledby="services-title">
       <div class="container">
@@ -272,6 +279,18 @@
           </article>
         </div>
       </div>
+
+      <!-- Morphing 3D : des braises dessinent chaque service au fil du scroll (GPU uniquement, sinon les cartes ci-dessus) -->
+      <div class="morph" id="morph" hidden aria-hidden="true">
+        <div class="morph__sticky">
+          <div class="morph__glow"></div>
+          <canvas class="morph__canvas" id="morph-canvas"></canvas>
+          <div class="container morph__ui">
+            <div class="morph__text" id="morph-text"></div>
+            <div class="morph__progress"><span id="morph-count">01</span><i><b id="morph-bar"></b></i><span>04</span></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- 4. POURQUOI NOUS : du froid au confort (thermostat piloté par le scroll) -->
@@ -281,7 +300,10 @@
           <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
         </div>
-        <div class="thermo__warm" aria-hidden="true"></div>
+        <div class="thermo__warm" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
 
         <div class="container thermo__grid">
           <div class="thermo__head">

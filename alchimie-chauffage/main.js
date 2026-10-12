@@ -265,6 +265,14 @@ function initScrollEffects() {
     scrollTrigger: { trigger: '.hero', start: 'top top', end: '55% top', scrub: true },
   });
 
+  // Sortie du hero : les deux lignes du titre s'écartent
+  [['.hero__title .line:nth-child(1)', -16], ['.hero__title .line:nth-child(2)', 16]].forEach(([sel, x]) => {
+    gsap.to(sel, {
+      xPercent: x, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: '60% top', scrub: true },
+    });
+  });
+
   // Services : la carte du dessous recule quand la suivante arrive
   const cards = isSmall ? [] : gsap.utils.toArray('.svc');
   cards.forEach((card, i) => {
@@ -545,8 +553,12 @@ function hasRealGPU() {
   }
 }
 
+let gpuCache = null;
+const useGPU = () => (gpuCache ??= !reducedMotion && hasRealGPU());
+const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
+
 async function initHero3D() {
-  if (reducedMotion || !hasRealGPU()) return;
+  if (!useGPU()) return;
   const canvas = document.getElementById('hero-canvas');
   const hero = document.querySelector('.hero');
   const light = document.getElementById('hero-light');
@@ -554,7 +566,7 @@ async function initHero3D() {
 
   let THREE;
   try {
-    THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js');
+    THREE = await import(THREE_URL);
   } catch (e) {
     return; // le dégradé CSS reste affiché
   }
@@ -787,13 +799,32 @@ async function initHero3D() {
   /* --- Interactions : souris / doigt, clic (la flamme s'emballe), scroll --- */
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
   window.addEventListener('pointermove', (e) => {
+    if (tilted) return;
     mouse.tx = (e.clientX / window.innerWidth) * 2 - 1;
     mouse.ty = -((e.clientY / window.innerHeight) * 2 - 1);
   }, { passive: true });
+  let tilted = false;
+  const onTilt = (e) => {
+    if (e.gamma == null) return;
+    tilted = true;
+    mouse.tx = clamp(e.gamma / 28, -1, 1);
+    mouse.ty = clamp((45 - e.beta) / 35, -1, 1);
+  };
+  const askTilt = () => {
+    const DOE = window.DeviceOrientationEvent;
+    if (DOE && typeof DOE.requestPermission === 'function') {
+      DOE.requestPermission().then((r) => { if (r === 'granted') window.addEventListener('deviceorientation', onTilt); }).catch(() => {});
+    }
+  };
+  if (window.DeviceOrientationEvent && typeof window.DeviceOrientationEvent.requestPermission !== 'function') {
+    window.addEventListener('deviceorientation', onTilt);
+  }
   let boost = 0;
+  let asked = false;
   const hint = document.querySelector('.hero__hint');
   hero.addEventListener('pointerdown', (e) => {
     if (e.target.closest('a, button')) return;
+    if (!asked) { asked = true; askTilt(); }
     boost = 1;
     mouse.tx = (e.clientX / window.innerWidth) * 2 - 1;
     if (hint) hint.classList.add('is-done');
@@ -858,14 +889,336 @@ async function initHero3D() {
 }
 
 /* --------------------------------------------------------------------------
+   Manifeste : les mots s'allument au fil du scroll
+   -------------------------------------------------------------------------- */
+function initManifesto() {
+  const el = document.getElementById('manifesto');
+  if (!el || reducedMotion) return;
+  // découpe en mots (en gardant les <em>)
+  const wrap = (node) => {
+    [...node.childNodes].forEach((child) => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        const frag = document.createDocumentFragment();
+        child.textContent.split(/([ \t\n]+)/).forEach((part) => {
+          if (!part) return;
+          if (/^[ \t\n]+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+          const w = document.createElement('span');
+          w.className = 'mw';
+          w.textContent = part;
+          frag.appendChild(w);
+        });
+        child.replaceWith(frag);
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        wrap(child);
+      }
+    });
+  };
+  wrap(el);
+  const words = [...el.querySelectorAll('.mw')];
+  let lit = -1;
+  onScrollFrame(() => {
+    const r = el.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const p = clamp((vh * 0.82 - r.top) / (r.height + vh * 0.3));
+    const n = Math.round(p * words.length);
+    if (n === lit) return;
+    lit = n;
+    words.forEach((w, i) => w.classList.toggle('on', i < n));
+  });
+}
+
+/* --------------------------------------------------------------------------
+   SERVICES : morphing de particules 3D
+   Des braises dessinent chaque service (chaudière → calendrier → clé → maison),
+   explosent en tourbillon entre deux formes, et fuient le doigt / la souris.
+   -------------------------------------------------------------------------- */
+const MORPH_SHAPES = [
+  // chaudière
+  { stroke: ['M38 10h44a8 8 0 0 1 8 8v68a8 8 0 0 1-8 8H38a8 8 0 0 1-8-8V18a8 8 0 0 1 8-8z', 'M42 26h36M42 36h20', 'M74 62a14 14 0 1 1-28 0a14 14 0 1 1 28 0z', 'M44 94v14M76 94v14M36 108h48'],
+    fill: ['M60 52c3 4 7 6 7 11a7 7 0 0 1-14 0c0-3 2-5 4-7 0 2 1 3 2 4-1-3 0-6 1-8z'] },
+  // calendrier d'entretien
+  { stroke: ['M26 22h68a10 10 0 0 1 10 10v60a10 10 0 0 1-10 10H26a10 10 0 0 1-10-10V32a10 10 0 0 1 10-10z', 'M16 44h88M40 12v20M80 12v20'],
+    hot: ['M42 72l12 12 26-28'] },
+  // clé de dépannage (étincelles froides)
+  { stroke: ['M76 18a22 22 0 0 0-27 28L18 77a9 9 0 0 0 13 13l31-31a22 22 0 0 0 28-27l-14 14-12-3-3-12z'],
+    cold: ['M86 82l14 14M96 72l10 10'] },
+  // maison chauffée
+  { stroke: ['M14 56 60 18l46 38', 'M24 48v56h72V48'],
+    fill: ['M60 58c5 6 10 9 10 16a10 10 0 0 1-20 0c0-5 3-8 6-10 0 3 1 5 3 6-1-5 0-8 1-12z'] },
+];
+
+// Échantillonne une forme : renvoie des points (x, y dans -1..1) et leur type (0 braise, 1 cœur chaud, 2 froid)
+function sampleShape(shape, count) {
+  const S = 180;
+  const c = document.createElement('canvas');
+  c.width = c.height = S;
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  ctx.scale(S / 120, S / 120);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  const draw = (paths, color, mode) => (paths || []).forEach((d) => {
+    const p = new Path2D(d);
+    if (mode === 'fill') { ctx.fillStyle = color; ctx.fill(p); }
+    ctx.strokeStyle = color; ctx.lineWidth = mode === 'fill' ? 2 : 6.5; ctx.stroke(p);
+  });
+  draw(shape.stroke, '#ff0000', 'stroke');
+  draw(shape.hot, '#00ff00', 'stroke');
+  draw(shape.fill, '#00ff00', 'fill');
+  draw(shape.cold, '#0000ff', 'stroke');
+  const data = ctx.getImageData(0, 0, S, S).data;
+  const pts = [];
+  for (let y = 0; y < S; y++) {
+    for (let x = 0; x < S; x++) {
+      const i = (y * S + x) * 4;
+      if (data[i + 3] < 120) continue;
+      const type = data[i + 2] > 128 ? 2 : data[i + 1] > 128 ? 1 : 0;
+      pts.push([x / S * 2 - 1, 1 - y / S * 2, type]);
+    }
+  }
+  const out = new Float32Array(count * 4);
+  for (let k = 0; k < count; k++) {
+    const q = pts[(Math.random() * pts.length) | 0];
+    out[k * 4] = q[0] + (Math.random() - 0.5) * 0.012;
+    out[k * 4 + 1] = q[1] + (Math.random() - 0.5) * 0.012;
+    out[k * 4 + 2] = (Math.random() - 0.5) * 0.22; // un peu d'épaisseur pour la profondeur
+    out[k * 4 + 3] = q[2];
+  }
+  return out;
+}
+
+function prepareMorph() {
+  const section = document.querySelector('.services');
+  const morph = document.getElementById('morph');
+  if (!section || !morph || !useGPU()) return false;
+  // le texte de chaque étape est repris des cartes (aucune duplication dans le HTML)
+  const box = document.getElementById('morph-text');
+  section.querySelectorAll('.svc').forEach((card, i) => {
+    const step = document.createElement('div');
+    step.className = 'morph__step' + (i === 0 ? ' is-active' : '');
+    const num = document.createElement('p');
+    num.className = 'morph__num';
+    num.textContent = card.querySelector('.svc__num').textContent;
+    step.append(num,
+      card.querySelector('h3').cloneNode(true),
+      card.querySelector('.svc__text > p:not(.svc__num)').cloneNode(true),
+      card.querySelector('.svc__list').cloneNode(true));
+    box.appendChild(step);
+  });
+  morph.hidden = false;
+  section.classList.add('has-morph');
+  return true;
+}
+
+async function initMorph3D() {
+  const morph = document.getElementById('morph');
+  const canvas = document.getElementById('morph-canvas');
+  if (!morph || morph.hidden) return;
+
+  let THREE;
+  try { THREE = await import(THREE_URL); } catch (e) { return; }
+
+  const lite = isSmall || lowPower;
+  const COUNT = lite ? 4200 : 12000;
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
+  } catch (e) { return; }
+  const dpr = Math.min(window.devicePixelRatio || 1, lite ? 1.5 : 2);
+  renderer.setPixelRatio(dpr);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
+  camera.position.set(0, 0, 6);
+  const group = new THREE.Group();
+  scene.add(group);
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(COUNT * 3), 3));
+  ['aA', 'aB', 'aC', 'aD'].forEach((name, i) => geo.setAttribute(name, new THREE.BufferAttribute(sampleShape(MORPH_SHAPES[i], COUNT), 4)));
+  const rand = new Float32Array(COUNT * 3);
+  for (let i = 0; i < rand.length; i++) rand[i] = Math.random();
+  geo.setAttribute('aRand', new THREE.BufferAttribute(rand, 3));
+
+  const uniforms = {
+    uMorph: { value: 0 },
+    uTime: { value: 0 },
+    uPR: { value: dpr },
+    uPointer: { value: new THREE.Vector2(9, 9) },
+    uPush: { value: 0 },
+    uSize: { value: lite ? 1 : 1.3 },
+  };
+  const points = new THREE.Points(geo, new THREE.ShaderMaterial({
+    uniforms,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.CustomBlending,
+    blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
+    blendSrcAlpha: THREE.OneFactor, blendDstAlpha: THREE.OneFactor,
+    vertexShader: /* glsl */ `
+      attribute vec4 aA; attribute vec4 aB; attribute vec4 aC; attribute vec4 aD; attribute vec3 aRand;
+      uniform float uMorph; uniform float uTime; uniform float uPR; uniform vec2 uPointer; uniform float uPush; uniform float uSize;
+      varying vec3 vColor; varying float vGlow;
+      void main(){
+        float w0 = clamp(1.0 - abs(uMorph - 0.0), 0.0, 1.0);
+        float w1 = clamp(1.0 - abs(uMorph - 1.0), 0.0, 1.0);
+        float w2 = clamp(1.0 - abs(uMorph - 2.0), 0.0, 1.0);
+        float w3 = clamp(1.0 - abs(uMorph - 3.0), 0.0, 1.0);
+        vec4 s = aA * w0 + aB * w1 + aC * w2 + aD * w3;
+        vec3 p = s.xyz;
+        // entre deux formes : explosion en tourbillon
+        float burst = sin(fract(uMorph) * 3.14159);
+        burst *= burst;
+        vec3 dir = normalize(aRand - 0.5 + 0.0001);
+        p += dir * burst * (0.9 + aRand.y * 1.8);
+        float ang = burst * (aRand.x - 0.5) * 5.0 + burst * uTime * 0.6;
+        float ca = cos(ang), sa = sin(ang);
+        p.xz = mat2(ca, -sa, sa, ca) * p.xz;
+        p.y += burst * (aRand.z - 0.3) * 0.8;
+        // respiration au repos
+        p += 0.018 * vec3(sin(uTime * 1.3 + aRand.x * 40.0), cos(uTime * 1.1 + aRand.y * 40.0), sin(uTime * 0.9 + aRand.z * 40.0));
+        // le doigt / la souris repousse les braises
+        vec2 d = p.xy - uPointer;
+        float dl = length(d);
+        p.xy += normalize(d + 0.0001) * uPush * 0.35 * exp(-dl * dl * 9.0);
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * mv;
+        float twinkle = 0.7 + 0.3 * sin(uTime * (2.0 + aRand.z * 3.0) + aRand.x * 60.0);
+        gl_PointSize = (1.6 + aRand.z * 2.6) * uSize * uPR * (1.0 + burst * 0.8) * (5.5 / -mv.z);
+        float type = s.w;
+        vec3 ember = mix(vec3(1.0, 0.36, 0.08), vec3(1.0, 0.6, 0.2), aRand.x);
+        vec3 col = mix(ember, vec3(1.0, 0.86, 0.55), clamp(type, 0.0, 1.0));
+        col = mix(col, vec3(0.25, 0.65, 1.0), clamp(type - 1.0, 0.0, 1.0));
+        vColor = col * twinkle * (1.0 - burst * 0.35);
+        vGlow = 1.0 + burst;
+      }`,
+    fragmentShader: /* glsl */ `
+      varying vec3 vColor; varying float vGlow;
+      void main(){
+        float d = length(gl_PointCoord - 0.5);
+        float a = smoothstep(0.5, 0.0, d);
+        a = a * a * 1.4;
+        vec3 col = vColor * a;
+        gl_FragColor = vec4(col, max(col.r, max(col.g, col.b)));
+      }`,
+  }));
+  group.add(points);
+
+  /* Mise en page : forme en haut (mobile) ou à droite (ordinateur) */
+  const layout = { x: 0, y: 0, s: 1 };
+  const resize = () => {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    const halfH = camera.position.z * Math.tan((camera.fov * Math.PI) / 360);
+    const halfW = halfH * camera.aspect;
+    if (camera.aspect > 1.1) {
+      layout.s = Math.min(halfH * 0.62, halfW * 0.4);
+      layout.x = halfW * 0.42;
+      layout.y = -0.05;
+    } else {
+      layout.s = Math.min(halfW * 0.78, halfH * 0.36);
+      layout.x = 0;
+      layout.y = halfH * 0.36;
+    }
+  };
+  resize();
+  window.addEventListener('resize', resize);
+
+  /* Doigt / souris → coordonnées locales de la forme */
+  const pointer = { x: 9, y: 9, on: 0, target: 0 };
+  const toLocal = (cx, cy) => {
+    const r = canvas.getBoundingClientRect();
+    const halfH = camera.position.z * Math.tan((camera.fov * Math.PI) / 360);
+    const halfW = halfH * camera.aspect;
+    const wx = ((cx - r.left) / r.width * 2 - 1) * halfW;
+    const wy = -((cy - r.top) / r.height * 2 - 1) * halfH;
+    pointer.x = (wx - group.position.x) / group.scale.x;
+    pointer.y = (wy - group.position.y) / group.scale.y;
+    pointer.target = 1;
+  };
+  const sticky = morph.querySelector('.morph__sticky');
+  sticky.addEventListener('pointermove', (e) => toLocal(e.clientX, e.clientY), { passive: true });
+  sticky.addEventListener('pointerdown', (e) => toLocal(e.clientX, e.clientY), { passive: true });
+  sticky.addEventListener('touchmove', (e) => { const t = e.touches[0]; if (t) toLocal(t.clientX, t.clientY); }, { passive: true });
+  ['pointerleave', 'pointerup', 'touchend'].forEach((ev) => sticky.addEventListener(ev, () => { pointer.target = 0; }));
+
+  /* Scroll → forme ; chaque forme « tient » avant d'exploser vers la suivante */
+  const steps = [...morph.querySelectorAll('.morph__step')];
+  const count = document.getElementById('morph-count');
+  const bar = document.getElementById('morph-bar');
+  let target = 0;
+  let current = 0;
+  let activeIdx = 0;
+  const onScroll = () => {
+    const r = morph.getBoundingClientRect();
+    const p = clamp(-r.top / (r.height - window.innerHeight));
+    const raw = p * 3;
+    const k = Math.min(2, Math.floor(raw));
+    const f = raw - k;
+    const ss = (t) => t * t * (3 - 2 * t);
+    target = k + ss(clamp((f - 0.3) / 0.4));
+    bar.style.transform = `scaleX(${p.toFixed(4)})`;
+  };
+  onScrollFrame(onScroll);
+  onScroll();
+
+  let visible = false;
+  let running = !document.hidden;
+  let rafId = 0;
+  const clock = new THREE.Clock();
+  let t = 0;
+  function frame() {
+    rafId = 0;
+    if (!visible || !running) { clock.getDelta(); return; }
+    const dt = Math.min(clock.getDelta(), 0.05);
+    t += dt;
+    current += (target - current) * Math.min(1, dt * 6);
+    uniforms.uMorph.value = current;
+    uniforms.uTime.value = t;
+    pointer.on += (pointer.target - pointer.on) * 0.12;
+    uniforms.uPush.value = pointer.on;
+    uniforms.uPointer.value.set(pointer.x, pointer.y);
+
+    const idx = Math.round(current);
+    if (idx !== activeIdx) {
+      steps.forEach((st, i) => {
+        st.classList.toggle('is-active', i === idx);
+        st.classList.toggle('is-past', i < idx);
+      });
+      count.textContent = String(idx + 1).padStart(2, '0');
+      activeIdx = idx;
+    }
+
+    group.scale.setScalar(layout.s);
+    group.position.set(layout.x, layout.y, 0);
+    group.rotation.y = Math.sin(t * 0.45) * 0.32;
+    group.rotation.x = Math.sin(t * 0.3) * 0.08;
+    renderer.render(scene, camera);
+    loop();
+  }
+  function loop() {
+    if (!rafId && visible && running) rafId = requestAnimationFrame(frame);
+  }
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; loop(); }).observe(canvas);
+  document.addEventListener('visibilitychange', () => { running = !document.hidden; loop(); });
+  if (renderer.compileAsync) await renderer.compileAsync(scene, camera);
+  loop();
+  requestAnimationFrame(() => canvas.classList.add('is-ready'));
+}
+
+/* --------------------------------------------------------------------------
    Démarrage
    -------------------------------------------------------------------------- */
 injectConfig();
+prepareMorph();
 initTopbar();
 initSmoothScroll();
 initCounters();
 initReveals();
 initThermostat();
+initManifesto();
 initScrollLoop();
 initCarousel();
 initInView();
@@ -876,7 +1229,7 @@ initFab();
 
 // GSAP et la 3D démarrent une fois la page affichée (meilleur score Lighthouse)
 const start3D = () => {
-  const go = () => { initScrollEffects(); initHero3D(); };
+  const go = () => { initScrollEffects(); initHero3D().catch(() => {}).then(initMorph3D); };
   if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 1200 });
   else setTimeout(go, 300);
 };
