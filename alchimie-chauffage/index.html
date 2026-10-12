@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="fr-BE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Chauffagiste à Nivelles | L'Alchimie du Chauffage</title>
+  <meta name="description" content="L'Alchimie du Chauffage, chauffagiste à Nivelles et dans le Brabant wallon : installation, remplacement et entretien de chaudières, dépannage rapide. 4,4 ★ sur 45 avis Google. Tél. 0479 53 55 03.">
+  <!-- DÉMO : à retirer quand le site sera mis en ligne pour le client -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0e0b09">
+  <meta property="og:title" content="L'Alchimie du Chauffage, chauffagiste à Nivelles">
+  <meta property="og:description" content="Installation, entretien et dépannage de chaudières dans le Brabant wallon.">
+  <meta property="og:locale" content="fr_BE">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <!-- Intro d'allumage : jouée une seule fois par session, jamais en mouvement réduit -->
+  <script>
+    try {
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-anim');
+      if (sessionStorage.getItem('alchimie:intro') || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('no-intro');
+      }
+      sessionStorage.setItem('alchimie:intro', '1');
+    } catch (e) { document.documentElement.classList.add('no-intro'); }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <!-- Syne en display=block : pas de saut de mise en page (l'intro couvre l'attente). Inter en swap, avec police de secours calibrée. -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=block" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=block"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="style.css">
+
+  <script type="application/ld+json" id="ld-business">
+  {
+    "@context": "https://schema.org",
+    "@type": "HVACBusiness",
+    "name": "L'Alchimie du Chauffage SPRL",
+    "description": "Chauffagiste à Nivelles : installation et remplacement de chaudières, entretien, dépannage et réparations.",
+    "telephone": "+32479535503",
+    "areaServed": [
+      {"@type": "City", "name": "Nivelles"},
+      {"@type": "City", "name": "Waterloo"},
+      {"@type": "City", "name": "Braine-l'Alleud"},
+      {"@type": "City", "name": "Genappe"},
+      {"@type": "City", "name": "Ittre"},
+      {"@type": "City", "name": "Seneffe"},
+      {"@type": "City", "name": "Tubize"},
+      {"@type": "AdministrativeArea", "name": "Brabant wallon"}
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Nivelles",
+      "addressRegion": "Brabant wallon",
+      "addressCountry": "BE"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.4",
+      "bestRating": "5",
+      "reviewCount": "45"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- Dégradés SVG partagés -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="g-fire" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="#ff4d0a"/>
+        <stop offset=".55" stop-color="#ff6a1a"/>
+        <stop offset="1" stop-color="#ffb347"/>
+      </linearGradient>
+      <linearGradient id="g-core" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="#ffd27a"/>
+        <stop offset="1" stop-color="#fff3d6"/>
+      </linearGradient>
+      <linearGradient id="g-stroke" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffb347"/>
+        <stop offset="1" stop-color="#ff6a1a"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- Intro : la flamme s'allume -->
+  <div class="intro" aria-hidden="true">
+    <div class="intro__inner">
+      <svg class="intro__flame" viewBox="0 0 48 48">
+        <path class="intro__outline" d="M24 3c3 10 14 14 14 28a14 14 0 0 1-28 0c0-7 3-11 7-14 0 5 2 9 5 10-2-9 0-17 2-24z"/>
+        <path class="intro__fill" fill="url(#g-fire)" d="M24 3c3 10 14 14 14 28a14 14 0 0 1-28 0c0-7 3-11 7-14 0 5 2 9 5 10-2-9 0-17 2-24z"/>
+      </svg>
+      <p class="intro__word"><span>L'Alchimie</span><small>du Chauffage</small></p>
+    </div>
+  </div>
+
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
+
+  <a class="skip" href="#services">Aller au contenu</a>
+
+  <div class="topbar" id="topbar">
+    <div class="demo-banner" role="note">Proposition de site · démo</div>
+    <header class="header" id="header">
+      <a class="brand" href="#accueil" aria-label="L'Alchimie du Chauffage, retour en haut">
+        <svg class="brand__flame" viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="url(#g-fire)" d="M24 3c3 10 14 14 14 28a14 14 0 0 1-28 0c0-7 3-11 7-14 0 5 2 9 5 10-2-9 0-17 2-24z"/>
+          <path fill="url(#g-core)" opacity=".9" d="M24 27c2 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3-1-3 0-6 1-8z"/>
+        </svg>
+        <span class="brand__text"><strong>L'Alchimie</strong><small>du Chauffage</small></span>
+      </a>
+      <nav class="nav" aria-label="Navigation principale">
+        <a href="#services">Services</a>
+        <a href="#pourquoi">Pourquoi nous</a>
+        <a href="#avis">Avis</a>
+        <a href="#zone">Zone</a>
+      </nav>
+      <a class="btn btn--sm btn--fire header__call magnetic" href="tel:+32479535503" data-cfg-href="phoneHref" aria-label="Appeler le 0479 53 55 03">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+        <span data-cfg="phone">0479 53 55 03</span>
+      </a>
+    </header>
+    <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+  </div>
+
+  <main>
+    <!-- 1. HERO 3D -->
+    <section class="hero" id="accueil" aria-labelledby="hero-title">
+      <div class="hero__bg" aria-hidden="true"></div>
+      <div class="hero__light" id="hero-light" aria-hidden="true"></div>
+      <!-- Flamme CSS/SVG : visible tout de suite, puis relayée par la flamme 3D si l'appareil a un GPU -->
+      <div class="hero__flame" aria-hidden="true">
+        <svg viewBox="0 0 48 60">
+          <path class="hf1" fill="url(#g-fire)" d="M24 2c4 12 17 17 17 34a17 17 0 0 1-34 0c0-8 4-13 8-17 0 6 3 10 6 12-2-11 0-21 3-29z"/>
+          <path class="hf2" fill="#ffb347" opacity=".85" d="M24 22c3 6 10 9 10 18a10 10 0 0 1-20 0c0-5 3-8 5-10 0 3 1 5 3 6-1-6 0-10 2-14z"/>
+          <path class="hf3" fill="url(#g-core)" d="M24 36c2 3 5 5 5 9a5 5 0 0 1-10 0c0-3 2-4 3-5 0 1 1 2 1 3 0-3 0-5 1-7z"/>
+          <ellipse class="hf4" cx="24" cy="54" rx="9" ry="2.2" fill="#3aa0ff" opacity=".7"/>
+        </svg>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <canvas class="hero__canvas" id="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero__veil" aria-hidden="true"></div>
+
+      <div class="hero__content container">
+        <p class="eyebrow hero__eyebrow"><span class="dot"></span> Nivelles · Brabant wallon</p>
+        <h1 class="hero__title" id="hero-title">
+          <span class="line"><span>Votre confort,</span></span>
+          <span class="line"><span>notre <em class="shimmer">alchimie.</em></span></span>
+        </h1>
+        <p class="hero__sub">Chauffagiste à Nivelles — installation, entretien et dépannage de chaudières.</p>
+        <div class="hero__actions">
+          <a class="btn btn--fire btn--lg magnetic" href="tel:+32479535503" data-cfg-href="phoneHref">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+            Appeler maintenant
+          </a>
+          <a class="btn btn--glass btn--lg magnetic" href="#devis">Demander un devis
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+        <a class="hero__rating" href="#avis">
+          <span class="stars" aria-hidden="true"><span class="stars__fill" style="--r:.88"></span></span>
+          <span><strong>4,4</strong> sur Google · 45 avis</span>
+        </a>
+      </div>
+
+      <p class="hero__hint" aria-hidden="true"><span class="hint-touch">Touchez la flamme</span><span class="hint-mouse">Cliquez sur la flamme</span></p>
+      <div class="hero__scroll" aria-hidden="true"><span></span></div>
+    </section>
+
+    <!-- 2. BANDE DE CONFIANCE -->
+    <section class="trust" aria-label="Points de confiance">
+      <ul class="sr-only">
+        <li>4,4 étoiles sur Google</li><li>45 avis</li><li>Dépannage rapide</li><li>Brabant wallon</li>
+      </ul>
+      <div class="trust__row trust__row--a" aria-hidden="true">
+        <div class="trust__track">
+          <span>★ 4,4 sur Google</span><i></i><span>45 avis</span><i></i><span>Dépannage rapide</span><i></i><span>Brabant wallon</span><i></i>
+          <span>★ 4,4 sur Google</span><i></i><span>45 avis</span><i></i><span>Dépannage rapide</span><i></i><span>Brabant wallon</span><i></i>
+        </div>
+      </div>
+      <div class="trust__row trust__row--b" aria-hidden="true">
+        <div class="trust__track">
+          <span>Installation</span><i></i><span>Entretien</span><i></i><span>Dépannage</span><i></i><span>Réparation</span><i></i><span>Conseil</span><i></i>
+          <span>Installation</span><i></i><span>Entretien</span><i></i><span>Dépannage</span><i></i><span>Réparation</span><i></i><span>Conseil</span><i></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SERVICES : cartes empilées au scroll -->
+    <section class="section services" id="services" aria-labelledby="services-title">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow reveal">Services</p>
+          <h2 class="section__title split" id="services-title">Tout pour votre chaudière, <span class="grad">de la pose au dépannage.</span></h2>
+        </div>
+
+        <div class="stack">
+          <article class="svc" style="--i:0">
+            <div class="svc__inner">
+              <div class="svc__text">
+                <p class="svc__num">01</p>
+                <h3>Installation de chaudière</h3>
+                <p>Chaudières à condensation posées proprement, réglées, et expliquées avant notre départ.</p>
+                <ul class="svc__list"><li>Étude de vos besoins</li><li>Pose soignée</li><li>Mise en service</li></ul>
+              </div>
+              <div class="svc__art" aria-hidden="true">
+                <svg viewBox="0 0 120 120" class="draw">
+                  <rect x="30" y="10" width="60" height="84" rx="8"/>
+                  <path d="M42 26h36M42 36h20"/>
+                  <circle cx="60" cy="62" r="14"/>
+                  <path class="flame-mini" d="M60 52c3 4 7 6 7 11a7 7 0 0 1-14 0c0-3 2-5 4-7 0 2 1 3 2 4-1-3 0-6 1-8z"/>
+                  <path d="M44 94v14M76 94v14M36 108h48"/>
+                </svg>
+              </div>
+            </div>
+          </article>
+
+          <article class="svc" style="--i:1">
+            <div class="svc__inner">
+              <div class="svc__text">
+                <p class="svc__num">02</p>
+                <h3>Entretien annuel</h3>
+                <p>Une chaudière entretenue est plus sûre, consomme moins et dure plus longtemps.</p>
+                <ul class="svc__list"><li>Nettoyage complet</li><li>Contrôle de combustion</li><li>Attestation d'entretien</li></ul>
+              </div>
+              <div class="svc__art" aria-hidden="true">
+                <svg viewBox="0 0 120 120" class="draw">
+                  <rect x="16" y="22" width="88" height="80" rx="10"/>
+                  <path d="M16 44h88M40 12v20M80 12v20"/>
+                  <path class="accent" d="M42 72l12 12 26-28"/>
+                </svg>
+              </div>
+            </div>
+          </article>
+
+          <article class="svc" style="--i:2">
+            <div class="svc__inner">
+              <div class="svc__text">
+                <p class="svc__num">03</p>
+                <h3>Dépannage et réparation</h3>
+                <p>Plus de chauffage ou d'eau chaude ? On intervient rapidement et on ne lâche rien, même sur les pannes difficiles.</p>
+                <ul class="svc__list"><li>Diagnostic précis</li><li>Réparation durable</li><li>Pannes difficiles</li></ul>
+              </div>
+              <div class="svc__art" aria-hidden="true">
+                <svg viewBox="0 0 120 120" class="draw">
+                  <path d="M76 18a22 22 0 0 0-27 28L18 77a9 9 0 0 0 13 13l31-31a22 22 0 0 0 28-27l-14 14-12-3-3-12z"/>
+                  <path class="cold" d="M86 82l14 14M96 72l10 10"/>
+                </svg>
+              </div>
+            </div>
+          </article>
+
+          <article class="svc" style="--i:3">
+            <div class="svc__inner">
+              <div class="svc__text">
+                <p class="svc__num">04</p>
+                <h3>Conseil et remplacement</h3>
+                <p>Votre installation vieillit ? On vous dit honnêtement s'il vaut mieux réparer ou remplacer.</p>
+                <ul class="svc__list"><li>Avis honnête</li><li>Solution adaptée</li><li>Devis clair</li></ul>
+              </div>
+              <div class="svc__art" aria-hidden="true">
+                <svg viewBox="0 0 120 120" class="draw">
+                  <path d="M14 56 60 18l46 38"/>
+                  <path d="M24 48v56h72V48"/>
+                  <path class="flame-mini" d="M60 58c5 6 10 9 10 16a10 10 0 0 1-20 0c0-5 3-8 6-10 0 3 1 5 3 6-1-5 0-8 1-12z"/>
+                </svg>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. POURQUOI NOUS : du froid au confort (thermostat piloté par le scroll) -->
+    <section class="thermo" id="pourquoi" aria-labelledby="thermo-title">
+      <div class="thermo__sticky">
+        <div class="thermo__cold" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="thermo__warm" aria-hidden="true"></div>
+
+        <div class="container thermo__grid">
+          <div class="thermo__head">
+            <p class="eyebrow">Pourquoi nous</p>
+            <h2 class="section__title" id="thermo-title">Du froid<br><span class="grad">au confort.</span></h2>
+          </div>
+
+          <div class="dial" aria-hidden="true">
+            <div class="dial__track"></div>
+            <div class="dial__ticks"></div>
+            <div class="dial__arc"></div>
+            <div class="dial__knob"><span></span></div>
+            <div class="dial__face">
+              <p class="dial__temp"><span id="dial-temp">4</span><sup>°C</sup></p>
+              <p class="dial__label" id="dial-label">Panne</p>
+            </div>
+          </div>
+
+          <ol class="steps" id="steps">
+            <li class="step is-active">
+              <span class="step__num">01</span>
+              <div><h3>Rapides</h3><p>Une panne de chauffage n'attend pas. Nous non plus : on répond vite et on se déplace vite.</p></div>
+            </li>
+            <li class="step">
+              <span class="step__num">02</span>
+              <div><h3>Persévérants</h3><p>Panne difficile ? On cherche jusqu'à trouver. On ne lâche rien.</p></div>
+            </li>
+            <li class="step">
+              <span class="step__num">03</span>
+              <div><h3>Honnêtes</h3><p>Un diagnostic clair et un prix annoncé. Pas de surprise sur la facture.</p></div>
+            </li>
+            <li class="step">
+              <span class="step__num">04</span>
+              <div><h3>Soignés</h3><p>Techniciens souriants, à l'écoute et propres. Il ne reste que la chaleur.</p></div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. AVIS -->
+    <section class="section reviews" id="avis" aria-labelledby="reviews-title">
+      <div class="container reviews__grid">
+        <div class="score" data-inview>
+          <p class="eyebrow reveal">Avis clients</p>
+          <h2 class="sr-only" id="reviews-title">4,4 étoiles sur 45 avis Google</h2>
+          <p class="score__big" aria-hidden="true"><span class="counter" data-to="4.4" data-decimals="1">4,4</span></p>
+          <div class="score__stars" aria-hidden="true"><span class="stars stars--lg"><span class="stars__fill" style="--r:.88"></span></span></div>
+          <p class="score__sub"><span class="counter" data-to="45" data-decimals="0">45</span> avis sur Google</p>
+          <a class="link-arrow" href="#" data-cfg-href="googleReviewsUrl" target="_blank" rel="noopener">Voir les 45 avis sur Google
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+
+        <!-- Avis réels résumés, initiales uniquement. Ne pas inventer d'autres avis. -->
+        <div class="carousel reveal" id="carousel" aria-roledescription="carrousel" aria-label="Avis clients">
+          <div class="carousel__viewport">
+            <figure class="review glass is-active" aria-roledescription="diapositive" aria-label="Avis 1 sur 2">
+              <span class="review__mark" aria-hidden="true">“</span>
+              <blockquote>Travail de qualité, sans surprise, techniciens souriants et propres.</blockquote>
+              <figcaption><span class="avatar">CV</span><span><strong>C. V.</strong><small>Avis Google</small></span></figcaption>
+            </figure>
+            <figure class="review glass" aria-roledescription="diapositive" aria-label="Avis 2 sur 2">
+              <span class="review__mark" aria-hidden="true">“</span>
+              <blockquote>Rapides et honnêtes, ils n'ont rien lâché sur une panne compliquée.</blockquote>
+              <figcaption><span class="avatar">MS</span><span><strong>M. S.</strong><small>Avis Google</small></span></figcaption>
+            </figure>
+          </div>
+          <div class="carousel__nav">
+            <button class="carousel__btn" type="button" data-dir="-1" aria-label="Avis précédent">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+            </button>
+            <div class="carousel__bars">
+              <button type="button" class="is-active" aria-label="Afficher l'avis 1"><span></span></button>
+              <button type="button" aria-label="Afficher l'avis 2"><span></span></button>
+            </div>
+            <button class="carousel__btn" type="button" data-dir="1" aria-label="Avis suivant">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. ZONE D'INTERVENTION -->
+    <section class="section zone" id="zone" aria-labelledby="zone-title">
+      <div class="container zone__grid">
+        <div class="zone__content">
+          <p class="eyebrow reveal">Zone d'intervention</p>
+          <h2 class="section__title split" id="zone-title">Nivelles et tout <span class="grad">le Brabant wallon.</span></h2>
+          <p class="lead reveal">Basés à Nivelles, nous intervenons rapidement dans les communes voisines.</p>
+          <!-- Liste des communes : À CONFIRMER avec le client -->
+          <ul class="chips reveal">
+            <li>Nivelles</li><li>Waterloo</li><li>Braine-l'Alleud</li><li>Genappe</li><li>Ittre</li><li>Seneffe</li><li>Tubize</li>
+          </ul>
+          <address class="zone__address reveal">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            <span data-cfg="address">[ADRESSE À COMPLÉTER]</span>
+          </address>
+          <div class="zone__actions reveal">
+            <a class="btn btn--glass magnetic" id="streetview-btn" href="#" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true" class="ico-fill"><circle cx="12" cy="5" r="2.5"/><path d="M9.5 21v-6H8v-4.5A2.5 2.5 0 0 1 10.5 8h3a2.5 2.5 0 0 1 2.5 2.5V15h-1.5v6z"/></svg>
+              Voir en Street View (3D)
+            </a>
+          </div>
+        </div>
+
+        <!-- Radar : positions réelles des communes autour de Nivelles (1 km ≈ 11,7 unités) -->
+        <div class="radar reveal" aria-hidden="true">
+          <svg viewBox="0 0 400 400" id="radar-svg">
+            <defs>
+              <radialGradient id="g-radar" cx="50%" cy="50%" r="50%">
+                <stop offset="0" stop-color="#ff6a1a" stop-opacity=".22"/>
+                <stop offset="1" stop-color="#ff6a1a" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <g transform="translate(200 222)">
+              <circle r="190" fill="url(#g-radar)"/>
+              <circle class="ring" r="58.5"/><circle class="ring" r="117"/><circle class="ring" r="175.5"/>
+              <text class="ring-label" x="4" y="-62">5 km</text>
+              <text class="ring-label" x="4" y="-121">10 km</text>
+              <text class="ring-label" x="4" y="-179">15 km</text>
+              <g class="sweep"><path d="M0 0 L0 -190 A190 190 0 0 1 134 -134 Z" fill="url(#g-sweep)"/></g>
+              <g class="links">
+                <path d="M0 0L58.6 -152"/><path d="M0 0L33 -110.5"/><path d="M0 0L101.5 -17"/>
+                <path d="M0 0L-52.8 -59.8"/><path d="M0 0L-54.5 87"/><path d="M0 0L-101.5 -119.6"/>
+              </g>
+              <g class="towns">
+                <g transform="translate(58.6 -152)"><circle r="5"/><text x="9" y="4">Waterloo</text></g>
+                <g transform="translate(33 -110.5)"><circle r="5"/><text x="9" y="4">Braine-l'Alleud</text></g>
+                <g transform="translate(101.5 -17)"><circle r="5"/><text x="-8" y="20" text-anchor="middle">Genappe</text></g>
+                <g transform="translate(-52.8 -59.8)"><circle r="5"/><text x="-9" y="4" text-anchor="end">Ittre</text></g>
+                <g transform="translate(-54.5 87)"><circle r="5"/><text x="9" y="4">Seneffe</text></g>
+                <g transform="translate(-101.5 -119.6)"><circle r="5"/><text x="0" y="-11" text-anchor="middle">Tubize</text></g>
+              </g>
+              <g class="home">
+                <circle class="home__pulse" r="10"/>
+                <circle class="home__pulse home__pulse--2" r="10"/>
+                <circle class="home__dot" r="8"/>
+                <text y="28" text-anchor="middle">Nivelles</text>
+              </g>
+            </g>
+            <defs>
+              <linearGradient id="g-sweep" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#ffb347" stop-opacity=".28"/>
+                <stop offset="1" stop-color="#ffb347" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="map-frame glass reveal">
+          <iframe id="map-iframe" title="Carte : L'Alchimie du Chauffage à Nivelles" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <!-- Street View intégré : affiché seulement si CONFIG.GOOGLE_MAPS_KEY est renseignée -->
+        <div class="map-frame map-frame--sv glass" id="sv-frame" hidden>
+          <iframe id="sv-iframe" title="Street View : façade de l'entreprise" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. APPEL (devis gratuit par téléphone) -->
+    <section class="cta" id="devis" aria-labelledby="cta-title">
+      <div class="cta__glow" aria-hidden="true"></div>
+      <div class="container cta__inner">
+        <div class="cta__flame" aria-hidden="true">
+          <svg viewBox="0 0 48 60">
+            <path class="f1" fill="url(#g-fire)" d="M24 2c4 12 17 17 17 34a17 17 0 0 1-34 0c0-8 4-13 8-17 0 6 3 10 6 12-2-11 0-21 3-29z"/>
+            <path class="f2" fill="#ffb347" opacity=".85" d="M24 22c3 6 10 9 10 18a10 10 0 0 1-20 0c0-5 3-8 5-10 0 3 1 5 3 6-1-6 0-10 2-14z"/>
+            <path class="f3" fill="url(#g-core)" d="M24 36c2 3 5 5 5 9a5 5 0 0 1-10 0c0-3 2-4 3-5 0 1 1 2 1 3 0-3 0-5 1-7z"/>
+            <ellipse class="f4" cx="24" cy="54" rx="9" ry="2.2" fill="#3aa0ff" opacity=".7"/>
+          </svg>
+        </div>
+        <p class="eyebrow eyebrow--center reveal">Devis gratuit</p>
+        <h2 class="cta__title split" id="cta-title">Un souci de chauffage&nbsp;? <span class="grad">Appelez-nous.</span></h2>
+        <p class="lead lead--center reveal">Un appel et on s'occupe du reste : on écoute votre problème et on vous dit honnêtement ce qu'il faut faire.</p>
+        <a class="cta__number reveal" href="tel:+32479535503" data-cfg-href="phoneHref"><span data-cfg="phone">0479 53 55 03</span></a>
+        <div class="cta__actions reveal">
+          <a class="btn btn--fire btn--xl magnetic" href="tel:+32479535503" data-cfg-href="phoneHref">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+            Appeler maintenant
+          </a>
+        </div>
+        <ul class="cta__points reveal">
+          <li>Installation</li><li>Entretien</li><li>Panne</li><li>Nivelles et Brabant wallon</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- 8. FOOTER -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <img src="assets/logo.svg" alt="L'Alchimie du Chauffage" width="220" height="44" loading="lazy">
+        <p>L'Alchimie du Chauffage SPRL<br>Chauffagiste à Nivelles et dans le Brabant wallon.</p>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <p><a href="tel:+32479535503" data-cfg-href="phoneHref" data-cfg="phone">0479 53 55 03</a></p>
+        <p data-cfg="address">[ADRESSE À COMPLÉTER]</p>
+      </div>
+      <div>
+        <h3>Horaires</h3>
+        <p data-cfg="hours">[HORAIRES À COMPLÉTER]</p>
+      </div>
+      <div>
+        <h3>Informations</h3>
+        <p>BCE : <span data-cfg="bce">[À COMPLÉTER]</span></p>
+        <p><a href="#" data-cfg-href="legalUrl">Mentions légales</a> · <a href="#" data-cfg-href="privacyUrl">Vie privée</a></p>
+      </div>
+    </div>
+    <p class="footer__word" aria-hidden="true"><span>L'Alchimie</span></p>
+    <div class="container footer__bottom">
+      <p>© <span id="year">2026</span> L'Alchimie du Chauffage SPRL · Proposition de site (démo)</p>
+      <a href="#accueil" class="footer__top">Haut de page ↑</a>
+    </div>
+  </footer>
+
+  <!-- Bouton d'appel flottant (mobile) -->
+  <a class="fab-call" href="tel:+32479535503" data-cfg-href="phoneHref" aria-label="Appeler L'Alchimie du Chauffage au 0479 53 55 03">
+    <span class="fab-call__icon" aria-hidden="true">📞</span>
+    <span class="fab-call__label">Appeler</span>
+    <span class="fab-call__num" data-cfg="phone">0479 53 55 03</span>
+  </a>
+
+  <!-- Bibliothèques (CDN). three.js est chargé à la demande depuis main.js. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+  <script src="main.js" type="module"></script>
+</body>
+</html>
