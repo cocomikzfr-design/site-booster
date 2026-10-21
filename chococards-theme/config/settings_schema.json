@@ -73,7 +73,8 @@
       { "type": "text", "id": "tag_preorder", "label": "Tag « Précommande »", "default": "precommande" },
       { "type": "text", "id": "tag_coming_soon", "label": "Tag « Bientôt disponible »", "default": "bientot-disponible" },
       { "type": "text", "id": "tag_store_only", "label": "Tag « Non disponible en ligne »", "default": "boutique-uniquement", "info": "Bouton désactivé + message « Disponible en boutique à … »." },
-      { "type": "paragraph", "content": "Badge de langue : metafield produit custom.langue (FR, JP, EN). Libellé court des cartes : metafield custom.libelle_court (ex. ETB, UPC)." }
+      { "type": "paragraph", "content": "Badge de langue : metafield produit custom.langue (FR, JP, EN). Libellé court des cartes : metafield custom.libelle_court (ex. ETB, UPC)." },
+      { "type": "select", "id": "product_image_fit", "label": "Photos des cartes produits", "options": [ { "value": "contain", "label": "Photo entière (idéal pour les photos détourées)" }, { "value": "cover", "label": "Recadrer pour remplir la carte" } ], "default": "contain" }
     ]
   },
   {

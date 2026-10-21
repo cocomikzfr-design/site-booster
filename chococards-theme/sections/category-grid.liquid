@@ -25,7 +25,7 @@
           assign ph = 'collection-' | append: ph_index
           assign num = forloop.index | prepend: '0' | slice: -2, 2
         -%}
-        <a class="cat-card holo-card" href="{{ link }}"{% if settings.enable_holo %} data-tilt data-tilt-max="10"{% endif %} style="--h: {{ block.settings.hue }}" {{ block.shopify_attributes }}>
+        <a class="cat-card holo-card{% if img and block.settings.image_contain %} cat-card--contain{% endif %}" href="{{ link }}"{% if settings.enable_holo %} data-tilt data-tilt-max="10"{% endif %} style="--h: {{ block.settings.hue }}" {{ block.shopify_attributes }}>
           {%- if img -%}
             {{ img | image_url: width: 900 | image_tag: loading: 'lazy', widths: '300, 450, 600, 900', sizes: '(min-width: 1100px) 30vw, (min-width: 640px) 33vw, 50vw', alt: '' }}
           {%- else -%}
@@ -72,6 +72,7 @@
         { "type": "text", "id": "title", "label": "Titre (vide = nom de la collection)" },
         { "type": "text", "id": "text", "label": "Texte" },
         { "type": "image_picker", "id": "image", "label": "Image (vide = image de la collection)" },
+        { "type": "checkbox", "id": "image_contain", "label": "Photo détourée (afficher en entier)", "info": "À cocher pour une photo de produits sur fond transparent : elle est posée sur le dégradé sans être recadrée.", "default": true },
         { "type": "url", "id": "link", "label": "Lien (vide = la collection)" },
         { "type": "range", "id": "hue", "label": "Teinte du dégradé", "min": 0, "max": 360, "step": 5, "default": 30 }
       ]

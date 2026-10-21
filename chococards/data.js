@@ -7,8 +7,10 @@
 
    IMAGES : chaque produit pointe vers un fichier dans assets/images/…
    Il suffit de remplacer le fichier par votre vraie photo EN GARDANT LE MÊME
-   NOM (ex. assets/images/produits/pokemon-30-ans-etb.jpg). Format conseillé :
-   JPG ou WebP, carré 1000 × 1000 px pour les produits.
+   NOM (ex. assets/images/produits/pokemon-me05-display.jpg), ou changer le
+   chemin ici. Format conseillé : JPG ou WebP, carré 1000 × 1000 px pour les
+   produits. Photo détourée sur fond transparent (WebP/PNG) : ajoutez
+   detoure: true pour l'afficher entière, posée sur un fond coloré.
 
    STATUTS possibles pour un produit :
      "disponible"  → bouton « Ajouter au panier »
@@ -58,20 +60,23 @@ window.CHOCO_DATA = {
 
   /* ---------- Produits ----------
      categorie : "pokemon-30-ans" | "pokemon" | "one-piece" | "precommande"
-     langue    : "FR" | "JP" | "EN"                                          */
+     langue    : "FR" | "JP" | "EN"
+     detoure   : true si la photo est un produit détouré (fond transparent) :
+                 elle est alors affichée entière, sans recadrage            */
   produits: [
     // Pokémon fête ses 30 ans — vendus exclusivement en boutique physique
-    { id: 'p30-etb', nom: 'Coffret Dresseur d’Élite (ETB) — Pokémon 30 ans', court: 'ETB', prix: 64.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', image: 'assets/images/produits/pokemon-30-ans-etb.jpg' },
+    { id: 'p30-etb', nom: 'Coffret Dresseur d’Élite (ETB) — Pokémon 30 ans', court: 'ETB', prix: 64.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', image: 'assets/images/produits/pokemon-30-ans-etb.webp', detoure: true },
     { id: 'p30-upc', nom: 'Ultra-Premium Collection (UPC) — Pokémon 30 ans', court: 'UPC', prix: 149.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', image: 'assets/images/produits/pokemon-30-ans-upc.jpg' },
     { id: 'p30-tin', nom: 'Mini Tin — Pokémon 30 ans', court: 'Mini Tin', prix: 14.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', image: 'assets/images/produits/pokemon-30-ans-mini-tin.jpg' },
     { id: 'p30-bundle', nom: 'Booster Bundle — Pokémon 30 ans', court: 'Booster Bundle', prix: 39.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', image: 'assets/images/produits/pokemon-30-ans-booster-bundle.jpg' },
 
     // L'univers Pokémon
     { id: 'pk-me06-display', nom: 'Display ME06 Règne Delta — 36 boosters', prix: 199.90, statut: 'precommande', categorie: 'pokemon', langue: 'FR', image: 'assets/images/produits/pokemon-me06-display.jpg' },
-    { id: 'pk-me06-etb', nom: 'Coffret Dresseur d’Élite ME06 Règne Delta', prix: 59.90, statut: 'precommande', categorie: 'pokemon', langue: 'FR', image: 'assets/images/produits/pokemon-me06-etb.jpg' },
+    { id: 'pk-me06-etb', nom: 'Coffret Dresseur d’Élite ME06 Règne Delta', prix: 59.90, statut: 'precommande', categorie: 'pokemon', langue: 'FR', image: 'assets/images/produits/pokemon-me06-etb.webp', detoure: true },
     { id: 'pk-me05-display', nom: 'Display ME05 — 36 boosters', prix: 189.90, statut: 'disponible', categorie: 'pokemon', langue: 'FR', image: 'assets/images/produits/pokemon-me05-display.jpg' },
     { id: 'pk-me05-booster', nom: 'Booster ME05', prix: 5.90, statut: 'disponible', categorie: 'pokemon', langue: 'FR', image: 'assets/images/produits/pokemon-me05-booster.jpg' },
-    { id: 'pk-jp-display', nom: 'Display japonais — 30 boosters', prix: 79.90, statut: 'disponible', categorie: 'pokemon', langue: 'JP', image: 'assets/images/produits/pokemon-japonais-display.jpg' },
+    { id: 'pk-jp-30th', nom: 'Booster japonais 30th Celebration', prix: 6.90, statut: 'disponible', categorie: 'pokemon', langue: 'JP', image: 'assets/images/produits/pokemon-japonais-30th-celebration-booster.webp', detoure: true },
+    { id: 'pk-pikachu-ex', nom: 'Pikachu-ex 30e anniversaire — carte à l’unité', prix: 4.90, statut: 'disponible', categorie: 'pokemon', langue: 'FR', image: 'assets/images/produits/pokemon-carte-pikachu-ex-30-ans.webp', detoure: true },
     { id: 'pk-tripack', nom: 'Tripack ME04', prix: 17.90, statut: 'rupture', categorie: 'pokemon', langue: 'FR', image: 'assets/images/produits/pokemon-me04-tripack.jpg' },
     { id: 'pk-premium', nom: 'Coffret Collection Premium', prix: 39.90, statut: 'bientot', categorie: 'pokemon', langue: 'FR', image: 'assets/images/produits/pokemon-collection-premium.jpg' },
 
@@ -79,8 +84,8 @@ window.CHOCO_DATA = {
     { id: 'op-op18-display', nom: 'Display OP-18 — 24 boosters', prix: 109.90, statut: 'precommande', categorie: 'one-piece', langue: 'EN', image: 'assets/images/produits/one-piece-op18-display.jpg' },
     { id: 'op-eb05-display', nom: 'Display Extra Booster EB-05 — 24 boosters', prix: 119.90, statut: 'precommande', categorie: 'one-piece', langue: 'EN', image: 'assets/images/produits/one-piece-eb05-display.jpg' },
     { id: 'op-op17-display', nom: 'Display OP-17 — 24 boosters', prix: 104.90, statut: 'disponible', categorie: 'one-piece', langue: 'EN', image: 'assets/images/produits/one-piece-op17-display.jpg' },
-    { id: 'op-op17-booster', nom: 'Booster OP-17', prix: 4.90, statut: 'disponible', categorie: 'one-piece', langue: 'EN', image: 'assets/images/produits/one-piece-op17-booster.jpg' },
-    { id: 'op-op16-jp', nom: 'Display OP-16 — 24 boosters', prix: 69.90, statut: 'disponible', categorie: 'one-piece', langue: 'JP', image: 'assets/images/produits/one-piece-op16-display-jp.jpg' },
+    { id: 'op-op17-booster', nom: 'Booster OP-17 — Les Guerriers les plus puissants au monde', prix: 4.90, statut: 'disponible', categorie: 'one-piece', langue: 'FR', image: 'assets/images/produits/one-piece-op17-booster-fr.webp', detoure: true },
+    { id: 'op-op16-booster', nom: 'Booster OP-16 — L’Heure de la bataille décisive', prix: 4.90, statut: 'disponible', categorie: 'one-piece', langue: 'FR', image: 'assets/images/produits/one-piece-op16-booster-fr.webp', detoure: true },
     { id: 'op-starter', nom: 'Starter Deck', prix: 14.90, statut: 'boutique', categorie: 'one-piece', langue: 'EN', image: 'assets/images/produits/one-piece-starter-deck.jpg' },
     { id: 'op-double', nom: 'Double Pack Set', prix: 9.90, statut: 'rupture', categorie: 'one-piece', langue: 'EN', image: 'assets/images/produits/one-piece-double-pack.jpg' },
     { id: 'op-premium', nom: 'Premium Card Collection', prix: 29.90, statut: 'bientot', categorie: 'one-piece', langue: 'EN', image: 'assets/images/produits/one-piece-premium-collection.jpg' }
@@ -98,15 +103,15 @@ window.CHOCO_DATA = {
 
   /* ---------- Explorez la boutique (9 catégories) ---------- */
   categories: [
-    { titre: 'Pokémon', texte: 'Displays, boosters, ETB et coffrets', lien: '#pokemon', image: 'assets/images/categories/pokemon.jpg', teinte: 48 },
-    { titre: 'One Piece', texte: 'Displays, boosters et starter decks', lien: '#one-piece', image: 'assets/images/categories/one-piece.jpg', teinte: 0 },
-    { titre: 'Japonais', texte: 'Boosters et displays importés du Japon', lien: '#japonais', image: 'assets/images/categories/japonais.jpg', teinte: 340 },
-    { titre: 'Cartes à l’unité', texte: 'La carte qui manque à votre collection', lien: '#cartes-unite', image: 'assets/images/categories/cartes-a-l-unite.jpg', teinte: 265 },
+    { titre: 'Pokémon', texte: 'Displays, boosters, ETB et coffrets', lien: '#pokemon', image: 'assets/images/categories/pokemon.webp', detoure: true, teinte: 48 },
+    { titre: 'One Piece', texte: 'Displays, boosters et starter decks', lien: '#one-piece', image: 'assets/images/categories/one-piece.webp', detoure: true, teinte: 0 },
+    { titre: 'Japonais', texte: 'Boosters et displays importés du Japon', lien: '#japonais', image: 'assets/images/categories/japonais.webp', detoure: true, teinte: 340 },
+    { titre: 'Cartes à l’unité', texte: 'La carte qui manque à votre collection', lien: '#cartes-unite', image: 'assets/images/categories/cartes-a-l-unite.webp', detoure: true, teinte: 265 },
     { titre: 'Cartes gradées', texte: 'Des cartes certifiées et protégées', lien: '#cartes-gradees', image: 'assets/images/categories/cartes-gradees.jpg', teinte: 190 },
     { titre: 'Goodies', texte: 'Peluches, figurines et produits dérivés', lien: '#goodies', image: 'assets/images/categories/goodies.jpg', teinte: 320 },
     { titre: 'Accessoires', texte: 'Sleeves, classeurs, protections acryliques', lien: '#accessoires', image: 'assets/images/categories/accessoires.jpg', teinte: 160 },
     { titre: 'Autres TCG', texte: 'Dragon Ball, Digimon, Lorcana, Gundam…', lien: '#autres-tcg', image: 'assets/images/categories/autres-tcg.jpg', teinte: 220 },
-    { titre: 'Précommandes', texte: 'Réservez les prochaines sorties', lien: '#precommande', image: 'assets/images/categories/precommandes.jpg', teinte: 28 }
+    { titre: 'Précommandes', texte: 'Réservez les prochaines sorties', lien: '#precommande', image: 'assets/images/categories/precommandes.webp', detoure: true, teinte: 28 }
   ],
 
   /* ---------- Prochaines sorties TCG ---------- */
@@ -148,15 +153,15 @@ window.CHOCO_DATA = {
     { titre: 'Pokémon', lien: '#pokemon', colonnes: [
       { titre: 'Produits scellés', liens: ['Displays', 'Boosters', 'Coffrets Dresseur d’Élite (ETB)', 'Special Box', 'Tins & Mini Tins', 'Blisters & Tripacks'] },
       { titre: 'Collection', liens: ['Cartes à l’unité', 'Cartes gradées', 'Pokémon 30 ans'] }
-    ], vedette: { titre: 'Pokémon fête ses 30 ans', texte: 'Exclusivités en boutique', image: 'assets/images/categories/pokemon.jpg', lien: '#pokemon-30-ans' } },
+    ], vedette: { titre: 'Pokémon fête ses 30 ans', texte: 'Exclusivités en boutique', image: 'assets/images/categories/pokemon.webp', detoure: true, lien: '#pokemon-30-ans' } },
     { titre: 'One Piece', lien: '#one-piece', colonnes: [
       { titre: 'Produits scellés', liens: ['Displays', 'Boosters', 'Starter Decks', 'Special Box', 'Double Packs'] },
       { titre: 'Collection', liens: ['Cartes à l’unité', 'Cartes gradées'] }
-    ], vedette: { titre: 'OP-18 en précommande', texte: 'Sortie le 20 novembre', image: 'assets/images/categories/one-piece.jpg', lien: '#one-piece' } },
+    ], vedette: { titre: 'OP-18 en précommande', texte: 'Sortie le 20 novembre', image: 'assets/images/categories/one-piece.webp', detoure: true, lien: '#one-piece' } },
     { titre: 'Japonais', lien: '#japonais', colonnes: [
       { titre: 'Pokémon japonais', liens: ['Displays', 'Boosters', 'Special Box'] },
       { titre: 'One Piece japonais', liens: ['Displays', 'Boosters'] }
-    ], vedette: { titre: 'Import Japon', texte: 'Les sets avant tout le monde', image: 'assets/images/categories/japonais.jpg', lien: '#japonais' } },
+    ], vedette: { titre: 'Import Japon', texte: 'Les sets avant tout le monde', image: 'assets/images/categories/japonais.webp', detoure: true, lien: '#japonais' } },
     { titre: 'Cartes à l’unité', lien: '#cartes-unite', colonnes: [
       { titre: 'Par jeu', liens: ['Pokémon', 'One Piece', 'Autres TCG'] },
       { titre: 'Prestige', liens: ['Cartes gradées', 'Cartes rares'] }

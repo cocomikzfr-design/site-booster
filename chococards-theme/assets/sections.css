@@ -122,6 +122,10 @@ a.info-pill:hover { border-color: rgba(255, 246, 236, .35); transform: translate
 .cat-card::marker { content: none; }
 .cat-card__shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, hsl(var(--h) 70% 50% / .0) 30%, hsl(var(--h) 60% 12% / .92) 100%); }
 .cat-card:hover img { transform: scale(1.07); }
+/* Photo détourée (fond transparent) : produits posés en entier sur un halo coloré */
+.cat-card--contain { background: radial-gradient(circle at 50% 36%, hsl(var(--h) 85% 62% / .6), transparent 64%), hsl(var(--h) 45% 22%); }
+.cat-card--contain img { object-fit: contain; padding: 10% 9% 32%; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .4)); }
+.cat-card--contain:hover img { transform: scale(1.05) translateY(-2%); }
 .cat-card__num { position: absolute; top: 16px; left: 18px; font: 700 .8rem var(--font-body); letter-spacing: .1em; opacity: .75; }
 .cat-card__arrow { position: absolute; top: 14px; right: 14px; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: rgba(255, 246, 236, .16); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: transform .5s var(--ease-spring), background .3s; }
 .cat-card__arrow svg { width: 18px; height: 18px; transform: rotate(-45deg); transition: transform .5s var(--ease-out); }

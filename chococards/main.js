@@ -91,7 +91,7 @@
     return `
       <article class="product-card holo-card${light ? ' product-card--light' : ''}" data-tilt data-tilt-max="9" data-product="${esc(p.id)}">
         <div class="product-card__media">
-          <img src="${esc(p.image)}" alt="${esc(p.nom)}" width="600" height="600" loading="lazy" decoding="async">
+          <img${p.detoure ? ' class="is-detoure"' : ''} src="${esc(p.image)}" alt="${esc(p.nom)}" width="600" height="600" loading="lazy" decoding="async">
           <span class="product-card__badges">
             <span class="badge badge--${esc(p.statut)}">${esc(st.label)}</span>
             ${p.langue ? `<span class="badge badge--lang" title="Langue des cartes">${esc(p.langue)}</span>` : ''}
@@ -125,7 +125,7 @@
           </div>`).join('');
         const feat = m.vedette ? `
           <a class="mega__feature holo-card" data-tilt data-tilt-max="6" href="${esc(m.vedette.lien)}">
-            <img src="${esc(m.vedette.image)}" alt="" width="800" height="600" loading="lazy" decoding="async">
+            <img${m.vedette.detoure ? ' class="is-detoure"' : ''} src="${esc(m.vedette.image)}" alt="" width="800" height="600" loading="lazy" decoding="async">
             <span class="mega__feature-text"><strong>${esc(m.vedette.titre)}</strong><span>${esc(m.vedette.texte)}</span></span>
           </a>` : '';
         return `
@@ -170,7 +170,7 @@
     if (!grid) return;
     grid.innerHTML = (D.categories || []).map((c, i) => `
       <a class="cat-card holo-card" href="${esc(c.lien)}" data-tilt data-tilt-max="10" style="--h:${Number(c.teinte) || 30}">
-        <img src="${esc(c.image)}" alt="" width="800" height="1000" loading="lazy" decoding="async">
+        <img${c.detoure ? ' class="is-detoure"' : ''} src="${esc(c.image)}" alt="" width="800" height="1000" loading="lazy" decoding="async">
         <span class="cat-card__shade" aria-hidden="true"></span>
         <span class="cat-card__num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
         <span class="cat-card__arrow" aria-hidden="true">${icon('arrow')}</span>
@@ -190,7 +190,7 @@
     const p = productById(conf.produitId);
     if (box && p) {
       box.innerHTML = `
-        <img src="${esc(p.image)}" alt="${esc(p.nom)}" width="160" height="160" loading="lazy" decoding="async">
+        <img${p.detoure ? ' class="is-detoure"' : ''} src="${esc(p.image)}" alt="${esc(p.nom)}" width="160" height="160" loading="lazy" decoding="async">
         <div>
           <p class="preorder__product-name">${esc(p.nom)}</p>
           <div class="preorder__product-row">
@@ -540,7 +540,7 @@
     const productRow = (p) => {
       const st = STATUTS[p.statut] || {};
       return `<a class="search-item" href="#${esc(p.categorie)}">
-        <img src="${esc(p.image)}" alt="" width="56" height="56" loading="lazy">
+        <img${p.detoure ? ' class="is-detoure"' : ''} src="${esc(p.image)}" alt="" width="56" height="56" loading="lazy">
         <span><span class="search-item__name">${esc(p.nom)}</span><br><span class="search-item__meta">${esc(CAT_LABELS[p.categorie] || '')} · ${esc(st.label || '')}${p.langue ? ` · ${esc(p.langue)}` : ''}</span></span>
         <span class="search-item__price">${prix(p.prix)}</span>
       </a>`;
@@ -655,7 +655,7 @@
         ${cart.map((l) => {
           const p = productById(l.id);
           return `<li class="cart-line">
-            <img src="${esc(p.image)}" alt="" width="72" height="72" loading="lazy">
+            <img${p.detoure ? ' class="is-detoure"' : ''} src="${esc(p.image)}" alt="" width="72" height="72" loading="lazy">
             <div>
               <p class="cart-line__name">${esc(p.nom)}</p>
               <p class="cart-line__price">${prix(p.prix)}${p.statut === 'precommande' ? ' · Précommande' : ''}</p>

@@ -23,7 +23,7 @@
   assign short_label = product.metafields.custom.libelle_court.value | default: product.type
 -%}
 <article class="product-card holo-card{% if light %} product-card--light{% endif %}"{% if settings.enable_holo %} data-tilt data-tilt-max="9"{% endif %} data-product-card>
-  <div class="product-card__media">
+  <div class="product-card__media{% if settings.product_image_fit == 'contain' %} product-card__media--contain{% endif %}">
     {%- if product.featured_media -%}
       {{ product.featured_media | image_url: width: 900 | image_tag: loading: loading, widths: '240, 360, 480, 600, 900', sizes: img_sizes, alt: media_alt }}
     {%- else -%}
