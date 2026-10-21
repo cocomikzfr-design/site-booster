@@ -27,6 +27,7 @@ import { $$, throttle } from './utils.js';
 
 const SEL = '[data-reveal], [data-reveal-stagger]';
 let io = null;
+let nearIO = null;
 let armed = false;
 const splits = new Map();
 
@@ -54,16 +55,24 @@ export function revealAll(root = document) {
 }
 
 function prepare(root) {
-  $$(SEL, root).forEach((el) => {
-    if (el.hasAttribute('data-reveal-stagger')) {
-      [...el.children].forEach((c, i) => c.style.setProperty('--i', i));
-    }
-    if (el.getAttribute('data-reveal') === 'lines' && !splits.has(el) && !el.classList.contains('is-in')) {
-      const s = splitText(el, { type: 'lines', mask: true });
-      s.lines.forEach((l, i) => l.style.setProperty('--line', i));
-      splits.set(el, s);
-    }
+  $$('[data-reveal-stagger]', root).forEach((el) => {
+    [...el.children].forEach((c, i) => c.style.setProperty('--i', i));
   });
+}
+
+/**
+ * Découpe un titre [data-reveal="lines"] en lignes masquées. Appelé à l'approche
+ * (60 % d'écran avant), jamais quand le titre est déjà visible : pas de clignotement,
+ * et le coût de mesure des lignes est étalé dans le temps (pas de tâche longue).
+ */
+function splitLines(el) {
+  if (splits.has(el) || el.classList.contains('is-in')) return;
+  const r = el.getBoundingClientRect();
+  if (r.top < innerHeight) return; // déjà à l'écran : on le laissera tel quel
+  const s = splitText(el, { type: 'lines', mask: true });
+  if (!s.lines.length) { s.revert(); return; }
+  s.lines.forEach((l, i) => l.style.setProperty('--line', i));
+  splits.set(el, s);
 }
 
 /** Révèle ce qui est déjà au-dessus du bas de l'écran (filet de sécurité). */
@@ -71,8 +80,7 @@ function sweep(root = document) {
   const limit = innerHeight * 1.02;
   $$(SEL, root).forEach((el) => {
     if (el.classList.contains('is-in')) return;
-    const r = el.getBoundingClientRect();
-    if (r.top < limit && (r.bottom > -innerHeight * 4 || r.top < 0)) reveal(el);
+    if (el.getBoundingClientRect().top < limit) reveal(el);
   });
 }
 
@@ -98,6 +106,10 @@ export function armReveals(root = document) {
   io = new IntersectionObserver((entries) => {
     entries.forEach((e) => { if (e.isIntersecting) reveal(e.target); });
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
+  // Découpe en lignes à l'approche des titres
+  nearIO = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { nearIO.unobserve(e.target); splitLines(e.target); } });
+  }, { rootMargin: '0px 0px 60% 0px', threshold: 0 });
 
   prepare(root);
   // Ce qui est déjà à l'écran : affiché tout de suite, sans animation
@@ -106,8 +118,8 @@ export function armReveals(root = document) {
     const r = el.getBoundingClientRect();
     if (r.top < limit) el.classList.add('is-in', 'is-done');
   });
-  splits.forEach((s, el) => { if (el.classList.contains('is-in')) { s.revert(); splits.delete(el); } });
   observeReveals(root);
+  $$('[data-reveal="lines"]', root).forEach((el) => { if (!el.classList.contains('is-in')) nearIO.observe(el); });
   html.classList.add('anim-ready');
 
   // Filets de sécurité

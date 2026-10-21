@@ -72,7 +72,7 @@
     --c-papier: #FBF7EE;       /* papier : texte sur scène, feuilles éditoriales */
     --c-papier-2: #F3EDE0;
     --c-papier-3: #E7DFCF;
-    --c-brume: #D8D2EF;        /* texte secondaire sur scène (≥ 5.3:1 partout) */
+    --c-brume: #DDD8F3;        /* texte secondaire sur scène (≥ 5:1 partout, mesuré) */
     --c-violet: #8B6CFF;
     --c-lilas-vif: #B9A8FF;
     --c-lilas: #D9CEFF;
@@ -154,6 +154,23 @@
     color-scheme: dark;
   }
 
+  /* 3. MONDES DE COULEUR (sections) ------------------------------------------
+     Chaque section porte data-world="…". Le moteur js/core/worlds.js fond
+     la scène fixe vers le monde de la section au centre de l'écran.
+     --accent-text reste toujours citron, menthe ou cyan (≥ 5:1 sur la scène). */
+  [data-world="nuit"]     { --accent: var(--c-violet); --accent-2: var(--c-cyan);   --accent-text: var(--c-cyan); }
+  [data-world="gala"]     { --accent: var(--c-or);     --accent-2: var(--c-rose);   --accent-text: var(--c-citron); }
+  [data-world="prisme"]   { --accent: var(--c-rose);   --accent-2: var(--c-menthe); --accent-text: var(--c-menthe); }
+  [data-world="delta"]    { --accent: var(--c-menthe); --accent-2: var(--c-cyan);   --accent-text: var(--c-menthe); }
+  [data-world="cobalt"]   { --accent: var(--c-cyan);   --accent-2: var(--c-violet); --accent-text: var(--c-cyan); }
+  [data-world="foudre"]   { --accent: var(--c-citron); --accent-2: var(--c-cyan);   --accent-text: var(--c-citron); }
+  [data-world="corsaire"] { --accent: var(--c-corail); --accent-2: var(--c-citron); --accent-text: var(--c-citron); }
+  [data-world="arcade"]   { --accent: var(--c-cyan);   --accent-2: var(--c-rose);   --accent-text: var(--c-cyan); }
+  [data-world="lagon"]    { --accent: var(--c-cyan);   --accent-2: var(--c-menthe); --accent-text: var(--c-menthe); }
+  [data-world="rose"]     { --accent: var(--c-rose);   --accent-2: var(--c-violet); --accent-text: var(--c-citron); }
+  [data-world="violet"]   { --accent: var(--c-violet); --accent-2: var(--c-citron); --accent-text: var(--c-citron); }
+  [data-world="menthe"]   { --accent: var(--c-menthe); --accent-2: var(--c-citron); --accent-text: var(--c-menthe); }
+
   /* 2. SURFACES ---------------------------------------------------------------
      Scène = fond sombre coloré (mondes). Feuille = panneau opaque clair.
      Les variables --fg, --fg-2, --line, --focus, --accent-text, --holo-text
@@ -216,36 +233,19 @@
   [data-couleur="ciel"]   { --tone: var(--c-ciel); --tone-2: #E1F6FF; }
   [data-couleur="or"]     { --tone: var(--c-or); --tone-2: #FFE7A6; }
 
-  /* 3. MONDES DE COULEUR (sections) ------------------------------------------
-     Chaque section porte data-world="…". Le moteur js/core/worlds.js fond
-     la scène fixe vers le monde de la section au centre de l'écran.
-     --accent-text reste toujours citron, menthe ou cyan (≥ 5:1 sur la scène). */
-  [data-world="nuit"]     { --accent: var(--c-violet); --accent-2: var(--c-cyan);   --accent-text: var(--c-cyan); }
-  [data-world="gala"]     { --accent: var(--c-or);     --accent-2: var(--c-rose);   --accent-text: var(--c-citron); }
-  [data-world="prisme"]   { --accent: var(--c-rose);   --accent-2: var(--c-menthe); --accent-text: var(--c-menthe); }
-  [data-world="delta"]    { --accent: var(--c-menthe); --accent-2: var(--c-cyan);   --accent-text: var(--c-menthe); }
-  [data-world="cobalt"]   { --accent: var(--c-cyan);   --accent-2: var(--c-violet); --accent-text: var(--c-cyan); }
-  [data-world="foudre"]   { --accent: var(--c-citron); --accent-2: var(--c-cyan);   --accent-text: var(--c-citron); }
-  [data-world="corsaire"] { --accent: var(--c-corail); --accent-2: var(--c-citron); --accent-text: var(--c-citron); }
-  [data-world="arcade"]   { --accent: var(--c-cyan);   --accent-2: var(--c-rose);   --accent-text: var(--c-cyan); }
-  [data-world="lagon"]    { --accent: var(--c-cyan);   --accent-2: var(--c-menthe); --accent-text: var(--c-menthe); }
-  [data-world="rose"]     { --accent: var(--c-rose);   --accent-2: var(--c-violet); --accent-text: var(--c-citron); }
-  [data-world="violet"]   { --accent: var(--c-violet); --accent-2: var(--c-citron); --accent-text: var(--c-citron); }
-  [data-world="menthe"]   { --accent: var(--c-menthe); --accent-2: var(--c-citron); --accent-text: var(--c-menthe); }
-
-  /* Scène fixe : base + 3 nappes par monde (luminance max ≤ 0,085, voir DESIGN.md) */
-  .stage__world[data-w="nuit"]     { --w-base: #0E0A24; --w-1: rgb(139 108 255 / .34); --w-2: rgb(46 230 255 / .20); --w-3: rgb(255 93 177 / .10); }
-  .stage__world[data-w="gala"]     { --w-base: #1C0B30; --w-1: rgb(255 212 59 / .20);  --w-2: rgb(255 93 177 / .25); --w-3: rgb(139 108 255 / .16); }
-  .stage__world[data-w="prisme"]   { --w-base: #130B3D; --w-1: rgb(255 93 177 / .26);  --w-2: rgb(92 242 181 / .18); --w-3: rgb(255 212 59 / .16); }
-  .stage__world[data-w="delta"]    { --w-base: #03221F; --w-1: rgb(92 242 181 / .17);  --w-2: rgb(46 230 255 / .14); --w-3: rgb(139 108 255 / .12); }
-  .stage__world[data-w="cobalt"]   { --w-base: #0A1748; --w-1: rgb(46 230 255 / .18);  --w-2: rgb(139 108 255 / .28); --w-3: rgb(92 242 181 / .08); }
-  .stage__world[data-w="foudre"]   { --w-base: #0B1342; --w-1: rgb(255 212 59 / .20);  --w-2: rgb(46 230 255 / .16); --w-3: rgb(139 108 255 / .14); }
-  .stage__world[data-w="corsaire"] { --w-base: #2B0719; --w-1: rgb(255 122 89 / .26);  --w-2: rgb(255 212 59 / .14); --w-3: rgb(255 93 177 / .12); }
-  .stage__world[data-w="arcade"]   { --w-base: #170A36; --w-1: rgb(46 230 255 / .20);  --w-2: rgb(255 93 177 / .24); --w-3: rgb(92 242 181 / .16); }
-  .stage__world[data-w="lagon"]    { --w-base: #04212F; --w-1: rgb(46 230 255 / .17);  --w-2: rgb(92 242 181 / .13); --w-3: rgb(139 108 255 / .12); }
-  .stage__world[data-w="rose"]     { --w-base: #2C0A2E; --w-1: rgb(255 93 177 / .28);  --w-2: rgb(139 108 255 / .28); --w-3: rgb(255 212 59 / .08); }
-  .stage__world[data-w="violet"]   { --w-base: #1F0F57; --w-1: rgb(139 108 255 / .30); --w-2: rgb(255 212 59 / .16); --w-3: rgb(46 230 255 / .10); }
-  .stage__world[data-w="menthe"]   { --w-base: #062722; --w-1: rgb(92 242 181 / .17);  --w-2: rgb(255 212 59 / .12); --w-3: rgb(46 230 255 / .10); }
+  /* Scène fixe : base + 3 nappes par monde (luminance max mesurée ≤ 0,096 sur toute la dérive, voir DESIGN.md §3) */
+  .stage__world[data-w="nuit"]     { --w-base: #0E0A24; --w-1: rgb(139 108 255 / 0.54); --w-2: rgb(46 230 255 / 0.32); --w-3: rgb(255 93 177 / 0.16); }
+  .stage__world[data-w="gala"]     { --w-base: #1C0B30; --w-1: rgb(255 212 59 / 0.32);  --w-2: rgb(255 93 177 / 0.40); --w-3: rgb(139 108 255 / 0.26); }
+  .stage__world[data-w="prisme"]   { --w-base: #130B3D; --w-1: rgb(255 93 177 / 0.42);  --w-2: rgb(92 242 181 / 0.29); --w-3: rgb(255 212 59 / 0.26); }
+  .stage__world[data-w="delta"]    { --w-base: #03221F; --w-1: rgb(92 242 181 / 0.27);  --w-2: rgb(46 230 255 / 0.22); --w-3: rgb(139 108 255 / 0.19); }
+  .stage__world[data-w="cobalt"]   { --w-base: #0A1748; --w-1: rgb(46 230 255 / 0.29);  --w-2: rgb(139 108 255 / 0.45); --w-3: rgb(92 242 181 / 0.13); }
+  .stage__world[data-w="foudre"]   { --w-base: #0B1342; --w-1: rgb(255 212 59 / 0.32);  --w-2: rgb(46 230 255 / 0.26); --w-3: rgb(139 108 255 / 0.22); }
+  .stage__world[data-w="corsaire"] { --w-base: #2B0719; --w-1: rgb(255 122 89 / 0.42);  --w-2: rgb(255 212 59 / 0.22); --w-3: rgb(255 93 177 / 0.19); }
+  .stage__world[data-w="arcade"]   { --w-base: #170A36; --w-1: rgb(46 230 255 / 0.32);  --w-2: rgb(255 93 177 / 0.38); --w-3: rgb(92 242 181 / 0.26); }
+  .stage__world[data-w="lagon"]    { --w-base: #04212F; --w-1: rgb(46 230 255 / 0.27);  --w-2: rgb(92 242 181 / 0.21); --w-3: rgb(139 108 255 / 0.19); }
+  .stage__world[data-w="rose"]     { --w-base: #2C0A2E; --w-1: rgb(255 93 177 / 0.45);  --w-2: rgb(139 108 255 / 0.45); --w-3: rgb(255 212 59 / 0.13); }
+  .stage__world[data-w="violet"]   { --w-base: #1F0F57; --w-1: rgb(139 108 255 / 0.48); --w-2: rgb(255 212 59 / 0.26); --w-3: rgb(46 230 255 / 0.16); }
+  .stage__world[data-w="menthe"]   { --w-base: #062722; --w-1: rgb(92 242 181 / 0.27);  --w-2: rgb(255 212 59 / 0.19); --w-3: rgb(46 230 255 / 0.16); }
 }
 
 /* 4. RESET -------------------------------------------------------------------- */
@@ -263,6 +263,8 @@
   :where(table) { border-collapse: collapse; }
   :where([hidden]) { display: none !important; }
   :where(svg:not([fill])) { fill: currentColor; }
+  /* Cibles d'ancres / lien d'évitement (focus programmatique) : pas de cadre sur toute une section */
+  :where([tabindex="-1"]):focus { outline: none; }
 }
 
 /* 5. TYPOGRAPHIE + corps ------------------------------------------------------ */
@@ -428,6 +430,8 @@
     transition: transform var(--d-short) var(--ease-out), background-position .8s var(--ease-out), box-shadow var(--d-short);
   }
   .btn--holo:hover { background-position: 100% 50%; box-shadow: 0 14px 36px -10px rgb(46 230 255 / .6); }
+  /* Magnétisme : GSAP écrit transform → pas de transition CSS sur transform */
+  [data-magnetic] { transition-property: background-color, background-position, color, border-color, box-shadow, opacity; }
 
   .round-btn {
     display: inline-grid; place-items: center;
@@ -549,8 +553,6 @@
 
   /* --- Carte produit --- */
   .pcard {
-    --tone: var(--c-lilas-vif);
-    --tone-2: var(--c-lilas);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -573,8 +575,8 @@
     margin: 8px 8px 0;
     border-radius: calc(var(--r-card) - 8px);
     background:
-      radial-gradient(70% 60% at 50% 58%, var(--tone) 0%, color-mix(in srgb, var(--tone) 40%, transparent) 46%, transparent 72%),
-      var(--tone-2);
+      radial-gradient(70% 60% at 50% 58%, var(--tone, var(--c-lilas-vif)) 0%, color-mix(in srgb, var(--tone, var(--c-lilas-vif)) 40%, transparent) 46%, transparent 72%),
+      var(--tone-2, var(--c-lilas));
     overflow: hidden;
     isolation: isolate;
   }
@@ -621,7 +623,6 @@
   /* --- Carte « slot » : visuel typographique quand il n'y a pas encore de photo ---
      Clairement graphique (jamais une fausse photo). Couleur : data-couleur. */
   .slot {
-    --tone: var(--c-lilas-vif);
     position: relative;
     width: 66%;
     aspect-ratio: 5 / 7;
@@ -630,10 +631,10 @@
     padding: 9% 9% 8%;
     border-radius: 7% / 5%;
     background:
-      radial-gradient(120% 80% at 20% 0%, color-mix(in srgb, var(--tone) 28%, transparent), transparent 60%),
+      radial-gradient(120% 80% at 20% 0%, color-mix(in srgb, var(--tone, var(--c-lilas-vif)) 30%, transparent), transparent 60%),
       linear-gradient(160deg, #221B4E, #0E0A24 70%);
     color: var(--c-papier);
-    box-shadow: 0 0 0 3px var(--tone), 0 0 0 5px rgb(255 255 255 / .55), 0 24px 30px -14px rgb(14 10 36 / .55);
+    box-shadow: 0 0 0 3px var(--tone, var(--c-lilas-vif)), 0 0 0 5px rgb(255 255 255 / .55), 0 24px 30px -14px rgb(14 10 36 / .55);
     overflow: hidden;
     transform: rotate(-4deg);
     container-type: inline-size;
@@ -723,9 +724,10 @@
     left: 50%; bottom: max(20px, env(safe-area-inset-bottom));
     z-index: var(--z-toast);
     display: flex; align-items: center; gap: 10px;
-    max-width: min(92vw, 440px);
+    width: max-content;
+    max-width: min(calc(100vw - 32px), 460px);
     padding: 12px 18px;
-    border-radius: var(--r-pill);
+    border-radius: 22px;
     background: var(--c-papier);
     color: var(--c-encre);
     font-size: var(--fs-sm);
@@ -812,7 +814,7 @@
   }
   .preloader__bar { display: block; width: 120px; height: 2px; margin: 14px auto 0; border-radius: 2px; background: rgb(251 247 238 / .15); overflow: hidden; }
   .preloader__bar::after { content: ''; display: block; height: 100%; background: var(--holo); transform-origin: 0 50%; transform: scaleX(var(--progress, .1)); transition: transform .3s var(--ease-out); }
-  .preloader.is-leaving { animation: none; transition: opacity .5s var(--ease-soft) .2s, visibility 0s .7s; opacity: 0; visibility: hidden; }
+  .preloader.is-leaving { animation: none; transition: opacity .5s var(--ease-soft) .15s; opacity: 0; }
   .preloader.is-leaving .preloader__card { animation: none; transition: transform .6s var(--ease-out); }
   .preloader.is-leaving .preloader__card:nth-child(-n+2) { transform: translate3d(-90vw, 0, 0) rotate(-40deg); }
   .preloader.is-leaving .preloader__card:nth-child(n+4) { transform: translate3d(90vw, 0, 0) rotate(40deg); }

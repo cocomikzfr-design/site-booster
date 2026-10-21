@@ -80,14 +80,25 @@ export function timeLeft(isoDateTime) {
 
 const toMin = (hhmm) => { const [h, m] = hhmm.split(':').map(Number); return h * 60 + m; };
 
+/** Jour (0 = dimanche) et minutes écoulées, à l'heure de Nivelles (Europe/Brussels). */
+function brusselsNow() {
+  try {
+    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Brussels', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+    const get = (t) => parts.find((p) => p.type === t)?.value;
+    const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday'));
+    if (day >= 0) return { day, mins: Number(get('hour')) * 60 + Number(get('minute')) };
+  } catch { /* fuseau indisponible : heure locale */ }
+  const d = new Date();
+  return { day: d.getDay(), mins: d.getHours() * 60 + d.getMinutes() };
+}
+
 /**
- * État d'ouverture de la boutique maintenant.
+ * État d'ouverture de la boutique maintenant (heure belge).
  * → { open: bool, label: 'Ouvert maintenant · jusqu’à 19h' | 'Fermé · ouvre mardi à 10h', todayIndex }
  */
-export function openState(now = new Date()) {
+export function openState() {
   const h = DATA.boutique.horaires;
-  const day = now.getDay();
-  const mins = now.getHours() * 60 + now.getMinutes();
+  const { day, mins } = brusselsNow();
   const t = h[day];
   const fmt = (hhmm) => hhmm.replace(/^0/, '').replace(':00', 'h').replace(':', 'h');
   if (t && t.ouverture && mins >= toMin(t.ouverture) && mins < toMin(t.fermeture)) {

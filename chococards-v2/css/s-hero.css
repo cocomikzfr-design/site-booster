@@ -1,0 +1,6 @@
+/* ==========================================================================
+   s-hero.css — feuille du constructeur « hero » (voir DESIGN.md §10)
+   Périmètre : SECTION:marquee + SECTION:hero
+   Hors couche (@layer) : ces règles l'emportent toujours sur base.css et
+   sections.css. Préfixez chaque sélecteur par la classe ou l'id de vos sections.
+   ========================================================================== */

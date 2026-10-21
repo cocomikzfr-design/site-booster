@@ -1,0 +1,6 @@
+/* ==========================================================================
+   s-booster.css — feuille du constructeur « booster » (voir DESIGN.md §10)
+   Périmètre : SECTION:precommande, SECTION:sorties
+   Hors couche (@layer) : ces règles l'emportent toujours sur base.css et
+   sections.css. Préfixez chaque sélecteur par la classe ou l'id de vos sections.
+   ========================================================================== */

@@ -52,7 +52,7 @@ export function initScroll() {
       const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
       requestAnimationFrame(raf);
     }
-    root.classList.add('has-lenis');
+    root.classList.add('smooth-scroll'); // (pas « has-lenis » : Lenis retire toute classe contenant « lenis »)
   } else {
     // Défilement natif : vitesse calculée à la main
     let lastY = scrollY, lastT = performance.now(), ticking = false;

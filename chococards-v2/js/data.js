@@ -79,10 +79,10 @@ const DATA = {
      format    : type de produit (ETB, Display ×36…)                        */
   produits: [
     // Pokémon fête ses 30 ans — vendus exclusivement en boutique physique
-    { id: 'p30-etb', nom: 'Coffret Dresseur d’Élite (ETB) — Pokémon 30 ans', court: 'ETB', prix: 64.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', code: '30 ANS', format: 'ETB', couleur: 'or', image: 'assets/img/produits/pokemon-30-ans-etb.webp', detoure: true },
-    { id: 'p30-upc', nom: 'Ultra-Premium Collection (UPC) — Pokémon 30 ans', court: 'UPC', prix: 149.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', code: '30 ANS', format: 'UPC', couleur: 'or', image: null, detoure: false },
-    { id: 'p30-tin', nom: 'Mini Tin — Pokémon 30 ans', court: 'Mini Tin', prix: 14.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', code: '30 ANS', format: 'Mini Tin', couleur: 'or', image: null, detoure: false },
-    { id: 'p30-bundle', nom: 'Booster Bundle — Pokémon 30 ans', court: 'Booster Bundle', prix: 39.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', code: '30 ANS', format: 'Bundle', couleur: 'or', image: null, detoure: false },
+    { id: 'p30-etb', nom: 'Coffret Dresseur d’Élite (ETB) — Pokémon 30 ans', court: 'ETB', prix: 64.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', code: 'ETB', format: '30 ans', couleur: 'or', image: 'assets/img/produits/pokemon-30-ans-etb.webp', detoure: true },
+    { id: 'p30-upc', nom: 'Ultra-Premium Collection (UPC) — Pokémon 30 ans', court: 'UPC', prix: 149.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', code: 'UPC', format: '30 ans', couleur: 'or', image: null, detoure: false },
+    { id: 'p30-tin', nom: 'Mini Tin — Pokémon 30 ans', court: 'Mini Tin', prix: 14.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', code: 'TIN', format: '30 ans · Mini Tin', couleur: 'rose', image: null, detoure: false },
+    { id: 'p30-bundle', nom: 'Booster Bundle — Pokémon 30 ans', court: 'Booster Bundle', prix: 39.90, statut: 'boutique', categorie: 'pokemon-30-ans', langue: 'FR', code: 'BUNDLE', format: '30 ans · Booster', couleur: 'lilas', image: null, detoure: false },
 
     // L'univers Pokémon
     { id: 'pk-me06-display', nom: 'Display ME06 Règne Delta — 36 boosters', prix: 199.90, statut: 'precommande', categorie: 'pokemon', langue: 'FR', code: 'ME06', format: 'Display ×36', couleur: 'menthe', image: null, detoure: false },
@@ -167,7 +167,7 @@ const DATA = {
     { image: 'assets/img/categories/one-piece.webp', detoure: true, alt: 'Arrivage des boosters One Piece OP-16 et OP-17', legende: 'Arrivage One Piece', couleur: 'corail', lien: 'https://www.instagram.com/chococards.be/' },
     { image: null, alt: 'Ouverture de boosters entre passionnés', legende: 'Ouverture de boosters', couleur: 'violet', lien: 'https://www.instagram.com/chococards.be/' },
     { image: null, alt: 'Tournoi du week-end chez ChocoCards', legende: 'Tournoi du week-end', couleur: 'citron', lien: 'https://www.instagram.com/chococards.be/' },
-    { image: 'assets/img/categories/japonais.webp', detoure: true, alt: 'Boosters japonais 30th Celebration arrivés en boutique', legende: 'Import Japon', couleur: 'rose', lien: 'https://www.instagram.com/chococards.be/' },
+    { image: 'assets/img/categories/japonais.webp', detoure: true, alt: 'Boosters japonais 30th Celebration arrivés en boutique', legende: 'Import Japon', couleur: 'ciel', lien: 'https://www.instagram.com/chococards.be/' },
     { image: null, alt: 'Les vitrines de cartes gradées', legende: 'Vitrine des gradées', couleur: 'cyan', lien: 'https://www.instagram.com/chococards.be/' },
     { image: null, alt: 'La boutique de Nivelles', legende: 'La boutique', couleur: 'menthe', lien: 'https://www.instagram.com/chococards.be/' }
   ],

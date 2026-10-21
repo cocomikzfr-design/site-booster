@@ -1,0 +1,6 @@
+/* ==========================================================================
+   s-univers.css — feuille du constructeur « univers » (voir DESIGN.md §10)
+   Périmètre : SECTION:explorer, SECTION:autres-tcg, SECTION:bannieres, SECTION:communaute, SECTION:tournois, SECTION:boutique
+   Hors couche (@layer) : ces règles l'emportent toujours sur base.css et
+   sections.css. Préfixez chaque sélecteur par la classe ou l'id de vos sections.
+   ========================================================================== */

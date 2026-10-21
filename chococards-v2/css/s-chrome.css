@@ -1,0 +1,6 @@
+/* ==========================================================================
+   s-chrome.css — feuille du constructeur « chrome » (voir DESIGN.md §10)
+   Périmètre : SECTION:header (+ méga-menu, tiroirs, recherche, panier), SECTION:confiance, SECTION:footer
+   Hors couche (@layer) : ces règles l'emportent toujours sur base.css et
+   sections.css. Préfixez chaque sélecteur par la classe ou l'id de vos sections.
+   ========================================================================== */

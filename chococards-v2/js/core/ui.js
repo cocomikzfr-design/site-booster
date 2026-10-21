@@ -131,6 +131,20 @@ export function initUI() {
       if (track) track.scrollBy({ left: (next ? 1 : -1) * track.clientWidth * 0.85, behavior: prefs.reduced ? 'auto' : 'smooth' });
     }
   });
+  // Formulaires : la recherche ne recharge pas la page ; newsletter de démonstration (validation + message)
+  document.addEventListener('submit', (e) => {
+    const f = e.target;
+    if (f.matches('[data-search-form]')) { e.preventDefault(); return; }
+    if (f.matches('[data-newsletter]:not([data-render-custom])')) {
+      e.preventDefault();
+      const input = f.querySelector('input[type="email"]');
+      const msg = f.querySelector('.newsletter__msg');
+      const ok = !!input && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(input.value.trim());
+      input?.setAttribute('aria-invalid', ok ? 'false' : 'true');
+      if (msg) msg.textContent = ok ? 'Merci ! Vous recevrez nos prochaines infos.' : 'Adresse e-mail invalide : vérifiez-la (par exemple nom@domaine.be).';
+      if (ok) { f.reset(); toast('Inscription à la newsletter enregistrée.'); }
+    }
+  });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && stack.length) { e.preventDefault(); closeOverlay(); }
     trapFocus(e);
