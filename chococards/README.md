@@ -19,10 +19,10 @@ GSAP 3.12.5 + ScrollTrigger (cdnjs), Lenis 1.1.13 et Three.js 0.160.0 (jsdelivr,
 | Fichier | Rôle |
 |---|---|
 | `index.html` | Structure de la page (les 15 blocs de l’original, dans le même ordre) |
-| `style.css` | Design : palette chocolat / crème, effets holo, verre dépoli, responsive |
+| `style.css` | Design : fond « univers » qui change de couleur à chaque section, effets holo, verre dépoli, responsive |
 | `main.js` | Interactions : 3D, animations, carrousels, recherche, panier… |
 | `data.js` | **Le contenu à modifier** : produits, prix, statuts, sorties, tournois, menu |
-| `assets/images/` | Images de remplacement (à remplacer par vos photos) |
+| `assets/images/` | Vos photos produits (fichiers `.webp` détourés) et images de remplacement à compléter |
 
 ## Modifier le contenu
 
@@ -36,8 +36,14 @@ Tout se passe dans `data.js` :
 
 ## Remplacer les images
 
-Chaque image affiche son propre nom de fichier (« Photo à remplacer · assets/images/… »).
-Déposez votre photo **avec exactement le même nom** dans le même dossier : rien d’autre à changer.
+Les photos de la boutique sont déjà en place pour 6 produits et 5 catégories
+(fichiers `.webp` sur fond transparent : coffrets Dresseur d’Élite 30 ans et Règne Delta,
+boosters OP-16 et OP-17, booster japonais 30th Celebration, carte Pikachu-ex).
+Elles portent `detoure: true` dans `data.js` : le produit s’affiche en entier sur un halo coloré.
+
+Les autres images affichent leur nom de fichier (« Photo à remplacer · assets/images/… »).
+Déposez votre photo **avec exactement le même nom** dans le même dossier, ou changez le chemin
+dans `data.js` (et ajoutez `detoure: true` si c’est une photo détourée sur fond transparent).
 
 | Dossier | Format conseillé |
 |---|---|
@@ -47,6 +53,15 @@ Déposez votre photo **avec exactement le même nom** dans le même dossier : ri
 | `bannieres/` | paysage, 1400 × 900 px |
 | `instagram/` | carré, 600 × 600 px |
 | `boutique/` | portrait 4:5, 800 × 1000 px |
+
+## Fond « univers »
+
+Le fond change de couleur selon la section visible, avec un fondu doux : violet nuit (accueil),
+or (Pokémon 30 ans), baie (catégories), indigo (précommande), lagon (sorties), bleu royal (Pokémon),
+rouge (One Piece), océan (autres TCG), rose (communauté), orange (tournois), émeraude (boutique).
+Les halos dérivent lentement (desktop), les panneaux clairs prennent une version pastel de la couleur.
+Les couleurs se règlent dans `style.css` (bloc 23 « Univers »), l’association section → univers dans `main.js`
+(tableau `MONDES`). Mouvement réduit : couleurs conservées, aucun mouvement.
 
 ## Effets (activables en haut de `main.js`)
 

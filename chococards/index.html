@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>ChocoCards — Boutique TCG à Nivelles · Pokémon, One Piece, cartes japonaises</title>
   <meta name="description" content="ChocoCards, votre boutique de cartes à collectionner à Nivelles et en ligne : Pokémon, One Piece, cartes japonaises, cartes à l’unité, goodies, accessoires, tournois et précommandes.">
-  <meta name="theme-color" content="#2B1A12">
+  <meta name="theme-color" content="#0B0626">
   <meta property="og:title" content="ChocoCards — Boutique TCG à Nivelles">
   <meta property="og:description" content="Pokémon, One Piece, japonais, cartes à l’unité, goodies et accessoires. Retrait gratuit en boutique.">
   <meta property="og:type" content="website">
@@ -48,6 +48,20 @@
 </head>
 
 <body>
+  <!-- Fond « univers » : calque fixe dont la couleur change selon la section visible.
+       Deux couches se relaient pour les fondus (voir main.js, initUnivers). -->
+  <div class="univers" aria-hidden="true" data-univers>
+    <div class="univers__monde is-on is-top" data-monde="nuit">
+      <span class="univers__halo univers__halo--a"><i></i></span>
+      <span class="univers__halo univers__halo--b"><i></i></span>
+      <span class="univers__halo univers__halo--c"><i></i></span>
+    </div>
+    <div class="univers__monde" data-monde="nuit">
+      <span class="univers__halo univers__halo--a"><i></i></span>
+      <span class="univers__halo univers__halo--b"><i></i></span>
+      <span class="univers__halo univers__halo--c"><i></i></span>
+    </div>
+  </div>
   <!-- Sprite d'icônes SVG (réutilisées partout via <use>) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <defs>

@@ -15,6 +15,7 @@
    08. Apparitions au scroll, compteurs, compte à rebours
    09. Carrousel 3D (coverflow) et carrousels produits
    10. Animations GSAP : booster, timeline, parallaxe
+   10 bis. Univers au scroll : le fond change de couleur selon la section
    11. Hero Three.js (cartes 3D holographiques + paillettes)
    12. Démarrage
    ========================================================================== */
@@ -1198,13 +1199,22 @@
     const heroInner = $('.hero__inner');
     if (hero && heroInner) {
       let ticking = false;
+      // Lectures faites dans l'événement scroll (mise en page encore propre) et hauteur
+      // mise en cache : la boucle rAF n'écrit que des styles, sans lecture forcée
+      let heroH = 0;
+      let y = 0;
+      if ('ResizeObserver' in window) new ResizeObserver(([entry]) => { heroH = entry.target.offsetHeight; }).observe(hero);
       const update = () => {
         ticking = false;
-        const p = Math.min(1, Math.max(0, window.scrollY / (hero.offsetHeight || 1)));
+        const p = Math.min(1, Math.max(0, y / (heroH || 1)));
         heroInner.style.transform = p ? `translate3d(0, ${(-12 * p).toFixed(2)}%, 0)` : '';
         heroInner.style.opacity = p ? String(1 - 0.85 * p) : '';
       };
-      window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+      window.addEventListener('scroll', () => {
+        y = window.scrollY;
+        if (!heroH) heroH = hero.offsetHeight;
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
     }
 
     // --- Le grand "30" glisse légèrement ---
@@ -1236,6 +1246,98 @@
         if (ok) form.reset();
       });
     });
+  }
+
+  /* ---------- 10 bis. Univers au scroll ----------
+     Le fond fixe (.univers) change de « monde » quand une section passe au
+     milieu de l'écran. Deux couches se relaient : la couche cachée reçoit les
+     couleurs du monde suivant, passe devant et apparaît en fondu d'opacité ;
+     l'ancienne, recouverte, est ensuite masquée. Si l'on défile vite, seul le
+     dernier monde demandé est joué après le fondu en cours. */
+
+  // Monde de chaque section (palettes : style.css, section 23)
+  const MONDES = [
+    ['[data-hero]', 'nuit'],
+    ['#pokemon-30-ans', 'or'],
+    ['#explorer', 'baie'],
+    ['#precommande', 'indigo'],
+    ['#sorties', 'lagon'],
+    ['#pokemon', 'soleil'],
+    ['#one-piece', 'corsaire'],
+    ['#autres-tcg', 'ocean'],
+    ['#accessoires', 'ocean'],
+    ['#communaute', 'rose'],
+    ['#tournois', 'ambre'],
+    ['#boutique', 'emeraude'],
+    ['.trust', 'abysse'],
+    ['#guides', 'abysse']
+  ];
+
+  function initUnivers() {
+    const box = $('[data-univers]');
+    if (!box || !('IntersectionObserver' in window)) return;
+    let [devant, derriere] = $$('.univers__monde', box);
+    const meta = $('meta[name="theme-color"]');
+    const FONDU = motionOK ? 1100 : 0;
+    let actuel = devant.dataset.monde;
+    let cible = actuel;
+    let enCours = false;
+    let premier = true;
+
+    // Barre du navigateur mobile : couleur de base du monde (une lecture de style par changement)
+    const majTheme = (couche) => {
+      const c = getComputedStyle(couche).getPropertyValue('--u-base').trim();
+      if (meta && c) meta.setAttribute('content', c);
+    };
+
+    const jouer = () => {
+      if (enCours || cible === actuel) return;
+      enCours = true;
+      const monde = cible;
+      // La couche cachée (opacité 0) prend les nouvelles couleurs puis passe devant en fondu
+      derriere.dataset.monde = monde;
+      derriere.classList.add('is-top', 'is-on');
+      devant.classList.remove('is-top');
+      majTheme(derriere);
+      setTimeout(() => {
+        devant.classList.remove('is-on'); // l'ancienne couche, recouverte, disparaît
+        [devant, derriere] = [derriere, devant];
+        actuel = monde;
+        enCours = false;
+        jouer(); // un autre monde a été demandé pendant le fondu
+      }, FONDU + 60);
+    };
+
+    // Une fine bande au milieu de l'écran : la section qui la traverse donne le monde
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) cible = e.target.dataset.univers; });
+      if (premier) {
+        // Chargement (ancre, retour arrière) : monde appliqué directement, sans fondu
+        premier = false;
+        devant.dataset.monde = actuel = cible;
+        majTheme(devant);
+        return;
+      }
+      jouer();
+    }, { rootMargin: '-48% 0px -48% 0px' });
+    MONDES.forEach(([sel, monde]) => $$(sel).forEach((el) => { el.dataset.univers = monde; io.observe(el); }));
+
+    // Onglet caché : les halos s'arrêtent (animations CSS en pause)
+    document.addEventListener('visibilitychange', () => box.classList.toggle('is-pause', document.hidden));
+
+    // Halos : léger décalage vertical lié au scroll (ordinateur, mouvement autorisé).
+    // Un seul écouteur passif + rAF, écriture d'une variable CSS uniquement.
+    if (motionOK && finePointer) {
+      let h = window.innerHeight;
+      let ticking = false;
+      const maj = () => {
+        ticking = false;
+        box.style.setProperty('--u-p', Math.sin(window.scrollY / (h * 1.5)).toFixed(3));
+      };
+      window.addEventListener('resize', () => { h = window.innerHeight; }, { passive: true });
+      window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(maj); } }, { passive: true });
+      maj();
+    }
   }
 
   /* ---------- 11. Hero Three.js ---------- */
@@ -1665,6 +1767,7 @@
     initNewsletter();
 
     // 3. Effets
+    initUnivers();
     initSmoothScroll();
     initMarquee();
     initTilt();
