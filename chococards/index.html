@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="fr" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ChocoCards — Boutique TCG à Nivelles · Pokémon, One Piece, cartes japonaises</title>
+  <meta name="description" content="ChocoCards, votre boutique de cartes à collectionner à Nivelles et en ligne : Pokémon, One Piece, cartes japonaises, cartes à l’unité, goodies, accessoires, tournois et précommandes.">
+  <meta name="theme-color" content="#2B1A12">
+  <meta property="og:title" content="ChocoCards — Boutique TCG à Nivelles">
+  <meta property="og:description" content="Pokémon, One Piece, japonais, cartes à l’unité, goodies et accessoires. Retrait gratuit en boutique.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+
+  <!-- Polices : Bricolage Grotesque (titres) + Inter (texte) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+  <link rel="stylesheet" href="style.css">
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+
+  <!-- Bibliothèques (CDN). Three.js est chargé plus tard, à la demande, par main.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+  <script src="data.js" defer></script>
+  <script src="main.js" defer></script>
+
+  <!-- Données structurées : boutique locale -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "ChocoCards",
+    "url": "https://chococards.be/",
+    "telephone": "+32 465 16 83 13",
+    "email": "contact@chococards.be",
+    "address": { "@type": "PostalAddress", "streetAddress": "Rue du Géant 15", "postalCode": "1400", "addressLocality": "Nivelles", "addressCountry": "BE" },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday","Saturday"], "opens": "10:00", "closes": "19:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "10:00", "closes": "18:00" }
+    ],
+    "sameAs": ["https://www.instagram.com/chococards.be/"]
+  }
+  </script>
+</head>
+
+<body>
+  <!-- Sprite d'icônes SVG (réutilisées partout via <use>) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="g-holo" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#A78BFA"/><stop offset=".35" stop-color="#22D3EE"/><stop offset=".68" stop-color="#F472B6"/><stop offset="1" stop-color="#FBBF24"/>
+      </linearGradient>
+    </defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 8Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 10V6a3 3 0 0 1 6 0v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-parking" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 17V7h3.5a3 3 0 0 1 0 6H9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4V8Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 6v12" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3h2.8l1.4 4.2-2 1.4a11 11 0 0 0 6.6 6.6l1.4-2 4.2 1.4v2.8A2.6 2.6 0 0 1 18.4 20 15.4 15.4 0 0 1 4 5.6 2.6 2.6 0 0 1 6.6 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 10v10h16V10" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3 10l2-6h14l2 6a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 20v-5h4v5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c2.5 2.8 3.8 5.8 3.8 9S14.5 18.2 12 21c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3Z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 2.9 6.9 7.1.6-5.4 4.7 1.6 7L12 17.4 5.8 21.2l1.6-7L2 9.5l7.1-.6L12 2Z" fill="currentColor"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 2c.6 4.8 2.6 7.4 8 8.2v.6c-5.4.8-7.4 3.4-8 9.2h-.6c-.6-5.8-2.6-8.4-8-9.2v-.6c5.4-.8 7.4-3.4 8-8.2h.6Z" fill="currentColor"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <!-- Curseur personnalisé (desktop uniquement, activé par main.js) -->
+  <div class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
+
+  <!-- =====================================================================
+       1. BANDEAU D'INFOS DÉFILANT
+       ===================================================================== -->
+  <div class="announcement" role="region" aria-label="Informations">
+    <div class="marquee" data-marquee>
+      <ul class="marquee__track">
+        <li><svg aria-hidden="true"><use href="#i-sparkle"/></svg>Expédition rapide en Belgique</li>
+        <li><svg aria-hidden="true"><use href="#i-sparkle"/></svg>Retrait gratuit en boutique</li>
+        <li><svg aria-hidden="true"><use href="#i-sparkle"/></svg>Paiement 100 % sécurisé</li>
+        <li><svg aria-hidden="true"><use href="#i-sparkle"/></svg>Service client réactif</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       2. HEADER : logo, recherche, compte, panier, pays, langue, méga-menu
+       ===================================================================== -->
+  <header class="header" data-header>
+   <div class="header__inner">
+    <div class="header__bar">
+      <button class="icon-btn header__burger" type="button" aria-label="Ouvrir le menu" aria-controls="mobile-nav" aria-expanded="false" data-open-mobile-nav>
+        <svg aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
+
+      <a class="logo" href="#contenu" aria-label="ChocoCards, retour à l’accueil">
+        <svg class="logo__mark" viewBox="0 0 40 40" aria-hidden="true">
+          <g transform="rotate(-10 20 20)">
+            <rect x="9" y="3.5" width="22" height="33" rx="5" fill="url(#g-holo)"/>
+            <rect x="11.5" y="6" width="17" height="28" rx="3" fill="#4A2C1D"/>
+            <g fill="#7A4A33">
+              <rect x="13.3" y="8" width="6" height="7.2" rx="1.6"/><rect x="20.7" y="8" width="6" height="7.2" rx="1.6"/>
+              <rect x="13.3" y="16.4" width="6" height="7.2" rx="1.6"/><rect x="20.7" y="16.4" width="6" height="7.2" rx="1.6"/>
+              <rect x="13.3" y="24.8" width="6" height="7.2" rx="1.6"/><rect x="20.7" y="24.8" width="6" height="7.2" rx="1.6"/>
+            </g>
+          </g>
+        </svg>
+        <span class="logo__text">Choco<span>Cards</span></span>
+      </a>
+
+      <button class="header__search" type="button" data-open-search aria-label="Rechercher un produit">
+        <svg aria-hidden="true"><use href="#i-search"/></svg>
+        <span>Rechercher une carte, un booster, un display…</span>
+        <kbd>/</kbd>
+      </button>
+
+      <div class="header__actions">
+        <!-- Pays -->
+        <div class="dropdown" data-dropdown>
+          <button class="dropdown__toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Choisir le pays">
+            <svg aria-hidden="true"><use href="#i-globe"/></svg><span data-dropdown-value>BE</span><svg class="chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+          </button>
+          <ul class="dropdown__menu" role="listbox" aria-label="Pays">
+            <li role="option" aria-selected="true" data-value="BE" tabindex="-1">Belgique <small>EUR €</small></li>
+            <li role="option" aria-selected="false" data-value="FR" tabindex="-1">France <small>EUR €</small></li>
+          </ul>
+        </div>
+        <!-- Langue -->
+        <div class="dropdown" data-dropdown>
+          <button class="dropdown__toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Choisir la langue">
+            <span data-dropdown-value>FR</span><svg class="chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+          </button>
+          <ul class="dropdown__menu" role="listbox" aria-label="Langue">
+            <li role="option" aria-selected="true" data-value="FR" tabindex="-1">Français</li>
+            <li role="option" aria-selected="false" data-value="EN" tabindex="-1">English</li>
+          </ul>
+        </div>
+
+        <button class="icon-btn header__search-mobile" type="button" data-open-search aria-label="Rechercher">
+          <svg aria-hidden="true"><use href="#i-search"/></svg>
+        </button>
+        <a class="icon-btn" href="#compte" aria-label="Mon compte"><svg aria-hidden="true"><use href="#i-user"/></svg></a>
+        <button class="icon-btn cart-btn" type="button" data-open-cart aria-label="Ouvrir le panier, 0 article" aria-controls="cart-drawer">
+          <svg aria-hidden="true"><use href="#i-bag"/></svg>
+          <span class="cart-btn__count" data-cart-count hidden>0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Méga-menu (généré depuis data.js) -->
+    <nav class="mega" aria-label="Menu principal">
+      <ul class="mega__list" data-mega-list></ul>
+    </nav>
+   </div>
+  </header>
+
+  <!-- Menu mobile -->
+  <div class="drawer drawer--left" id="mobile-nav" data-drawer="mobile-nav" hidden>
+    <div class="drawer__overlay" data-close-drawer></div>
+    <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="drawer__head">
+        <span class="drawer__title">Menu</span>
+        <button class="icon-btn" type="button" data-close-drawer aria-label="Fermer le menu"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <nav class="mobile-nav" aria-label="Menu mobile" data-mobile-nav></nav>
+      <div class="mobile-nav__foot">
+        <a class="btn btn--ghost btn--sm" href="#compte"><svg aria-hidden="true"><use href="#i-user"/></svg>Mon compte</a>
+        <div class="mobile-nav__locale">
+          <label>Pays <select data-sync-dropdown="0"><option value="BE">Belgique (EUR €)</option><option value="FR">France (EUR €)</option></select></label>
+          <label>Langue <select data-sync-dropdown="1"><option value="FR">Français</option><option value="EN">English</option></select></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recherche (aperçu instantané depuis data.js) -->
+  <div class="search-overlay" data-search hidden>
+    <div class="search-overlay__backdrop" data-close-search></div>
+    <div class="search-overlay__panel" role="dialog" aria-modal="true" aria-label="Recherche">
+      <form class="search-overlay__form" role="search" data-search-form>
+        <svg aria-hidden="true"><use href="#i-search"/></svg>
+        <label class="sr-only" for="search-input">Rechercher</label>
+        <input id="search-input" type="search" placeholder="Pokémon, One Piece, display, ETB…" autocomplete="off" data-search-input>
+        <button class="icon-btn" type="button" data-close-search aria-label="Fermer la recherche"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </form>
+      <div class="search-overlay__results" data-search-results aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- Panier (tiroir) -->
+  <div class="drawer drawer--right" id="cart-drawer" data-drawer="cart" hidden>
+    <div class="drawer__overlay" data-close-drawer></div>
+    <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Panier">
+      <div class="drawer__head">
+        <span class="drawer__title">Votre panier</span>
+        <button class="icon-btn" type="button" data-close-drawer aria-label="Fermer le panier"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="cart" data-cart></div>
+    </div>
+  </div>
+
+  <main id="contenu">
+
+    <!-- ===================================================================
+         3. HERO 3D
+         =================================================================== -->
+    <section class="hero" data-hero aria-labelledby="hero-title">
+      <canvas class="hero__canvas" data-hero-canvas aria-hidden="true"></canvas>
+      <!-- Version légère (avant chargement 3D, mouvement réduit ou sans WebGL) -->
+      <div class="hero__poster" aria-hidden="true">
+        <div class="poster-card poster-card--1"></div>
+        <div class="poster-card poster-card--2"></div>
+        <div class="poster-card poster-card--3"></div>
+      </div>
+      <div class="hero__glow" aria-hidden="true"></div>
+
+      <div class="hero__inner container">
+        <p class="hero__eyebrow chip chip--live" data-hero-item><span class="dot"></span>Notre magasin est ouvert !</p>
+        <h1 class="hero__title" id="hero-title" data-hero-item>
+          <span class="line">Bienvenue chez</span>
+          <span class="line holo-text">ChocoCards</span>
+        </h1>
+        <p class="hero__lead" data-hero-item>Votre boutique de cartes à collectionner à Nivelles : Pokémon, One Piece, japonais, cartes à l’unité, goodies et accessoires. Passez nous voir, on adore parler cartes !</p>
+
+        <div class="hero__infos" data-hero-item>
+          <div class="info-pill glass">
+            <svg aria-hidden="true"><use href="#i-clock"/></svg>
+            <div><strong>Mardi – samedi</strong> 10h – 19h<br><strong>Dimanche</strong> 10h – 18h</div>
+          </div>
+          <a class="info-pill glass" href="https://www.google.com/maps/dir/?api=1&amp;destination=Rue%20du%20G%C3%A9ant%2015%2C%201400%20Nivelles%2C%20Belgique" target="_blank" rel="noopener">
+            <svg aria-hidden="true"><use href="#i-pin"/></svg>
+            <div><strong>Rue du Géant 15</strong><br>1400 Nivelles</div>
+          </a>
+        </div>
+
+        <div class="hero__ctas" data-hero-item>
+          <a class="btn btn--holo" href="https://www.instagram.com/chococards.be/" target="_blank" rel="noopener" data-magnetic>
+            <svg aria-hidden="true"><use href="#i-instagram"/></svg><span>Suivez-nous sur Instagram</span>
+          </a>
+          <a class="btn btn--ghost" href="#explorer" data-magnetic><span>Explorer la boutique</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+
+      <a class="hero__scroll" href="#pokemon-30-ans" aria-label="Défiler vers la suite"><span></span></a>
+    </section>
+
+    <!-- ===================================================================
+         4. POKÉMON FÊTE SES 30 ANS — carrousel 3D
+         =================================================================== -->
+    <section class="section panel panel--light anniversary" id="pokemon-30-ans" aria-labelledby="anniv-title">
+      <div class="anniversary__bg" aria-hidden="true">30</div>
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <p class="eyebrow"><svg aria-hidden="true"><use href="#i-star"/></svg>Événement collector</p>
+          <h2 class="section-title" id="anniv-title">Pokémon fête ses <span class="holo-text holo-text--deep">30 ans</span></h2>
+          <p class="section-lead">ETB, UPC, Mini Tin et Booster Bundle de l’anniversaire sont arrivés chez ChocoCards. Cette collection est <strong>vendue exclusivement en boutique physique</strong> : venez la découvrir à Nivelles !</p>
+        </div>
+
+        <div class="coverflow" data-coverflow aria-roledescription="carrousel" aria-label="Produits Pokémon 30 ans">
+          <div class="coverflow__stage" data-coverflow-stage></div>
+          <div class="coverflow__controls">
+            <button class="round-btn" type="button" data-coverflow-prev aria-label="Produit précédent"><svg aria-hidden="true"><use href="#i-arrow-left"/></svg></button>
+            <div class="coverflow__dots" data-coverflow-dots></div>
+            <button class="round-btn" type="button" data-coverflow-next aria-label="Produit suivant"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+
+        <p class="exclusive-note" data-reveal><svg aria-hidden="true"><use href="#i-store"/></svg>Vendue exclusivement en boutique physique — Rue du Géant 15, Nivelles</p>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         5. EXPLOREZ LA BOUTIQUE — 9 catégories
+         =================================================================== -->
+    <section class="section explore" id="explorer" aria-labelledby="explore-title">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Nos univers</p>
+          <h2 class="section-title" id="explore-title">Explorez la <span class="holo-text">boutique</span></h2>
+        </div>
+        <div class="category-grid" data-categories data-reveal-stagger></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         6. PRÉCOMMANDE ME06 — booster qui s'ouvre + compte à rebours
+         =================================================================== -->
+    <section class="preorder" id="precommande" aria-labelledby="preorder-title" data-booster-section>
+      <div class="preorder__pin" data-booster-pin>
+        <div class="preorder__glow" aria-hidden="true"></div>
+        <div class="container preorder__grid">
+          <div class="preorder__content">
+            <p class="eyebrow eyebrow--holo">Précommande ouverte</p>
+            <h2 class="section-title" id="preorder-title">ME06 — <span class="holo-text">Règne Delta</span></h2>
+            <p class="preorder__date"><svg aria-hidden="true"><use href="#i-calendar"/></svg>Sortie le <strong>6 novembre 2026</strong></p>
+            <p class="preorder__text" data-preorder-text></p>
+
+            <div class="countdown" data-countdown="2026-11-06T00:00:00+01:00" role="timer" aria-label="Temps restant avant la sortie">
+              <div class="countdown__unit"><span class="countdown__value" data-unit="days">00</span><span class="countdown__label">jours</span></div>
+              <div class="countdown__unit"><span class="countdown__value" data-unit="hours">00</span><span class="countdown__label">heures</span></div>
+              <div class="countdown__unit"><span class="countdown__value" data-unit="minutes">00</span><span class="countdown__label">minutes</span></div>
+              <div class="countdown__unit"><span class="countdown__value" data-unit="seconds">00</span><span class="countdown__label">secondes</span></div>
+            </div>
+
+            <div class="preorder__product glass" data-preorder-product></div>
+          </div>
+
+          <!-- Le booster (illustration ChocoCards générique) -->
+          <div class="booster-stage" aria-hidden="true">
+            <div class="booster-burst" data-booster-burst></div>
+            <div class="booster-cards" data-booster-cards>
+              <div class="mini-card mini-card--1"><span class="mini-card__star">★</span></div>
+              <div class="mini-card mini-card--2"><span class="mini-card__star">★</span></div>
+              <div class="mini-card mini-card--3 mini-card--rare"><span class="mini-card__star">★★★</span></div>
+              <div class="mini-card mini-card--4"><span class="mini-card__star">★</span></div>
+              <div class="mini-card mini-card--5"><span class="mini-card__star">★</span></div>
+            </div>
+            <div class="booster" data-booster>
+              <div class="booster__top" data-booster-top><span></span></div>
+              <div class="booster__body" data-booster-body>
+                <span class="booster__brand">ChocoCards</span>
+                <span class="booster__emblem"></span>
+                <span class="booster__label">Booster</span>
+                <span class="booster__sub">Édition collector</span>
+              </div>
+            </div>
+            <p class="booster-hint" data-booster-hint>Faites défiler pour ouvrir le booster</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         7. PROCHAINES SORTIES TCG — timeline animée
+         =================================================================== -->
+    <section class="section panel panel--light releases" id="sorties" aria-labelledby="releases-title">
+      <div class="container">
+        <div class="section-head section-head--split" data-reveal>
+          <div>
+            <p class="eyebrow">Calendrier TCG</p>
+            <h2 class="section-title" id="releases-title">Prochaines sorties <span class="holo-text holo-text--deep">TCG</span></h2>
+          </div>
+          <a class="link-arrow" href="#sorties">Voir le calendrier complet<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+        <div class="timeline-wrap">
+          <div class="timeline__line" aria-hidden="true"><span data-timeline-progress></span></div>
+          <ol class="timeline" data-timeline></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         8. CARROUSELS PRODUITS : Pokémon + One Piece
+         =================================================================== -->
+    <section class="section products" id="pokemon" aria-labelledby="pokemon-title">
+      <div class="container">
+        <div class="section-head section-head--split" data-reveal>
+          <div>
+            <p class="eyebrow">Pokémon</p>
+            <h2 class="section-title" id="pokemon-title">L’univers <span class="holo-text">Pokémon</span></h2>
+          </div>
+          <div class="slider-nav">
+            <a class="link-arrow" href="#pokemon">Tout voir<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <button class="round-btn" type="button" data-slider-prev="pokemon" aria-label="Produits précédents"><svg aria-hidden="true"><use href="#i-arrow-left"/></svg></button>
+            <button class="round-btn" type="button" data-slider-next="pokemon" aria-label="Produits suivants"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="slider" data-slider="pokemon" data-products="pokemon" tabindex="0" aria-label="Produits Pokémon"></div>
+      <div class="container"><div class="slider-progress"><span data-slider-progress="pokemon"></span></div></div>
+    </section>
+
+    <section class="section products products--onepiece" id="one-piece" aria-labelledby="onepiece-title">
+      <div class="container">
+        <div class="section-head section-head--split" data-reveal>
+          <div>
+            <p class="eyebrow">One Piece</p>
+            <h2 class="section-title" id="onepiece-title">One Piece <span class="holo-text">Card Game</span></h2>
+          </div>
+          <div class="slider-nav">
+            <a class="link-arrow" href="#one-piece">Tout voir<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <button class="round-btn" type="button" data-slider-prev="one-piece" aria-label="Produits précédents"><svg aria-hidden="true"><use href="#i-arrow-left"/></svg></button>
+            <button class="round-btn" type="button" data-slider-next="one-piece" aria-label="Produits suivants"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="slider" data-slider="one-piece" data-products="one-piece" tabindex="0" aria-label="Produits One Piece"></div>
+      <div class="container"><div class="slider-progress"><span data-slider-progress="one-piece"></span></div></div>
+    </section>
+
+    <!-- ===================================================================
+         9. DÉCOUVREZ NOS AUTRES TCG
+         =================================================================== -->
+    <section class="section panel panel--light other-tcg" id="autres-tcg" aria-labelledby="other-title">
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <p class="eyebrow">Plus de jeux, plus de fun</p>
+          <h2 class="section-title" id="other-title">Découvrez nos <span class="holo-text holo-text--deep">autres TCG</span></h2>
+        </div>
+        <div class="tcg-grid" data-other-tcg data-reveal-stagger></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         10. BANNIÈRES : Accessoires + Retrait gratuit
+         =================================================================== -->
+    <section class="section banners" id="accessoires" aria-label="Accessoires et retrait en boutique">
+      <div class="container banners__grid" data-reveal-stagger>
+        <a class="banner holo-card" href="#accessoires" data-tilt data-tilt-max="5">
+          <img class="banner__img" src="assets/images/bannieres/accessoires.jpg" alt="Sleeves, classeurs et protections acryliques" width="1400" height="900" loading="lazy" decoding="async" data-parallax>
+          <div class="banner__content">
+            <p class="eyebrow eyebrow--light">Accessoires</p>
+            <h3 class="banner__title">Protégez vos trésors</h3>
+            <p>Sleeves, classeurs, toploaders et protections acryliques UPC, ETB et Display.</p>
+            <span class="btn btn--light btn--sm">Découvrir les accessoires<svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
+          </div>
+        </a>
+        <a class="banner banner--pickup holo-card" href="#boutique" data-tilt data-tilt-max="5">
+          <img class="banner__img" src="assets/images/bannieres/retrait-boutique.jpg" alt="Comptoir de retrait de la boutique ChocoCards" width="1400" height="900" loading="lazy" decoding="async" data-parallax>
+          <div class="banner__content">
+            <p class="eyebrow eyebrow--light">Click &amp; Collect</p>
+            <h3 class="banner__title">Retrait gratuit en boutique</h3>
+            <p>Commandez en ligne, récupérez votre colis à Nivelles. Zéro frais de port.</p>
+            <span class="btn btn--light btn--sm">Comment ça marche ?<svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         11. COMMUNAUTÉ INSTAGRAM
+         =================================================================== -->
+    <section class="section panel panel--light community" id="communaute" aria-labelledby="community-title">
+      <div class="container community__grid">
+        <div class="community__text" data-reveal>
+          <p class="eyebrow"><svg aria-hidden="true"><use href="#i-instagram"/></svg>@chococards.be</p>
+          <h2 class="section-title" id="community-title">Rejoignez la communauté <span class="holo-text holo-text--deep">ChocoCards</span></h2>
+          <p class="section-lead">Arrivages, ouvertures de boosters, résultats de tournois et pépites du moment : suivez la vie de la boutique au quotidien et partagez vos plus belles pulls avec nous !</p>
+          <a class="btn btn--dark" href="https://www.instagram.com/chococards.be/" target="_blank" rel="noopener" data-magnetic>
+            <svg aria-hidden="true"><use href="#i-instagram"/></svg><span>Suivre @chococards.be</span>
+          </a>
+        </div>
+        <div class="insta-grid" data-instagram data-reveal-stagger></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         12. TOURNOIS & ÉVÉNEMENTS
+         =================================================================== -->
+    <section class="section events" id="tournois" aria-labelledby="events-title">
+      <div class="container">
+        <div class="section-head section-head--split" data-reveal>
+          <div>
+            <p class="eyebrow">En boutique</p>
+            <h2 class="section-title" id="events-title">Tournois &amp; <span class="holo-text">événements</span></h2>
+          </div>
+          <a class="link-arrow" href="#tournois">Tous les tournois<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+        <div class="event-grid" data-events data-reveal-stagger></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         13. VOTRE BOUTIQUE TCG À NIVELLES
+         =================================================================== -->
+    <section class="section panel panel--light store" id="boutique" aria-labelledby="store-title">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow"><svg aria-hidden="true"><use href="#i-pin"/></svg>Nivelles, Brabant wallon</p>
+          <h2 class="section-title" id="store-title">Votre boutique TCG <span class="holo-text holo-text--deep">à Nivelles</span></h2>
+        </div>
+
+        <div class="store__grid">
+          <div class="store__info" data-reveal>
+            <ul class="store-list">
+              <li><span class="store-list__icon"><svg aria-hidden="true"><use href="#i-pin"/></svg></span><div><h3>Adresse</h3><p>Rue du Géant 15<br>1400 Nivelles, Belgique</p></div></li>
+              <li><span class="store-list__icon"><svg aria-hidden="true"><use href="#i-clock"/></svg></span><div><h3>Horaires</h3><ul class="hours" data-hours></ul></div></li>
+              <li><span class="store-list__icon"><svg aria-hidden="true"><use href="#i-parking"/></svg></span><div><h3>Parking</h3><p data-store-parking></p></div></li>
+              <li><span class="store-list__icon"><svg aria-hidden="true"><use href="#i-store"/></svg></span><div><h3>Retrait en boutique</h3><p data-store-pickup></p></div></li>
+              <li class="store-list__next"><span class="store-list__icon"><svg aria-hidden="true"><use href="#i-ticket"/></svg></span><div><h3>Prochain tournoi</h3><p data-next-event></p></div></li>
+            </ul>
+            <div class="store__ctas">
+              <a class="btn btn--dark" data-magnetic href="https://www.google.com/maps/dir/?api=1&amp;destination=Rue%20du%20G%C3%A9ant%2015%2C%201400%20Nivelles%2C%20Belgique" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg><span>Itinéraire</span></a>
+              <a class="btn btn--outline" data-magnetic href="#tournois"><svg aria-hidden="true"><use href="#i-ticket"/></svg><span>Voir les tournois</span></a>
+              <a class="btn btn--outline" data-magnetic href="mailto:contact@chococards.be"><svg aria-hidden="true"><use href="#i-mail"/></svg><span>Contact</span></a>
+            </div>
+          </div>
+
+          <div class="store__visual" data-reveal>
+            <!-- Carte stylisée (illustration, pas une vraie carte) -->
+            <div class="map holo-card" data-tilt data-tilt-max="4">
+              <svg class="map__svg" viewBox="0 0 600 460" role="img" aria-label="Plan stylisé : la boutique ChocoCards se trouve Rue du Géant 15, à Nivelles">
+                <defs>
+                  <pattern id="map-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0v24" fill="none" stroke="rgba(74,44,29,.08)" stroke-width="1"/></pattern>
+                </defs>
+                <rect width="600" height="460" fill="#F7E8D6"/>
+                <rect width="600" height="460" fill="url(#map-grid)"/>
+                <!-- Parc -->
+                <path d="M420 40c60-10 140 10 160 60s-30 90-90 80-110-20-120-60 0-70 50-80Z" fill="#CFE3C0"/>
+                <path d="M40 330c40-20 110-10 130 30s-10 70-60 70-90-10-100-40 0-50 30-60Z" fill="#CFE3C0"/>
+                <!-- Îlots -->
+                <g fill="#EAD3BA">
+                  <rect x="60" y="60" width="140" height="90" rx="14"/><rect x="230" y="40" width="120" height="110" rx="14"/>
+                  <rect x="60" y="190" width="110" height="100" rx="14"/><rect x="380" y="230" width="170" height="90" rx="14"/>
+                  <rect x="230" y="320" width="130" height="110" rx="14"/><rect x="400" y="350" width="150" height="80" rx="14"/>
+                </g>
+                <!-- Rues -->
+                <g fill="none" stroke="#FFF6EC" stroke-linecap="round">
+                  <path d="M0 175C150 170 260 190 360 200s160 10 240 0" stroke-width="22"/>
+                  <path d="M210 0c5 120 15 230 0 460" stroke-width="18"/>
+                  <path d="M370 0c-10 90 0 170 10 200s0 160-20 260" stroke-width="14"/>
+                  <path d="M0 305c120 0 250-5 380 10s170 0 220-5" stroke-width="12"/>
+                </g>
+                <g fill="#8A6650" font-family="Inter, sans-serif" font-size="13" font-weight="600" letter-spacing=".04em">
+                  <text x="26" y="168">RUE DU GÉANT</text>
+                  <text x="388" y="92" transform="rotate(84 388 92)">VERS LA GRAND-PLACE</text>
+                  <text x="440" y="300">NIVELLES</text>
+                </g>
+                <!-- Itinéraire en pointillés animé -->
+                <path class="map__route" d="M40 430C120 400 150 330 210 300s20-110 70-125" fill="none" stroke="#8B5CF6" stroke-width="4" stroke-dasharray="2 10" stroke-linecap="round"/>
+              </svg>
+              <div class="map__pin" style="--x:47%;--y:38%">
+                <span class="map__pulse"></span>
+                <span class="map__marker"><svg aria-hidden="true"><use href="#i-pin"/></svg></span>
+                <span class="map__label glass">ChocoCards<small>Rue du Géant 15</small></span>
+              </div>
+            </div>
+            <figure class="store__photo holo-card" data-tilt>
+              <img src="assets/images/boutique/boutique-nivelles.jpg" alt="La boutique ChocoCards à Nivelles" width="800" height="1000" loading="lazy" decoding="async">
+            </figure>
+          </div>
+        </div>
+
+        <!-- Compteurs animés (calculés depuis data.js) -->
+        <ul class="stats" data-reveal-stagger>
+          <li><strong class="stats__num" data-count-to="6">0</strong><span>jours d’ouverture par semaine</span></li>
+          <li><strong class="stats__num" data-count-to="0" data-count-source="tcg">0</strong><span>jeux de cartes en rayon</span></li>
+          <li><strong class="stats__num" data-count-to="0" data-count-source="events">0</strong><span>tournois à venir</span></li>
+          <li><strong class="stats__num" data-count-to="100" data-count-suffix=" %">0</strong><span>produits authentiques</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         14. RÉASSURANCE
+         =================================================================== -->
+    <section class="section trust" aria-label="Nos engagements">
+      <div class="container">
+        <ul class="trust__grid" data-reveal-stagger>
+          <li class="trust__item">
+            <span class="trust__icon trust__icon--truck"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="t-body" d="M4 14h24v18H4zM28 20h8l6 6v6H28z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle class="t-wheel" cx="12" cy="34" r="4" fill="var(--bg)" stroke="currentColor" stroke-width="2.5"/><circle class="t-wheel" cx="35" cy="34" r="4" fill="var(--bg)" stroke="currentColor" stroke-width="2.5"/><path class="t-speed" d="M0 20h-6M0 25h-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+            <h3>Expédition rapide</h3><p>Vos commandes partent vite et bien protégées partout en Belgique.</p>
+          </li>
+          <li class="trust__item">
+            <span class="trust__icon trust__icon--shield"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4 8 10v12c0 10 7 18 16 22 9-4 16-12 16-22V10L24 4Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path class="t-check" d="m16 24 6 6 11-12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h3>Produits authentiques</h3><p>Uniquement des produits officiels, issus de distributeurs agréés.</p>
+          </li>
+          <li class="trust__item">
+            <span class="trust__icon trust__icon--lock"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="t-shackle" d="M15 21v-6a9 9 0 0 1 18 0v6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><rect x="10" y="21" width="28" height="21" rx="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="31" r="2.6" fill="currentColor"/></svg></span>
+            <h3>Paiement sécurisé</h3><p>Bancontact, cartes, Apple Pay, Google Pay, Klarna… 100 % sécurisé.</p>
+          </li>
+          <li class="trust__item">
+            <span class="trust__icon trust__icon--store"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="t-awning" d="M6 18 9 8h30l3 10a5 5 0 0 1-9 2 5 5 0 0 1-9 0 5 5 0 0 1-9 0 5 5 0 0 1-9-2Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M9 22v18h30V22M20 40v-9h8v9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></span>
+            <h3>Retrait en boutique</h3><p>Gratuit, à Nivelles, dès que votre commande est prête.</p>
+          </li>
+          <li class="trust__item">
+            <span class="trust__icon trust__icon--chat"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10h32v22H22l-8 7v-7H8z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><g class="t-dots" fill="currentColor"><circle cx="17" cy="21" r="2.2"/><circle cx="24" cy="21" r="2.2"/><circle cx="31" cy="21" r="2.2"/></g></svg></span>
+            <h3>Service client</h3><p>Une question ? On vous répond vite, par mail, téléphone ou en boutique.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- =====================================================================
+       15. FOOTER
+       ===================================================================== -->
+  <footer class="footer" id="guides">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <a class="logo logo--lg" href="#contenu" aria-label="ChocoCards, retour en haut">
+            <svg class="logo__mark" viewBox="0 0 40 40" aria-hidden="true">
+              <g transform="rotate(-10 20 20)"><rect x="9" y="3.5" width="22" height="33" rx="5" fill="url(#g-holo)"/><rect x="11.5" y="6" width="17" height="28" rx="3" fill="#4A2C1D"/><g fill="#7A4A33"><rect x="13.3" y="8" width="6" height="7.2" rx="1.6"/><rect x="20.7" y="8" width="6" height="7.2" rx="1.6"/><rect x="13.3" y="16.4" width="6" height="7.2" rx="1.6"/><rect x="20.7" y="16.4" width="6" height="7.2" rx="1.6"/><rect x="13.3" y="24.8" width="6" height="7.2" rx="1.6"/><rect x="20.7" y="24.8" width="6" height="7.2" rx="1.6"/></g></g>
+            </svg>
+            <span class="logo__text">Choco<span>Cards</span></span>
+          </a>
+          <p>Boutique TCG physique et en ligne à Nivelles. Pokémon, One Piece, japonais, cartes à l’unité, goodies et accessoires.</p>
+          <ul class="footer__contact">
+            <li><svg aria-hidden="true"><use href="#i-pin"/></svg>Rue du Géant 15, 1400 Nivelles</li>
+            <li><svg aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+32465168313">+32 465 16 83 13</a></li>
+            <li><svg aria-hidden="true"><use href="#i-mail"/></svg><a href="mailto:contact@chococards.be">contact@chococards.be</a></li>
+            <li><svg aria-hidden="true"><use href="#i-instagram"/></svg><a href="https://www.instagram.com/chococards.be/" target="_blank" rel="noopener">@chococards.be</a></li>
+          </ul>
+        </div>
+
+        <nav class="footer__col" aria-label="Boutique">
+          <h2>Boutique</h2>
+          <ul>
+            <li><a href="#pokemon">Pokémon</a></li><li><a href="#one-piece">One Piece</a></li><li><a href="#japonais">Japonais</a></li>
+            <li><a href="#cartes-unite">Cartes à l’unité</a></li><li><a href="#goodies">Goodies</a></li><li><a href="#accessoires">Accessoires</a></li>
+            <li><a href="#autres-tcg">Autres TCG</a></li><li><a href="#precommande">Précommandes</a></li>
+          </ul>
+        </nav>
+        <nav class="footer__col" aria-label="Infos">
+          <h2>Infos</h2>
+          <ul>
+            <li><a href="#tournois">Tournois</a></li><li><a href="#sorties">Calendrier TCG</a></li><li><a href="#guides">Guides &amp; Actualités</a></li>
+            <li><a href="#boutique">Comment venir</a></li><li><a href="mailto:contact@chococards.be">Contact</a></li><li><a href="#compte">Mon compte</a></li>
+          </ul>
+        </nav>
+
+        <div class="footer__newsletter">
+          <h2>Newsletter</h2>
+          <p>Sorties, précommandes et tournois : recevez les infos avant tout le monde.</p>
+          <form class="newsletter" data-newsletter novalidate>
+            <label class="sr-only" for="newsletter-email">Votre adresse e-mail</label>
+            <input id="newsletter-email" type="email" name="email" placeholder="votre@email.be" autocomplete="email" required>
+            <button class="btn btn--holo btn--sm" type="submit" data-magnetic><span>S’inscrire</span></button>
+            <p class="newsletter__msg" role="status" aria-live="polite"></p>
+          </form>
+          <h2 class="footer__pay-title">Paiements acceptés</h2>
+          <ul class="payments" aria-label="Moyens de paiement acceptés">
+            <li class="pay pay--bancontact">Bancontact</li><li class="pay pay--visa">VISA</li><li class="pay pay--mastercard"><span></span>Mastercard</li>
+            <li class="pay pay--maestro">Maestro</li><li class="pay pay--apple">Apple Pay</li><li class="pay pay--google">Google Pay</li>
+            <li class="pay pay--klarna">Klarna</li><li class="pay pay--paypal">PayPal</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer__giant" aria-hidden="true">ChocoCards</div>
+
+      <div class="footer__bottom">
+        <p>© <span data-year>2026</span> ChocoCards — Nivelles, Belgique</p>
+        <ul class="footer__legal">
+          <li><a href="#mentions-legales">Mentions légales</a></li><li><a href="#cgv">Conditions générales de vente</a></li>
+          <li><a href="#confidentialite">Politique de confidentialité</a></li><li><a href="#livraison">Livraison &amp; retours</a></li><li><a href="#cookies">Cookies</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Notification (ajout au panier, newsletter…) -->
+  <div class="toast" role="status" aria-live="polite" data-toast></div>
+</body>
+</html>
