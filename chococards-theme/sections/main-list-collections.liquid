@@ -1,0 +1,38 @@
+{%- comment -%} Liste de toutes les collections (cartes inclinables). {%- endcomment -%}
+{{ 'templates.css' | asset_url | stylesheet_tag }}
+<div class="page-hero">
+  <div class="container page-hero__inner">
+    <h1 class="page-hero__title">{{ section.settings.heading }}</h1>
+  </div>
+</div>
+<div class="container page-content">
+  <div class="collections-grid" data-reveal-stagger>
+    {%- for collection in collections -%}
+      {%- assign ph_index = forloop.index | modulo: 6 | plus: 1 -%}
+      {%- assign ph = 'collection-' | append: ph_index -%}
+      <a class="cat-card holo-card" href="{{ collection.url }}"{% if settings.enable_holo %} data-tilt data-tilt-max="10"{% endif %} style="--h: {{ forloop.index | times: 37 | modulo: 360 }}">
+        {%- if collection.featured_image -%}
+          {{ collection.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '300, 500, 700', sizes: '(min-width: 1100px) 25vw, (min-width: 750px) 33vw, 50vw', alt: '' }}
+        {%- else -%}
+          {{ ph | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+        <span class="cat-card__shade" aria-hidden="true"></span>
+        <span class="cat-card__arrow" aria-hidden="true">{% render 'icon', name: 'arrow' %}</span>
+        <div class="cat-card__body">
+          <h2 class="cat-card__title">{{ collection.title }}</h2>
+          <p class="cat-card__text">{{ 'collections.product_count' | t: count: collection.products_count }}</p>
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Liste des collections",
+  "class": "section-list-collections",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Toutes nos collections" }
+  ]
+}
+{% endschema %}

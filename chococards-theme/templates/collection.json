@@ -1,0 +1,78 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "show_image": true,
+        "show_description": true,
+        "products_per_page": 24,
+        "columns_desktop": "4",
+        "enable_filtering": true,
+        "filter_layout": "sidebar",
+        "enable_sorting": true
+      }
+    },
+    "trust": {
+      "type": "trust-badges",
+      "blocks": {
+        "t1": {
+          "type": "badge",
+          "settings": {
+            "icon": "truck",
+            "title": "Expédition rapide",
+            "text": "Vos commandes partent vite et bien protégées partout en Belgique."
+          }
+        },
+        "t2": {
+          "type": "badge",
+          "settings": {
+            "icon": "shield",
+            "title": "Produits authentiques",
+            "text": "Uniquement des produits officiels, issus de distributeurs agréés."
+          }
+        },
+        "t3": {
+          "type": "badge",
+          "settings": {
+            "icon": "lock",
+            "title": "Paiement sécurisé",
+            "text": "Bancontact, cartes, Apple Pay, Google Pay, Klarna… 100 % sécurisé."
+          }
+        },
+        "t4": {
+          "type": "badge",
+          "settings": {
+            "icon": "store",
+            "title": "Retrait en boutique",
+            "text": "Gratuit, à Nivelles, dès que votre commande est prête."
+          }
+        },
+        "t5": {
+          "type": "badge",
+          "settings": {
+            "icon": "chat",
+            "title": "Service client",
+            "text": "Une question ? On vous répond vite, par mail, téléphone ou en boutique."
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5"
+      ],
+      "settings": {
+        "label": "Nos engagements",
+        "scheme": "dark",
+        "padding_top": 64,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "main",
+    "trust"
+  ]
+}

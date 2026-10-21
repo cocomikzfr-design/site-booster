@@ -1,0 +1,21 @@
+{%- comment -%}
+  Carte produit d'exemple (affichée dans l'éditeur tant qu'aucune collection n'est choisie).
+  - index : numéro pour varier l'illustration
+  - light : variante claire
+{%- endcomment -%}
+{%- assign n = index | modulo: 6 | plus: 1 -%}
+{%- assign ph = 'product-' | append: n -%}
+<article class="product-card holo-card{% if light %} product-card--light{% endif %}"{% if settings.enable_holo %} data-tilt data-tilt-max="9"{% endif %}>
+  <div class="product-card__media">
+    {{ ph | placeholder_svg_tag: 'placeholder-svg' }}
+    <span class="product-card__badges">{% render 'product-badges', status: 'disponible', langue: 'FR' %}</span>
+  </div>
+  <div class="product-card__body">
+    <p class="product-card__cat">{{ 'products.placeholder_type' | t }}</p>
+    <h3 class="product-card__title"><a href="{{ routes.all_products_collection_url }}">{{ 'products.placeholder_title' | t }}</a></h3>
+    <div class="product-card__foot">
+      <span class="price-wrap"><span class="price">{{ 4990 | money }}</span></span>
+      <button class="add-btn" type="button" disabled>{{ 'products.soon_short' | t }}</button>
+    </div>
+  </div>
+</article>

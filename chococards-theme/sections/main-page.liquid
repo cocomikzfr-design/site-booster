@@ -1,0 +1,26 @@
+{%- comment -%} Page de contenu (Contact, Comment venir, Tournois, Calendrier TCG…). {%- endcomment -%}
+{{ 'templates.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<div class="page-hero">
+  <div class="container page-hero__inner">
+    {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+    <h1 class="page-hero__title">{{ page.title }}{% if s.holo_suffix != blank %} <span class="holo-text">{{ s.holo_suffix }}</span>{% endif %}</h1>
+  </div>
+</div>
+{%- if page.content != blank -%}
+  <div class="page-content container{% if s.center %} page-content--center{% endif %}">
+    <div class="page-content__body rte" data-reveal>{{ page.content }}</div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Contenu de la page",
+  "class": "section-main-page",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre" },
+    { "type": "text", "id": "holo_suffix", "label": "Texte holographique après le titre" },
+    { "type": "checkbox", "id": "center", "label": "Centrer le texte", "default": false }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,51 @@
+{%- comment -%}
+  Disponibilité du retrait en boutique (Shopify "Retrait en magasin").
+  Chargée par product.js : /variants/{id}/?section_id=pickup-availability
+{%- endcomment -%}
+{%- assign variant = product.selected_or_first_available_variant -%}
+{%- assign pick_up_availabilities = variant.store_availabilities | where: 'pick_up_enabled', true -%}
+<div data-pickup-content>
+  {%- if pick_up_availabilities.size > 0 -%}
+    {%- assign closest = pick_up_availabilities.first -%}
+    <div class="pickup">
+      {%- if closest.available -%}
+        <div class="pickup__row pickup__row--ok">
+          {%- render 'icon', name: 'check' -%}
+          <div>
+            <p class="pickup__title">{{ 'products.pickup.available_at' | t: location: closest.location.name }}</p>
+            <p class="pickup__text">{{ closest.pick_up_time }}</p>
+          </div>
+        </div>
+      {%- else -%}
+        <div class="pickup__row pickup__row--no">
+          {%- render 'icon', name: 'close' -%}
+          <div><p class="pickup__title">{{ 'products.pickup.unavailable_at' | t: location: closest.location.name }}</p></div>
+        </div>
+      {%- endif -%}
+      <details>
+        <summary>{{ 'products.pickup.view_details' | t }}</summary>
+        <ul class="pickup-list" role="list">
+          {%- for availability in pick_up_availabilities -%}
+            <li>
+              <strong>{{ availability.location.name }}</strong>
+              {%- if availability.available -%}
+                <span>{{ 'products.pickup.available' | t }} · {{ availability.pick_up_time }}</span>
+              {%- else -%}
+                <span>{{ 'products.pickup.unavailable' | t }}</span>
+              {%- endif -%}
+              <address>{{ availability.location.address | format_address }}</address>
+              {%- if availability.location.address.phone != blank -%}<span>{{ availability.location.address.phone }}</span>{%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </details>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Retrait en boutique",
+  "settings": []
+}
+{% endschema %}

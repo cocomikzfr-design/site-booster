@@ -1,0 +1,35 @@
+{
+  "type": "header",
+  "name": "Groupe header",
+  "sections": {
+    "announcement": {
+      "type": "announcement-marquee",
+      "blocks": {
+        "msg1": { "type": "message", "settings": { "text": "Expédition rapide en Belgique", "link": "" } },
+        "msg2": { "type": "message", "settings": { "text": "Retrait gratuit en boutique", "link": "" } },
+        "msg3": { "type": "message", "settings": { "text": "Paiement 100 % sécurisé", "link": "" } },
+        "msg4": { "type": "message", "settings": { "text": "Service client réactif", "link": "" } }
+      },
+      "block_order": ["msg1", "msg2", "msg3", "msg4"],
+      "settings": { "style": "holo", "speed": 55 }
+    },
+    "header": {
+      "type": "header",
+      "blocks": {
+        "feature_pokemon": { "type": "mega_feature", "settings": { "menu_item": "Pokémon", "heading": "Pokémon fête ses 30 ans", "text": "Exclusivités en boutique", "link": "" } },
+        "feature_onepiece": { "type": "mega_feature", "settings": { "menu_item": "One Piece", "heading": "OP-18 en précommande", "text": "Sortie le 20 novembre", "link": "" } },
+        "feature_accessoires": { "type": "mega_feature", "settings": { "menu_item": "Accessoires", "heading": "Protégez vos trésors", "text": "Acryliques UPC, ETB, Display", "link": "" } }
+      },
+      "block_order": ["feature_pokemon", "feature_onepiece", "feature_accessoires"],
+      "settings": {
+        "menu": "main-menu",
+        "highlight_link": "Précommandes",
+        "search_placeholder": "Rechercher une carte, un booster, un display…",
+        "search_suggestions": "Pokémon 30 ans, Display, ETB, One Piece, Japonais, Précommande",
+        "show_country": true,
+        "show_language": true
+      }
+    }
+  },
+  "order": ["announcement", "header"]
+}

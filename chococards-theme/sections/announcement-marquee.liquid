@@ -1,0 +1,56 @@
+{%- comment -%}
+  Bandeau d'infos défilant (marquee infini). Chaque bloc = un message.
+{%- endcomment -%}
+<div class="announcement{% if section.settings.style == 'dark' %} announcement--dark{% endif %}" role="region" aria-label="{{ 'general.announcements' | t }}">
+  <marquee-band class="marquee" data-speed="{{ section.settings.speed }}">
+    <ul class="marquee__track" role="list">
+      {%- for block in section.blocks -%}
+        <li {{ block.shopify_attributes }}>
+          {%- render 'icon', name: 'sparkle' -%}
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+          {%- else -%}
+            {{ block.settings.text }}
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </marquee-band>
+</div>
+
+{% schema %}
+{
+  "name": "Bandeau défilant",
+  "class": "section-announcement",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "select", "id": "style", "label": "Style", "default": "holo",
+      "options": [ { "value": "holo", "label": "Holographique" }, { "value": "dark", "label": "Chocolat" } ]
+    },
+    { "type": "range", "id": "speed", "label": "Vitesse", "min": 20, "max": 120, "step": 5, "unit": "px", "default": 55, "info": "Pixels par seconde." }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "default": "Expédition rapide en Belgique" },
+        { "type": "url", "id": "link", "label": "Lien (optionnel)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bandeau défilant",
+      "blocks": [
+        { "type": "message", "settings": { "text": "Expédition rapide en Belgique" } },
+        { "type": "message", "settings": { "text": "Retrait gratuit en boutique" } },
+        { "type": "message", "settings": { "text": "Paiement 100 % sécurisé" } },
+        { "type": "message", "settings": { "text": "Service client réactif" } }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

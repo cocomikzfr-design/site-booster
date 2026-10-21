@@ -1,0 +1,66 @@
+{%- comment -%}
+  Carrousel de produits d'une collection (réutilisable : Pokémon, One Piece…).
+  Fiches avec prix, badges de statut et de langue, ajout rapide au panier.
+{%- endcomment -%}
+<script src="{{ 'carousels.js' | asset_url }}" type="module"></script>
+{%- liquid
+  assign s = section.settings
+  assign collection = s.collection
+  assign anchor = s.anchor | default: section.id | handleize
+  assign deep = false
+  if s.scheme == 'light'
+    assign deep = true
+  endif
+  assign title_id = 'Title-' | append: section.id
+  assign slider_label = s.heading | append: ' ' | append: s.heading_holo | escape
+-%}
+<section class="section products{% if deep %} panel panel--light{% endif %}" id="{{ anchor }}" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px" aria-labelledby="{{ title_id }}">
+  <product-slider>
+    <div class="container">
+      {%- capture extra -%}
+        <div class="slider-nav">
+          {%- if collection != blank and s.view_all_label != blank -%}
+            <a class="link-arrow" href="{{ collection.url }}">{{ s.view_all_label }}{% render 'icon', name: 'arrow' %}</a>
+          {%- endif -%}
+          <button class="round-btn" type="button" data-slider-prev aria-label="{{ 'sections.slider.previous' | t }}">{% render 'icon', name: 'arrow-left' %}</button>
+          <button class="round-btn" type="button" data-slider-next aria-label="{{ 'sections.slider.next' | t }}">{% render 'icon', name: 'arrow' %}</button>
+        </div>
+      {%- endcapture -%}
+      {% render 'section-heading', eyebrow: s.eyebrow, heading: s.heading, heading_holo: s.heading_holo, deep: deep, align: 'split', extra: extra, id: title_id %}
+    </div>
+    <div class="slider" data-slider-track tabindex="0" role="region" aria-label="{{ slider_label }}">
+      {%- if collection != blank and collection.products_count > 0 -%}
+        {%- for product in collection.products limit: s.limit -%}
+          {% render 'product-card', product: product, light: deep, sizes: '(min-width: 750px) 300px, 70vw' %}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..6) -%}{% render 'product-card-placeholder', index: i, light: deep %}{%- endfor -%}
+      {%- endif -%}
+    </div>
+    <div class="container"><div class="slider-progress"><span data-slider-progress></span></div></div>
+  </product-slider>
+</section>
+
+{% schema %}
+{
+  "name": "Carrousel de produits",
+  "class": "section-product-carousel",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "limit", "label": "Nombre de produits", "min": 4, "max": 24, "step": 1, "default": 12 },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Pokémon" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "L’univers" },
+    { "type": "text", "id": "heading_holo", "label": "Fin du titre (holographique)", "default": "Pokémon" },
+    { "type": "text", "id": "view_all_label", "label": "Lien « Tout voir »", "default": "Tout voir" },
+    {
+      "type": "select", "id": "scheme", "label": "Fond", "default": "dark",
+      "options": [ { "value": "dark", "label": "Chocolat" }, { "value": "light", "label": "Crème" } ]
+    },
+    { "type": "text", "id": "anchor", "label": "Ancre (lien #…)" },
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 }
+  ],
+  "presets": [ { "name": "Carrousel de produits" } ]
+}
+{% endschema %}

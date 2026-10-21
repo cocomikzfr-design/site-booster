@@ -1,0 +1,109 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="{{ settings.color_choco }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+    {%- endif -%}
+
+    {%- if settings.use_bricolage -%}
+      {{ 'bricolage-grotesque-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- endif -%}
+    {%- unless settings.type_body_font.system? -%}
+      {{ settings.type_body_font | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- endunless -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags.first }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'sections.css' | asset_url | stylesheet_tag }}
+    {% render 'css-variables' %}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      /* Réglages transmis aux modules JavaScript du thème */
+      window.ChocoTheme = {
+        routes: {
+          root_url: {{ routes.root_url | json }},
+          cart_url: {{ routes.cart_url | json }},
+          cart_add_url: {{ routes.cart_add_url | append: '.js' | json }},
+          cart_change_url: {{ routes.cart_change_url | append: '.js' | json }},
+          cart_update_url: {{ routes.cart_update_url | append: '.js' | json }},
+          predictive_search_url: {{ routes.predictive_search_url | json }},
+          search_url: {{ routes.search_url | json }}
+        },
+        settings: {
+          hero3d: {{ settings.enable_hero_3d | json }},
+          holo: {{ settings.enable_holo | json }},
+          cursor: {{ settings.enable_custom_cursor | json }},
+          smoothScroll: {{ settings.enable_smooth_scroll | json }},
+          reveal: {{ settings.enable_reveal | json }},
+          cartType: {{ settings.cart_type | json }}
+        },
+        assets: {
+          gsap: {{ 'vendor-gsap.min.js' | asset_url | json }},
+          scrollTrigger: {{ 'vendor-scrolltrigger.min.js' | asset_url | json }},
+          lenis: {{ 'vendor-lenis.min.js' | asset_url | json }}
+        },
+        strings: {
+          added: {{ 'cart.added' | t | json }},
+          viewCart: {{ 'cart.view' | t | json }},
+          cartError: {{ 'cart.error' | t | json }},
+          today: {{ 'general.dates.today' | t | json }},
+          tomorrow: {{ 'general.dates.tomorrow' | t | json }},
+          daysPrefix: {{ 'general.dates.days_prefix' | t | json }}
+        },
+        moneyFormat: {{ shop.money_format | json }}
+      };
+    </script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "{{ 'vendor-three.module.min.js' | asset_url }}",
+          "@theme/utils": "{{ 'utils.js' | asset_url }}"
+        }
+      }
+    </script>
+    <script src="{{ 'theme.js' | asset_url }}" type="module"></script>
+    <script src="{{ 'cart.js' | asset_url }}" type="module"></script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ template.name | handle }}">
+    {% render 'icon-sprite' %}
+    <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    <div class="cursor" data-cursor aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {% section 'cart-drawer' %}
+    {%- endif -%}
+
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+  </body>
+</html>

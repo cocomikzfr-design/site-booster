@@ -1,0 +1,25 @@
+{%- comment -%} Page 404 : trois cartes holo qui flottent. {%- endcomment -%}
+{{ 'templates.css' | asset_url | stylesheet_tag }}
+<section class="not-found container">
+  <div class="not-found__inner">
+    <div class="not-found__cards" aria-hidden="true">
+      <span class="not-found__card">4</span><span class="not-found__card">0</span><span class="not-found__card">4</span>
+    </div>
+    <h1 class="not-found__title">{{ 'not_found.title' | t }}</h1>
+    <p class="section-lead">{{ 'not_found.text' | t }}</p>
+    <form class="search-page__form" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="visually-hidden" for="NotFoundSearch">{{ 'search.title' | t }}</label>
+      <input class="input" id="NotFoundSearch" type="search" name="q" placeholder="{{ 'search.placeholder' | t }}">
+      <button class="btn btn--ghost" type="submit">{% render 'icon', name: 'search' %}<span>{{ 'search.submit' | t }}</span></button>
+    </form>
+    <a class="btn btn--holo" href="{{ routes.root_url }}" data-magnetic><span>{{ 'not_found.back' | t }}</span>{% render 'icon', name: 'arrow' %}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page 404",
+  "class": "section-404",
+  "settings": []
+}
+{% endschema %}

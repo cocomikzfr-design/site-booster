@@ -1,0 +1,100 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "ChocoCards",
+    "theme_version": "1.0.0",
+    "theme_author": "ChocoCards",
+    "theme_documentation_url": "https://chococards.be/",
+    "theme_support_email": "contact@chococards.be"
+  },
+  {
+    "name": "Logo et favicon",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Logo (image)", "info": "Laissez vide pour afficher le pictogramme ChocoCards + le nom ci-dessous." },
+      { "type": "range", "id": "logo_width", "label": "Largeur du logo", "min": 80, "max": 260, "step": 10, "unit": "px", "default": 150 },
+      { "type": "text", "id": "logo_text_start", "label": "Nom : première partie", "default": "Choco" },
+      { "type": "text", "id": "logo_text_end", "label": "Nom : partie holographique", "default": "Cards" },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "Image carrée, 32 × 32 px minimum." }
+    ]
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      { "type": "header", "content": "Chocolat et crème" },
+      { "type": "color", "id": "color_choco_deep", "label": "Chocolat profond (footer, sections sombres)", "default": "#1F130D" },
+      { "type": "color", "id": "color_choco", "label": "Chocolat (fond principal)", "default": "#2B1A12" },
+      { "type": "color", "id": "color_choco_light", "label": "Chocolat clair (cartes, panneaux)", "default": "#4A2C1D" },
+      { "type": "color", "id": "color_cream", "label": "Crème (sections claires, texte)", "default": "#FFF6EC" },
+      { "type": "color", "id": "color_accent", "label": "Or (petits titres, icônes)", "default": "#FBBF24" },
+      { "type": "header", "content": "Dégradé holographique" },
+      { "type": "paragraph", "content": "Ces 4 couleurs composent le reflet irisé des cartes, des boutons et des titres." },
+      { "type": "color", "id": "color_holo_1", "label": "Holo : violet", "default": "#C4B5FD" },
+      { "type": "color", "id": "color_holo_2", "label": "Holo : cyan", "default": "#67E8F9" },
+      { "type": "color", "id": "color_holo_3", "label": "Holo : rose", "default": "#F9A8D4" },
+      { "type": "color", "id": "color_holo_4", "label": "Holo : or", "default": "#FDE68A" }
+    ]
+  },
+  {
+    "name": "Typographie",
+    "settings": [
+      { "type": "checkbox", "id": "use_bricolage", "label": "Titres en Bricolage Grotesque (incluse dans le thème)", "default": true, "info": "Police display arrondie de Google Fonts, hébergée avec le thème. Décochez pour utiliser la police de titre ci-dessous." },
+      { "type": "font_picker", "id": "type_heading_font", "label": "Police des titres (si Bricolage décochée)", "default": "inter_n7" },
+      { "type": "font_picker", "id": "type_body_font", "label": "Police du texte", "default": "inter_n4" },
+      { "type": "range", "id": "radius_large", "label": "Arrondi des grands blocs", "min": 16, "max": 56, "step": 2, "unit": "px", "default": 44 }
+    ]
+  },
+  {
+    "name": "Effets 3D et animations",
+    "settings": [
+      { "type": "paragraph", "content": "Si l'internaute a activé « Réduire les animations » sur son appareil, la 3D lourde et les grandes animations sont automatiquement coupées." },
+      { "type": "checkbox", "id": "enable_hero_3d", "label": "3D du hero (Three.js)", "default": true },
+      { "type": "checkbox", "id": "enable_holo", "label": "Effet holo des cartes (tilt 3D + reflet irisé)", "default": true },
+      { "type": "checkbox", "id": "enable_custom_cursor", "label": "Curseur personnalisé (ordinateur)", "default": true },
+      { "type": "checkbox", "id": "enable_smooth_scroll", "label": "Scroll fluide (Lenis)", "default": true },
+      { "type": "checkbox", "id": "enable_reveal", "label": "Apparition des sections au scroll", "default": true }
+    ]
+  },
+  {
+    "name": "Panier",
+    "settings": [
+      {
+        "type": "select", "id": "cart_type", "label": "Après un ajout au panier", "default": "drawer",
+        "options": [
+          { "value": "drawer", "label": "Ouvrir le tiroir panier" },
+          { "value": "page", "label": "Aller sur la page panier" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Produits et statuts",
+    "settings": [
+      { "type": "paragraph", "content": "Les badges sont automatiques : « Disponible » et « Rupture de stock » viennent de l'inventaire ; les autres statuts viennent des tags ci-dessous." },
+      { "type": "text", "id": "tag_preorder", "label": "Tag « Précommande »", "default": "precommande" },
+      { "type": "text", "id": "tag_coming_soon", "label": "Tag « Bientôt disponible »", "default": "bientot-disponible" },
+      { "type": "text", "id": "tag_store_only", "label": "Tag « Non disponible en ligne »", "default": "boutique-uniquement", "info": "Bouton désactivé + message « Disponible en boutique à … »." },
+      { "type": "paragraph", "content": "Badge de langue : metafield produit custom.langue (FR, JP, EN). Libellé court des cartes : metafield custom.libelle_court (ex. ETB, UPC)." }
+    ]
+  },
+  {
+    "name": "Boutique physique",
+    "settings": [
+      { "type": "text", "id": "store_address", "label": "Adresse", "default": "Rue du Géant 15" },
+      { "type": "text", "id": "store_zip_city", "label": "Code postal et ville", "default": "1400 Nivelles" },
+      { "type": "text", "id": "store_city", "label": "Ville (utilisée dans les messages)", "default": "Nivelles" },
+      { "type": "text", "id": "store_country", "label": "Pays", "default": "Belgique" },
+      { "type": "text", "id": "store_phone", "label": "Téléphone", "default": "+32 465 16 83 13" },
+      { "type": "text", "id": "store_email", "label": "E-mail", "default": "contact@chococards.be" },
+      { "type": "text", "id": "store_maps_url", "label": "Lien Itinéraire (Google Maps)", "default": "https://www.google.com/maps/dir/?api=1&destination=Rue%20du%20G%C3%A9ant%2015%2C%201400%20Nivelles%2C%20Belgique" }
+    ]
+  },
+  {
+    "name": "Réseaux sociaux",
+    "settings": [
+      { "type": "text", "id": "social_instagram_link", "label": "Instagram", "default": "https://www.instagram.com/chococards.be/" },
+      { "type": "text", "id": "social_instagram_handle", "label": "Pseudo Instagram", "default": "@chococards.be" },
+      { "type": "text", "id": "social_facebook_link", "label": "Facebook" },
+      { "type": "text", "id": "social_tiktok_link", "label": "TikTok" }
+    ]
+  }
+]

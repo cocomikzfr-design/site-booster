@@ -1,0 +1,33 @@
+{%- comment -%}
+  Calcule le statut d'un produit et l'affiche (texte brut, sans espace).
+  À utiliser avec capture :
+    {%- capture status -%}{%- render 'product-status', product: product -%}{%- endcapture -%}
+
+  Statuts (dans cet ordre de priorité) :
+  - boutique    : tag "boutique-uniquement" (réglable) → non disponible en ligne
+  - bientot     : tag "bientot-disponible" (réglable)
+  - precommande : tag "precommande" (réglable) et stock disponible
+  - rupture     : inventaire épuisé
+  - disponible  : en stock
+{%- endcomment -%}
+{%- liquid
+  assign tags = product.tags | join: '|' | downcase | split: '|'
+  assign tag_store = settings.tag_store_only | strip | downcase
+  assign tag_soon = settings.tag_coming_soon | strip | downcase
+  assign tag_pre = settings.tag_preorder | strip | downcase
+  assign status = 'disponible'
+  if tags contains tag_store
+    assign status = 'boutique'
+  elsif tags contains tag_soon
+    assign status = 'bientot'
+  elsif tags contains tag_pre
+    if product.available
+      assign status = 'precommande'
+    else
+      assign status = 'rupture'
+    endif
+  elsif product.available == false
+    assign status = 'rupture'
+  endif
+  echo status
+-%}

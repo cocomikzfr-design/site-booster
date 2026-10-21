@@ -1,0 +1,81 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "eyebrow": "Calendrier TCG",
+        "holo_suffix": ""
+      }
+    },
+    "releases": {
+      "type": "release-timeline",
+      "blocks": {
+        "r1": {
+          "type": "release",
+          "settings": {
+            "date": "2026-10-30",
+            "game": "One Piece",
+            "title": "EB-05",
+            "text": "Extra Booster",
+            "link": ""
+          }
+        },
+        "r2": {
+          "type": "release",
+          "settings": {
+            "date": "2026-10-30",
+            "game": "Gundam",
+            "title": "GD-06",
+            "text": "Nouvelle extension",
+            "link": ""
+          }
+        },
+        "r3": {
+          "type": "release",
+          "settings": {
+            "date": "2026-11-06",
+            "game": "Pokémon",
+            "title": "ME06 — Règne Delta",
+            "text": "Displays, ETB et boosters",
+            "link": ""
+          }
+        },
+        "r4": {
+          "type": "release",
+          "settings": {
+            "date": "2026-11-20",
+            "game": "One Piece",
+            "title": "OP-18",
+            "text": "Nouvelle extension",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
+      "settings": {
+        "eyebrow": "Toutes les dates",
+        "heading": "Prochaines sorties",
+        "heading_holo": "TCG",
+        "link_label": "",
+        "item_link_label": "Voir les produits",
+        "limit": 16,
+        "show_past": false,
+        "use_metaobjects": true,
+        "metaobject_type": "sortie_tcg",
+        "scheme": "light",
+        "anchor": "sorties",
+        "padding_top": 48,
+        "padding_bottom": 120
+      }
+    }
+  },
+  "order": [
+    "main",
+    "releases"
+  ]
+}

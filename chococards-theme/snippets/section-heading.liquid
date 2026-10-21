@@ -1,0 +1,22 @@
+{%- comment -%}
+  En-tête de section : sur-titre, titre (avec partie holographique) et texte.
+  - eyebrow, eyebrow_icon : petit titre au-dessus + icône optionnelle
+  - heading, heading_holo : titre + fin du titre en dégradé holo
+  - deep   : dégradé foncé (sections claires)
+  - lead   : texte (HTML richtext)
+  - align  : 'left' | 'center' | 'split' (titre à gauche, extra à droite)
+  - extra  : HTML affiché à droite en mode split (boutons, lien…)
+  - id     : id du titre (pour aria-labelledby)
+{%- endcomment -%}
+<div class="section-head{% if align == 'center' %} section-head--center{% elsif align == 'split' %} section-head--split{% endif %}" data-reveal>
+  {%- if align == 'split' -%}<div>{%- endif -%}
+  {%- if eyebrow != blank -%}
+    <p class="eyebrow">{% if eyebrow_icon != blank %}{% render 'icon', name: eyebrow_icon %}{% endif %}{{ eyebrow }}</p>
+  {%- endif -%}
+  <h2 class="section-title"{% if id != blank %} id="{{ id }}"{% endif %}>
+    {{- heading -}}
+    {%- if heading_holo != blank %} <span class="holo-text{% if deep %} holo-text--deep{% endif %}">{{ heading_holo }}</span>{% endif -%}
+  </h2>
+  {%- if lead != blank -%}<div class="section-lead rte">{{ lead }}</div>{%- endif -%}
+  {%- if align == 'split' -%}</div>{{ extra }}{%- endif -%}
+</div>

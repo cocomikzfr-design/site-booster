@@ -1,0 +1,19 @@
+{%- comment -%}
+  Prix d'un produit (avec "à partir de" et prix barré).
+  - product : produit
+{%- endcomment -%}
+{%- liquid
+  assign price_min = product.price_min | money
+  assign compare = product.compare_at_price
+-%}
+<span class="price-wrap">
+  {%- if product.price_varies -%}
+    <span class="price">{{ 'products.price_from' | t: price: price_min }}</span>
+  {%- else -%}
+    <span class="price{% if compare > product.price %} price--sale{% endif %}">{{ product.price | money }}</span>
+    {%- if compare > product.price -%}
+      <span class="visually-hidden">{{ 'products.regular_price' | t }}</span>
+      <s class="price--compare">{{ compare | money }}</s>
+    {%- endif -%}
+  {%- endif -%}
+</span>

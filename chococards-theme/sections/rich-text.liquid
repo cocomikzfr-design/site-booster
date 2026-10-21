@@ -1,0 +1,44 @@
+{%- comment -%} Bloc de texte libre (titre holo + texte + bouton). {%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign deep = false
+  if s.scheme == 'light'
+    assign deep = true
+  endif
+-%}
+<section class="section{% if deep %} panel panel--light{% endif %}" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px">
+  <div class="container">
+    {% render 'section-heading', eyebrow: s.eyebrow, heading: s.heading, heading_holo: s.heading_holo, deep: deep, lead: s.text, align: s.align %}
+    {%- if s.button_label != blank -%}
+      <div style="display:flex;{% if s.align == 'center' %}justify-content:center;{% endif %}" data-reveal>
+        <a class="btn {% if deep %}btn--dark{% else %}btn--holo{% endif %}" href="{{ s.button_link | default: routes.root_url }}" data-magnetic><span>{{ s.button_label }}</span>{% render 'icon', name: 'arrow' %}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Texte",
+  "class": "section-rich-text",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Bienvenue chez" },
+    { "type": "text", "id": "heading_holo", "label": "Fin du titre (holographique)", "default": "ChocoCards" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Partagez votre passion des cartes à collectionner.</p>" },
+    { "type": "text", "id": "button_label", "label": "Bouton" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" },
+    {
+      "type": "select", "id": "align", "label": "Alignement", "default": "center",
+      "options": [ { "value": "left", "label": "Gauche" }, { "value": "center", "label": "Centré" } ]
+    },
+    {
+      "type": "select", "id": "scheme", "label": "Fond", "default": "dark",
+      "options": [ { "value": "dark", "label": "Chocolat" }, { "value": "light", "label": "Crème" } ]
+    },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 96 }
+  ],
+  "presets": [ { "name": "Texte" } ]
+}
+{% endschema %}

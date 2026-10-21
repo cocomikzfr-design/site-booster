@@ -1,0 +1,144 @@
+{%- comment -%}
+  Prochaines sorties TCG (timeline animée).
+  Source : metaobjects « Sortie TCG » (type sortie_tcg : date, jeu, titre, description, lien, couleur).
+  Tant qu'aucune entrée n'existe, les blocs de la section sont utilisés.
+  Les dates passées sont masquées automatiquement ; tri par date.
+{%- endcomment -%}
+<script src="{{ 'scroll-fx.js' | asset_url }}" type="module"></script>
+{%- liquid
+  assign s = section.settings
+  assign anchor = s.anchor | default: section.id | handleize
+  assign deep = false
+  if s.scheme == 'light'
+    assign deep = true
+  endif
+  assign title_id = 'Title-' | append: section.id
+  assign top_link = s.link
+  if top_link == blank and s.page_handle != blank
+    assign top_link = pages[s.page_handle].url
+  endif
+  if top_link == request.path
+    assign top_link = blank
+  endif
+  assign definition = shop.metaobjects[s.metaobject_type]
+  assign entries = definition.values
+  assign today = 'now' | date: '%Y%m%d' | plus: 0
+  assign keys = ''
+  assign source = 'blocks'
+  if s.use_metaobjects and definition.values_count > 0
+    assign source = 'metaobjects'
+    for entry in entries
+      assign d = entry.date.value | date: '%Y%m%d'
+      assign dn = d | plus: 0
+      if dn > 0
+        if dn >= today or s.show_past
+          assign keys = keys | append: d | append: '-' | append: forloop.index0 | append: ','
+        endif
+      endif
+    endfor
+  else
+    for block in section.blocks
+      assign d = block.settings.date | date: '%Y%m%d'
+      assign dn = d | plus: 0
+      if dn > 0
+        if dn >= today or s.show_past
+          assign keys = keys | append: d | append: '-' | append: forloop.index0 | append: ','
+        endif
+      endif
+    endfor
+  endif
+  assign sorted = keys | split: ',' | sort
+  assign shown = sorted.size | at_most: s.limit
+-%}
+<section class="section releases{% if deep %} panel panel--light{% endif %}" id="{{ anchor }}" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px; --timeline-cols: {{ shown | at_most: 4 | at_least: 1 }}" aria-labelledby="{{ title_id }}">
+  <div class="container">
+    {%- capture extra -%}
+      {%- if s.link_label != blank and top_link != blank -%}<a class="link-arrow" href="{{ top_link }}">{{ s.link_label }}{% render 'icon', name: 'arrow' %}</a>{%- endif -%}
+    {%- endcapture -%}
+    {% render 'section-heading', eyebrow: s.eyebrow, heading: s.heading, heading_holo: s.heading_holo, deep: deep, align: 'split', extra: extra, id: title_id %}
+
+    {%- if sorted.size > 0 -%}
+      <timeline-track class="timeline-wrap">
+        <div class="timeline__line" aria-hidden="true"><span data-timeline-progress></span></div>
+        <ol class="timeline" role="list">
+          {%- for key in sorted limit: s.limit -%}
+            {%- assign idx = key | split: '-' | last | plus: 0 -%}
+            {%- assign pos = forloop.index0 -%}
+            {%- if source == 'metaobjects' -%}
+              {%- for entry in entries -%}
+                {%- if forloop.index0 == idx -%}
+                  {% render 'release-item', date: entry.date.value, jeu: entry.jeu.value, titre: entry.titre.value, texte: entry.description.value, lien: entry.lien.value, color: entry.couleur.value, link_label: s.item_link_label, index: pos %}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              {%- for block in section.blocks -%}
+                {%- if forloop.index0 == idx -%}
+                  {%- assign b = block.settings -%}
+                  {% render 'release-item', date: b.date, jeu: b.game, titre: b.title, texte: b.text, lien: b.link, link_label: s.item_link_label, index: pos, attrs: block.shopify_attributes %}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </ol>
+      </timeline-track>
+    {%- else -%}
+      <p class="section-lead">{{ 'sections.releases.empty' | t }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Prochaines sorties TCG",
+  "class": "section-releases",
+  "max_blocks": 16,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Calendrier TCG" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Prochaines sorties" },
+    { "type": "text", "id": "heading_holo", "label": "Fin du titre (holographique)", "default": "TCG" },
+    { "type": "text", "id": "link_label", "label": "Lien en haut à droite", "default": "Voir le calendrier complet" },
+    { "type": "url", "id": "link", "label": "Lien" },
+    { "type": "text", "id": "page_handle", "label": "Ou identifiant de la page (si lien vide)", "default": "calendrier-tcg" },
+    { "type": "text", "id": "item_link_label", "label": "Lien de chaque sortie", "default": "Voir les produits" },
+    { "type": "range", "id": "limit", "label": "Nombre de sorties affichées", "min": 2, "max": 16, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "show_past", "label": "Afficher aussi les sorties passées", "default": false },
+    { "type": "header", "content": "Source des sorties" },
+    { "type": "checkbox", "id": "use_metaobjects", "label": "Utiliser les metaobjects « Sortie TCG »", "default": true, "info": "Contenu > Metaobjects. Sans entrée, les blocs ci-dessous sont affichés." },
+    { "type": "text", "id": "metaobject_type", "label": "Type du metaobject", "default": "sortie_tcg" },
+    {
+      "type": "select", "id": "scheme", "label": "Fond", "default": "light",
+      "options": [ { "value": "dark", "label": "Chocolat" }, { "value": "light", "label": "Crème" } ]
+    },
+    { "type": "text", "id": "anchor", "label": "Ancre (lien #…)", "default": "sorties" },
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 }
+  ],
+  "blocks": [
+    {
+      "type": "release",
+      "name": "Sortie (sans metaobject)",
+      "settings": [
+        { "type": "text", "id": "date", "label": "Date (AAAA-MM-JJ)", "default": "2026-11-06" },
+        { "type": "text", "id": "game", "label": "Jeu", "default": "Pokémon" },
+        { "type": "text", "id": "title", "label": "Titre", "default": "ME06 — Règne Delta" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Displays, ETB et boosters" },
+        { "type": "url", "id": "link", "label": "Lien" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Prochaines sorties TCG",
+      "blocks": [
+        { "type": "release", "settings": { "date": "2026-10-30", "game": "One Piece", "title": "EB-05", "text": "Extra Booster" } },
+        { "type": "release", "settings": { "date": "2026-10-30", "game": "Gundam", "title": "GD-06", "text": "Nouvelle extension" } },
+        { "type": "release", "settings": { "date": "2026-11-06", "game": "Pokémon", "title": "ME06 — Règne Delta", "text": "Displays, ETB et boosters" } },
+        { "type": "release", "settings": { "date": "2026-11-20", "game": "One Piece", "title": "OP-18", "text": "Nouvelle extension" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

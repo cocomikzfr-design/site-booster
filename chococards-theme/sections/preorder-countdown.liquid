@@ -1,0 +1,98 @@
+{%- comment -%}
+  Précommande mise en avant : compte à rebours jusqu'à la sortie (date réglable)
+  + booster qui se déchire au scroll et cartes en éventail (GSAP ScrollTrigger).
+{%- endcomment -%}
+<script src="{{ 'scroll-fx.js' | asset_url }}" type="module"></script>
+{%- liquid
+  assign s = section.settings
+  assign p = s.product
+  assign anchor = s.anchor | default: section.id | handleize
+  assign title_id = 'Title-' | append: section.id
+  assign target = s.release_date | append: 'T' | append: s.release_time | append: ':00' | append: s.timezone
+-%}
+<section class="preorder" id="{{ anchor }}" data-booster-section aria-labelledby="{{ title_id }}">
+  <div class="preorder__pin" data-booster-pin>
+    <div class="preorder__glow" aria-hidden="true"></div>
+    <div class="container preorder__grid">
+      <div class="preorder__content">
+        {%- if s.eyebrow != blank -%}<p class="eyebrow eyebrow--holo">{{ s.eyebrow }}</p>{%- endif -%}
+        <h2 class="section-title" id="{{ title_id }}">{{ s.heading }}{% if s.heading_holo != blank %} <span class="holo-text">{{ s.heading_holo }}</span>{% endif %}</h2>
+        {%- if s.release_date != blank -%}
+          <p class="preorder__date">{% render 'icon', name: 'calendar' %}{{ s.release_label }}&nbsp;<strong>{% render 'date-label', date: s.release_date %}</strong></p>
+        {%- endif -%}
+        {%- if s.text != blank -%}<div class="preorder__text rte">{{ s.text }}</div>{%- endif -%}
+
+        {%- if s.release_date != blank -%}
+          <count-down class="countdown" data-target="{{ target }}" data-done-text="{{ s.done_text | escape }}" role="timer" aria-label="{{ 'sections.countdown.label' | t }}">
+            <div class="countdown__unit"><span class="countdown__value" data-unit="days">00</span><span class="countdown__label">{{ 'sections.countdown.days' | t }}</span></div>
+            <div class="countdown__unit"><span class="countdown__value" data-unit="hours">00</span><span class="countdown__label">{{ 'sections.countdown.hours' | t }}</span></div>
+            <div class="countdown__unit"><span class="countdown__value" data-unit="minutes">00</span><span class="countdown__label">{{ 'sections.countdown.minutes' | t }}</span></div>
+            <div class="countdown__unit"><span class="countdown__value" data-unit="seconds">00</span><span class="countdown__label">{{ 'sections.countdown.seconds' | t }}</span></div>
+          </count-down>
+        {%- endif -%}
+
+        {%- if p != blank -%}
+          {%- capture p_status -%}{%- render 'product-status', product: p -%}{%- endcapture -%}
+          {%- assign p_status = p_status | strip -%}
+          <div class="preorder__product glass" data-product-card>
+            {%- if p.featured_media -%}
+              {{ p.featured_media | image_url: width: 240, height: 240, crop: 'center' | image_tag: loading: 'lazy', alt: p.title }}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+            <div>
+              <p class="preorder__product-name"><a href="{{ p.url }}">{{ p.title | escape }}</a></p>
+              <div class="preorder__product-row">
+                <span class="preorder__product-price">{{ p.price | money }}</span>
+                {%- if p_status == 'precommande' or p_status == 'disponible' -%}
+                  {%- if p.has_only_default_variant -%}
+                    {%- form 'product', p, class: 'quick-add', data-product-form: '' -%}
+                      <input type="hidden" name="id" value="{{ p.selected_or_first_available_variant.id }}">
+                      <button class="btn btn--holo btn--sm" type="submit" data-magnetic>{% render 'icon', name: 'plus' %}<span>{% if p_status == 'precommande' %}{{ 'products.preorder' | t }}{% else %}{{ 'products.add_to_cart' | t }}{% endif %}</span></button>
+                    {%- endform -%}
+                  {%- else -%}
+                    <a class="btn btn--holo btn--sm" href="{{ p.url }}" data-magnetic><span>{{ 'products.choose' | t }}</span>{% render 'icon', name: 'arrow' %}</a>
+                  {%- endif -%}
+                {%- else -%}
+                  {%- assign p_key = 'products.status.' | append: p_status -%}
+                  <span class="badge badge--{{ p_status }}">{{ p_key | t }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {% render 'booster-illustration', brand: s.booster_brand, label: s.booster_label, sub: s.booster_sub, hint: s.hint, animate: s.animate_booster %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Précommande + décompte",
+  "class": "section-preorder",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Précommande ouverte" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "ME06 —" },
+    { "type": "text", "id": "heading_holo", "label": "Fin du titre (holographique)", "default": "Règne Delta" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>La nouvelle extension Pokémon arrive le 6 novembre 2026. Réservez dès maintenant vos displays et coffrets : on vous les met de côté dès l’arrivée du stock.</p>" },
+    { "type": "header", "content": "Date de sortie" },
+    { "type": "text", "id": "release_date", "label": "Date (AAAA-MM-JJ)", "default": "2026-11-06" },
+    { "type": "text", "id": "release_time", "label": "Heure (HH:MM)", "default": "00:00" },
+    { "type": "text", "id": "timezone", "label": "Fuseau horaire", "default": "+01:00", "info": "+01:00 en hiver, +02:00 en été (heure belge)." },
+    { "type": "text", "id": "release_label", "label": "Texte avant la date", "default": "Sortie le" },
+    { "type": "text", "id": "done_text", "label": "Message une fois la date passée", "default": "C’est le grand jour : disponible maintenant en boutique et en ligne !" },
+    { "type": "header", "content": "Produit" },
+    { "type": "product", "id": "product", "label": "Produit en précommande" },
+    { "type": "header", "content": "Booster animé" },
+    { "type": "checkbox", "id": "animate_booster", "label": "Animer l'ouverture au scroll", "default": true },
+    { "type": "text", "id": "booster_brand", "label": "Nom sur le booster", "default": "ChocoCards" },
+    { "type": "text", "id": "booster_label", "label": "Mot principal", "default": "Booster" },
+    { "type": "text", "id": "booster_sub", "label": "Sous-titre", "default": "Édition collector" },
+    { "type": "text", "id": "hint", "label": "Texte d'aide", "default": "Faites défiler pour ouvrir le booster" },
+    { "type": "text", "id": "anchor", "label": "Ancre (lien #…)", "default": "precommande" }
+  ],
+  "presets": [ { "name": "Précommande + décompte" } ]
+}
+{% endschema %}

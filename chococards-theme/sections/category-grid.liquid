@@ -1,0 +1,91 @@
+{%- comment -%}
+  « Explorez la boutique » : grille de catégories en cartes 3D inclinables.
+  Chaque bloc = une collection (+ image, texte et teinte personnalisables).
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign anchor = s.anchor | default: section.id | handleize
+  assign deep = false
+  if s.scheme == 'light'
+    assign deep = true
+  endif
+  assign title_id = 'Title-' | append: section.id
+-%}
+<section class="section explore{% if deep %} panel panel--light{% endif %}" id="{{ anchor }}" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px" aria-labelledby="{{ title_id }}">
+  <div class="container">
+    {% render 'section-heading', eyebrow: s.eyebrow, heading: s.heading, heading_holo: s.heading_holo, deep: deep, align: 'left', id: title_id %}
+    <div class="category-grid" data-reveal-stagger>
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign c = block.settings.collection
+          assign link = block.settings.link | default: c.url | default: routes.collections_url
+          assign title = block.settings.title | default: c.title
+          assign img = block.settings.image | default: c.featured_image
+          assign ph_index = forloop.index | modulo: 6 | plus: 1
+          assign ph = 'collection-' | append: ph_index
+          assign num = forloop.index | prepend: '0' | slice: -2, 2
+        -%}
+        <a class="cat-card holo-card" href="{{ link }}"{% if settings.enable_holo %} data-tilt data-tilt-max="10"{% endif %} style="--h: {{ block.settings.hue }}" {{ block.shopify_attributes }}>
+          {%- if img -%}
+            {{ img | image_url: width: 900 | image_tag: loading: 'lazy', widths: '300, 450, 600, 900', sizes: '(min-width: 1100px) 30vw, (min-width: 640px) 33vw, 50vw', alt: '' }}
+          {%- else -%}
+            {{ ph | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+          <span class="cat-card__shade" aria-hidden="true"></span>
+          {%- if s.show_numbers -%}<span class="cat-card__num" aria-hidden="true">{{ num }}</span>{%- endif -%}
+          <span class="cat-card__arrow" aria-hidden="true">{% render 'icon', name: 'arrow' %}</span>
+          <div class="cat-card__body">
+            <h3 class="cat-card__title">{{ title | default: 'Catégorie' }}</h3>
+            {%- if block.settings.text != blank -%}<p class="cat-card__text">{{ block.settings.text }}</p>{%- endif -%}
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Grille de catégories",
+  "class": "section-category-grid",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Nos univers" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Explorez la" },
+    { "type": "text", "id": "heading_holo", "label": "Fin du titre (holographique)", "default": "boutique" },
+    { "type": "checkbox", "id": "show_numbers", "label": "Numéroter les cartes", "default": true },
+    {
+      "type": "select", "id": "scheme", "label": "Fond", "default": "dark",
+      "options": [ { "value": "dark", "label": "Chocolat" }, { "value": "light", "label": "Crème" } ]
+    },
+    { "type": "text", "id": "anchor", "label": "Ancre (lien #…)", "default": "explorer" },
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Catégorie",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Titre (vide = nom de la collection)" },
+        { "type": "text", "id": "text", "label": "Texte" },
+        { "type": "image_picker", "id": "image", "label": "Image (vide = image de la collection)" },
+        { "type": "url", "id": "link", "label": "Lien (vide = la collection)" },
+        { "type": "range", "id": "hue", "label": "Teinte du dégradé", "min": 0, "max": 360, "step": 5, "default": 30 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Grille de catégories",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Pokémon", "text": "Displays, boosters, ETB et coffrets", "hue": 45 } },
+        { "type": "category", "settings": { "title": "One Piece", "text": "Displays, boosters et starter decks", "hue": 0 } },
+        { "type": "category", "settings": { "title": "Japonais", "text": "Boosters et displays importés du Japon", "hue": 340 } }
+      ]
+    }
+  ]
+}
+{% endschema %}

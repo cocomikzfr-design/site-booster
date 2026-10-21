@@ -54,9 +54,17 @@ Déposez votre photo **avec exactement le même nom** dans le même dossier : ri
 const OPTIONS = { hero3d: true, holo: true, curseur: true, scrollFluide: true };
 ```
 
-- Hero Three.js : cartes au dos ChocoCards (aucun personnage ni logo officiel), reflet holographique qui suit la souris ou le gyroscope, paillettes dorées. Pause automatique hors écran, version allégée sur mobile.
+- Hero Three.js : cartes au dos ChocoCards (aucun personnage ni logo officiel), reflet holographique qui suit la souris ou le gyroscope, paillettes dorées. Pause automatique hors écran ; sur mobile, version allégée chargée au premier geste (des cartes CSS holographiques s’affichent en attendant).
 - Cartes holo : tilt 3D + reflet irisé au survol.
 - Booster qui se déchire au scroll (section épinglée sur desktop, animation unique sur mobile).
 - Apparitions au scroll, compteurs, compte à rebours, boutons magnétiques, curseur discret, bandeau défilant.
 - Ajout au panier : la carte vole jusqu’au panier, le badge rebondit (panier gardé dans le navigateur).
 - `prefers-reduced-motion` : pas de 3D, pas de scroll fluide, animations coupées, état final affiché.
+
+## Tests réalisés
+
+- Chromium, desktop (1024 → 1440 px) et mobile (360, 390, 768 px) : rendu vérifié section par section, aucune erreur console, aucun débordement horizontal.
+- Interactions : méga-menu, recherche instantanée, pays/langue, carte qui vole vers le panier, tiroir panier, carrousel 3D, booster épinglé au scroll, menu mobile.
+- Lighthouse mobile (bibliothèques servies localement, compression activée) : **Performance 99–100 · Accessibilité 100 · Bonnes pratiques 100 · SEO 100**.
+
+Les animations au scroll (GSAP) ne sont créées qu’à l’approche de leur section, Lenis n’est utilisé qu’à la souris, et aucun dégradé n’est animé en continu hors du titre du hero : la page reste fluide même sur un petit téléphone.

@@ -1,0 +1,54 @@
+{%- comment -%} Formulaire de contact Shopify + coordonnées de la boutique. {%- endcomment -%}
+{{ 'templates.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<section class="section" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px">
+  <div class="container contact">
+    {%- form 'contact', id: 'ContactForm', class: 'contact__form' -%}
+      <h2>{{ s.heading }}</h2>
+      {%- if form.posted_successfully? -%}
+        <p class="form-message form-message--success" role="status">{% render 'icon', name: 'check' %}{{ 'contact.success' | t }}</p>
+      {%- elsif form.errors -%}
+        <div class="form-message form-message--error" role="alert">{% render 'icon', name: 'alert' %}{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+      <div class="contact__row">
+        <div class="field">
+          <label for="ContactName">{{ 'contact.name' | t }}</label>
+          <input id="ContactName" type="text" name="contact[{{ 'contact.name' | t }}]" autocomplete="name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+        </div>
+        <div class="field">
+          <label for="ContactEmail">{{ 'contact.email' | t }} *</label>
+          <input id="ContactEmail" type="email" name="contact[email]" autocomplete="email" required aria-required="true" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+        </div>
+      </div>
+      <div class="field">
+        <label for="ContactPhone">{{ 'contact.phone' | t }}</label>
+        <input id="ContactPhone" type="tel" name="contact[{{ 'contact.phone' | t }}]" autocomplete="tel" value="{{ form.phone }}">
+      </div>
+      <div class="field">
+        <label for="ContactBody">{{ 'contact.message' | t }}</label>
+        <textarea id="ContactBody" name="contact[{{ 'contact.message' | t }}]">{{ form.body }}</textarea>
+      </div>
+      <button class="btn btn--holo" type="submit" data-magnetic><span>{{ 'contact.send' | t }}</span>{% render 'icon', name: 'arrow' %}</button>
+    {%- endform -%}
+
+    <aside class="contact__aside" aria-label="{{ 'contact.details' | t }}">
+      <div class="contact__card">{% render 'icon', name: 'pin' %}<div><strong>{{ shop.name }}</strong><p>{{ settings.store_address }}<br>{{ settings.store_zip_city }}, {{ settings.store_country }}</p></div></div>
+      {%- if settings.store_phone != blank -%}<a class="contact__card" href="tel:{{ settings.store_phone | remove: ' ' }}">{% render 'icon', name: 'phone' %}<div><strong>{{ 'contact.phone' | t }}</strong><p>{{ settings.store_phone }}</p></div></a>{%- endif -%}
+      {%- if settings.store_email != blank -%}<a class="contact__card" href="mailto:{{ settings.store_email }}">{% render 'icon', name: 'mail' %}<div><strong>{{ 'contact.email' | t }}</strong><p>{{ settings.store_email }}</p></div></a>{%- endif -%}
+      {%- if settings.social_instagram_link != blank -%}<a class="contact__card" href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener">{% render 'icon', name: 'instagram' %}<div><strong>Instagram</strong><p>{{ settings.social_instagram_handle }}</p></div></a>{%- endif -%}
+    </aside>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Formulaire de contact",
+  "class": "section-contact",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Écrivez-nous" },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 32 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 }
+  ],
+  "presets": [ { "name": "Formulaire de contact" } ]
+}
+{% endschema %}

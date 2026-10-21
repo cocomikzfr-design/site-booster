@@ -1,0 +1,301 @@
+{%- comment -%}
+  Header ChocoCards : logo, recherche prédictive, compte, panier, pays / langue
+  (formulaire localization) et méga-menu piloté par la navigation Shopify.
+  Bloc « Mise en avant » : image + texte affichés dans le méga-menu d'un lien.
+{%- endcomment -%}
+<script src="{{ 'predictive-search.js' | asset_url }}" type="module"></script>
+{%- liquid
+  assign menu = linklists[section.settings.menu]
+  assign hot = section.settings.highlight_link | strip | downcase
+-%}
+
+<header class="header" data-header>
+  <div class="header__inner">
+    <div class="header__bar">
+      <button class="icon-btn header__burger" type="button" data-drawer-open="MenuDrawer" aria-controls="MenuDrawer" aria-expanded="false" aria-label="{{ 'header.menu_open' | t }}">
+        {%- render 'icon', name: 'menu' -%}
+      </button>
+
+      {% render 'logo' %}
+
+      <button class="header__search" type="button" data-search-open aria-label="{{ 'search.open' | t }}">
+        {%- render 'icon', name: 'search' -%}
+        <span>{{ section.settings.search_placeholder }}</span>
+        <kbd>/</kbd>
+      </button>
+
+      <div class="header__actions">
+        {%- if section.settings.show_country and localization.available_countries.size > 1 -%}
+          {%- form 'localization', class: 'localization-form' -%}
+            <details class="dropdown">
+              <summary aria-label="{{ 'localization.country_label' | t }} : {{ localization.country.name }}">
+                {%- render 'icon', name: 'globe' -%}<span>{{ localization.country.iso_code }}</span>{%- render 'icon', name: 'chevron', class: 'chev' -%}
+              </summary>
+              <ul class="dropdown__menu" role="list">
+                {%- for country in localization.available_countries -%}
+                  <li>
+                    <button type="submit" name="country_code" value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} aria-current="true"{% endif %}>
+                      {{ country.name }} <small>{{ country.currency.iso_code }} {{ country.currency.symbol }}</small>
+                    </button>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </details>
+          {%- endform -%}
+        {%- endif -%}
+
+        {%- if section.settings.show_language and localization.available_languages.size > 1 -%}
+          {%- form 'localization', class: 'localization-form' -%}
+            <details class="dropdown">
+              <summary aria-label="{{ 'localization.language_label' | t }} : {{ localization.language.endonym_name }}">
+                <span>{{ localization.language.iso_code | upcase }}</span>{%- render 'icon', name: 'chevron', class: 'chev' -%}
+              </summary>
+              <ul class="dropdown__menu" role="list">
+                {%- for language in localization.available_languages -%}
+                  <li>
+                    <button type="submit" name="language_code" value="{{ language.iso_code }}" lang="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} aria-current="true"{% endif %}>
+                      {{ language.endonym_name | capitalize }}
+                    </button>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </details>
+          {%- endform -%}
+        {%- endif -%}
+
+        <button class="icon-btn header__search-mobile" type="button" data-search-open aria-label="{{ 'search.open' | t }}">
+          {%- render 'icon', name: 'search' -%}
+        </button>
+
+        {%- if shop.customer_accounts_enabled -%}
+          <a class="icon-btn" href="{{ routes.account_url }}" aria-label="{% if customer %}{{ 'customer.account_title' | t }}{% else %}{{ 'customer.login_title' | t }}{% endif %}">
+            {%- render 'icon', name: 'user' -%}
+          </a>
+        {%- endif -%}
+
+        <a class="icon-btn cart-btn" href="{{ routes.cart_url }}" data-cart-button{% if settings.cart_type == 'drawer' %} data-drawer-open="cart-drawer" aria-controls="cart-drawer" aria-expanded="false"{% endif %}>
+          {%- render 'icon', name: 'bag' -%}
+          <span id="cart-icon-bubble">{% render 'cart-bubble' %}</span>
+        </a>
+      </div>
+    </div>
+
+    {%- if menu.links.size > 0 -%}
+      <nav class="mega" aria-label="{{ 'header.main_nav' | t }}">
+        <header-menu>
+          <ul class="mega__list" role="list">
+            {%- for link in menu.links -%}
+              {%- assign title_key = link.title | strip | downcase -%}
+              <li>
+                {%- if link.links != blank -%}
+                  <details class="mega__item">
+                    <summary class="mega__trigger"{% if link.active or link.child_active %} aria-current="page"{% endif %}>
+                      {{- link.title -}}{%- render 'icon', name: 'chevron' -%}
+                    </summary>
+                    <div class="mega__panel">
+                      <div>
+                        <div class="mega__cols">
+                          {%- capture simple_links -%}
+                            {%- for child in link.links -%}
+                              {%- if child.links == blank -%}
+                                <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a></li>
+                              {%- endif -%}
+                            {%- endfor -%}
+                          {%- endcapture -%}
+                          {%- if simple_links != blank -%}
+                            <div class="mega__col">
+                              <h3>{{ link.title }}</h3>
+                              <ul role="list">{{ simple_links }}</ul>
+                            </div>
+                          {%- endif -%}
+                          {%- for child in link.links -%}
+                            {%- if child.links != blank -%}
+                              <div class="mega__col">
+                                <h3><a href="{{ child.url }}">{{ child.title }}</a></h3>
+                                <ul role="list">
+                                  {%- for grandchild in child.links -%}
+                                    <li><a href="{{ grandchild.url }}"{% if grandchild.current %} aria-current="page"{% endif %}>{{ grandchild.title }}</a></li>
+                                  {%- endfor -%}
+                                </ul>
+                              </div>
+                            {%- endif -%}
+                          {%- endfor -%}
+                        </div>
+                        <a class="mega__all" href="{{ link.url }}">{{ 'header.view_all' | t: title: link.title }}{% render 'icon', name: 'arrow' %}</a>
+                      </div>
+
+                      {%- liquid
+                        assign feature = nil
+                        for block in section.blocks
+                          assign key = block.settings.menu_item | strip | downcase
+                          if key == title_key or key == link.handle
+                            assign feature = block
+                            break
+                          endif
+                        endfor
+                      -%}
+                      {%- if feature -%}
+                        {%- assign feature_link = feature.settings.link | default: link.url -%}
+                        <a class="mega__feature holo-card"{% if settings.enable_holo %} data-tilt data-tilt-max="6"{% endif %} href="{{ feature_link }}" {{ feature.shopify_attributes }}>
+                          {%- if feature.settings.image -%}
+                            {{ feature.settings.image | image_url: width: 640 | image_tag: loading: 'lazy', widths: '320, 480, 640', sizes: '320px', alt: '' }}
+                          {%- else -%}
+                            {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                          {%- endif -%}
+                          <span class="mega__feature-text"><strong>{{ feature.settings.heading }}</strong><span>{{ feature.settings.text }}</span></span>
+                        </a>
+                      {%- elsif link.type == 'collection_link' and link.object.featured_image -%}
+                        <a class="mega__feature holo-card"{% if settings.enable_holo %} data-tilt data-tilt-max="6"{% endif %} href="{{ link.url }}">
+                          {{ link.object.featured_image | image_url: width: 640 | image_tag: loading: 'lazy', widths: '320, 480, 640', sizes: '320px', alt: '' }}
+                          <span class="mega__feature-text"><strong>{{ link.object.title }}</strong><span>{{ 'header.discover' | t }}</span></span>
+                        </a>
+                      {%- endif -%}
+                    </div>
+                  </details>
+                {%- else -%}
+                  <a class="mega__trigger{% if title_key == hot %} mega__trigger--hot{% endif %}" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </header-menu>
+      </nav>
+    {%- endif -%}
+  </div>
+</header>
+
+{%- comment -%} Menu mobile {%- endcomment -%}
+<side-drawer id="MenuDrawer" class="drawer drawer--left" hidden>
+  <div class="drawer__overlay" data-drawer-close></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="{{ 'header.menu' | t }}">
+    <div class="drawer__head">
+      <span class="drawer__title">{{ 'header.menu' | t }}</span>
+      <button class="icon-btn" type="button" data-drawer-close aria-label="{{ 'header.menu_close' | t }}">{% render 'icon', name: 'close' %}</button>
+    </div>
+    <nav class="mobile-nav" aria-label="{{ 'header.main_nav' | t }}" data-lenis-prevent>
+      {%- for link in menu.links -%}
+        {%- if link.links != blank -%}
+          <details>
+            <summary>{{ link.title }}{% render 'icon', name: 'chevron' %}</summary>
+            <div class="mobile-nav__sub">
+              {%- for child in link.links -%}
+                {%- if child.links != blank -%}
+                  <div>
+                    <h3>{{ child.title }}</h3>
+                    {%- for grandchild in child.links -%}<a href="{{ grandchild.url }}">{{ grandchild.title }}</a>{%- endfor -%}
+                  </div>
+                {%- else -%}
+                  <a href="{{ child.url }}">{{ child.title }}</a>
+                {%- endif -%}
+              {%- endfor -%}
+              <a class="mega__all" href="{{ link.url }}">{{ 'header.view_all' | t: title: link.title }}{% render 'icon', name: 'arrow' %}</a>
+            </div>
+          </details>
+        {%- else -%}
+          <a href="{{ link.url }}">{{ link.title }}{% render 'icon', name: 'arrow' %}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </nav>
+    <div class="mobile-nav__foot">
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="btn btn--ghost btn--sm" href="{{ routes.account_url }}">{% render 'icon', name: 'user' %}<span>{% if customer %}{{ 'customer.account_title' | t }}{% else %}{{ 'customer.login_title' | t }}{% endif %}</span></a>
+      {%- endif -%}
+      {%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
+        <div class="mobile-nav__locale">
+          {%- if localization.available_countries.size > 1 -%}
+            {%- form 'localization' -%}
+              <label for="MobileCountry">{{ 'localization.country_label' | t }}</label>
+              <select id="MobileCountry" name="country_code" onchange="this.form.submit()">
+                {%- for country in localization.available_countries -%}
+                  <option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</option>
+                {%- endfor -%}
+              </select>
+              <noscript><button class="btn btn--ghost btn--sm" type="submit">{{ 'localization.update' | t }}</button></noscript>
+            {%- endform -%}
+          {%- endif -%}
+          {%- if localization.available_languages.size > 1 -%}
+            {%- form 'localization' -%}
+              <label for="MobileLanguage">{{ 'localization.language_label' | t }}</label>
+              <select id="MobileLanguage" name="language_code" onchange="this.form.submit()">
+                {%- for language in localization.available_languages -%}
+                  <option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>{{ language.endonym_name | capitalize }}</option>
+                {%- endfor -%}
+              </select>
+              <noscript><button class="btn btn--ghost btn--sm" type="submit">{{ 'localization.update' | t }}</button></noscript>
+            {%- endform -%}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</side-drawer>
+
+{%- comment -%} Recherche (fenêtre + résultats instantanés) {%- endcomment -%}
+<search-overlay class="search-overlay" hidden>
+  <div class="search-overlay__backdrop" data-search-close></div>
+  <div class="search-overlay__panel" role="dialog" aria-modal="true" aria-label="{{ 'search.title' | t }}">
+    <form class="search-overlay__form" action="{{ routes.search_url }}" method="get" role="search">
+      {%- render 'icon', name: 'search' -%}
+      <label class="visually-hidden" for="PredictiveSearchInput">{{ 'search.title' | t }}</label>
+      <input id="PredictiveSearchInput" type="search" name="q" placeholder="{{ section.settings.search_placeholder | escape }}" autocomplete="off" autocorrect="off" spellcheck="false">
+      <input type="hidden" name="options[prefix]" value="last">
+      <button class="icon-btn" type="button" data-search-close aria-label="{{ 'search.close' | t }}">{% render 'icon', name: 'close' %}</button>
+    </form>
+    <div class="search-overlay__results" data-search-results aria-live="polite" data-lenis-prevent>
+      {%- assign suggestions = section.settings.search_suggestions | split: ',' -%}
+      {%- if suggestions.size > 0 -%}
+        <div class="search-group">
+          <h3>{{ 'search.suggestions' | t }}</h3>
+          <div class="search-chips">
+            {%- for s in suggestions -%}
+              {%- assign s_clean = s | strip -%}
+              {%- if s_clean != blank -%}<button type="button" data-suggest="{{ s_clean | escape }}">{{ s_clean }}</button>{%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+      {%- assign popular = section.settings.popular_collection -%}
+      {%- if popular != blank and popular.products_count > 0 -%}
+        <div class="search-group">
+          <h3>{{ 'search.popular' | t }}</h3>
+          {%- for product in popular.products limit: 4 -%}
+            {% render 'search-item', product: product %}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</search-overlay>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu principal", "default": "main-menu", "info": "Les sous-menus deviennent le méga-menu (jusqu'à 3 niveaux)." },
+    { "type": "text", "id": "highlight_link", "label": "Lien avec pastille lumineuse", "default": "Précommandes", "info": "Titre exact d'un lien du menu sans sous-menu." },
+    { "type": "header", "content": "Recherche" },
+    { "type": "text", "id": "search_placeholder", "label": "Texte de la barre de recherche", "default": "Rechercher une carte, un booster, un display…" },
+    { "type": "text", "id": "search_suggestions", "label": "Suggestions (séparées par des virgules)", "default": "Pokémon 30 ans, Display, ETB, One Piece, Japonais, Précommande" },
+    { "type": "collection", "id": "popular_collection", "label": "Produits populaires affichés dans la recherche" },
+    { "type": "header", "content": "Pays et langue" },
+    { "type": "checkbox", "id": "show_country", "label": "Afficher le sélecteur de pays", "default": true, "info": "Pays configurés dans Paramètres > Marchés (ex. Belgique, France)." },
+    { "type": "checkbox", "id": "show_language", "label": "Afficher le sélecteur de langue", "default": true, "info": "Langues publiées dans Paramètres > Langues (ex. FR, EN)." }
+  ],
+  "blocks": [
+    {
+      "type": "mega_feature",
+      "name": "Mise en avant (méga-menu)",
+      "settings": [
+        { "type": "text", "id": "menu_item", "label": "Titre du lien du menu concerné", "default": "Pokémon", "info": "Ex. « Pokémon » : l'image s'affiche dans le méga-menu de ce lien." },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "heading", "label": "Titre", "default": "Pokémon fête ses 30 ans" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Exclusivités en boutique" },
+        { "type": "url", "id": "link", "label": "Lien" }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

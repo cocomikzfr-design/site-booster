@@ -1,0 +1,57 @@
+{%- comment -%}
+  Variables CSS générées depuis les réglages du thème (couleurs, typos).
+  Elles surchargent les valeurs par défaut de base.css.
+{%- endcomment -%}
+{%- liquid
+  assign body_font = settings.type_body_font
+  assign body_font_medium = body_font | font_modify: 'weight', '500'
+  assign body_font_semibold = body_font | font_modify: 'weight', '600'
+  assign body_font_bold = body_font | font_modify: 'weight', 'bold'
+  assign heading_font = settings.type_heading_font
+  assign h1 = settings.color_holo_1
+  assign h2 = settings.color_holo_2
+  assign h3 = settings.color_holo_3
+  assign h4 = settings.color_holo_4
+-%}
+{% style %}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ body_font_medium | font_face: font_display: 'swap' }}
+  {{ body_font_semibold | font_face: font_display: 'swap' }}
+  {{ body_font_bold | font_face: font_display: 'swap' }}
+  {%- if settings.use_bricolage %}
+  /* Bricolage Grotesque (police variable incluse dans le thème, licence OFL) */
+  @font-face {
+    font-family: 'Bricolage Grotesque';
+    src: url('{{ 'bricolage-grotesque-latin.woff2' | asset_url }}') format('woff2');
+    font-weight: 200 800; font-stretch: 75% 100%; font-style: normal; font-display: swap;
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'Bricolage Grotesque';
+    src: url('{{ 'bricolage-grotesque-latin-ext.woff2' | asset_url }}') format('woff2');
+    font-weight: 200 800; font-stretch: 75% 100%; font-style: normal; font-display: swap;
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  {%- else %}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {%- endif %}
+
+  :root {
+    --choco-950: {{ settings.color_choco_deep | color_darken: 4 }};
+    --choco-900: {{ settings.color_choco_deep }};
+    --choco-800: {{ settings.color_choco }};
+    --choco-700: {{ settings.color_choco_light }};
+    --choco-600: {{ settings.color_choco_light | color_lighten: 10 }};
+    --choco-500: {{ settings.color_choco_light | color_lighten: 20 }};
+    --cream-50: {{ settings.color_cream }};
+    --cream-100: {{ settings.color_cream | color_darken: 4 }};
+    --cream-200: {{ settings.color_cream | color_darken: 11 }};
+    --cream-300: {{ settings.color_cream | color_darken: 20 }};
+    --holo-gold: {{ settings.color_accent }};
+    --holo: linear-gradient(105deg, {{ h1 }} 0%, {{ h2 }} 24%, {{ h3 }} 50%, {{ h4 }} 76%, {{ h1 }} 100%);
+    --holo-deep: linear-gradient(105deg, {{ h1 | color_darken: 30 | color_saturate: 20 }} 0%, {{ h2 | color_darken: 30 | color_saturate: 20 }} 26%, {{ h3 | color_darken: 30 | color_saturate: 20 }} 52%, {{ h4 | color_darken: 35 | color_saturate: 20 }} 78%, {{ h1 | color_darken: 30 | color_saturate: 20 }} 100%);
+    --font-display: {% if settings.use_bricolage %}'Bricolage Grotesque', {% else %}{{ heading_font.family }}, {% endif %}{{ heading_font.fallback_families }};
+    --font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --radius-l: clamp(20px, 3.5vw, {{ settings.radius_large }}px);
+  }
+{% endstyle %}

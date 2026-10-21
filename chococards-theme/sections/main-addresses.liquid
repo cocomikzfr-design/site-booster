@@ -1,0 +1,42 @@
+{{ 'templates.css' | asset_url | stylesheet_tag }}
+<div class="page-hero">
+  <div class="container page-hero__inner">
+    <p><a class="link-arrow" href="{{ routes.account_url }}">{% render 'icon', name: 'arrow-left' %}{{ 'customer.back_to_account' | t }}</a></p>
+    <h1 class="page-hero__title">{{ 'customer.addresses' | t }}</h1>
+  </div>
+</div>
+<section class="account container">
+  {%- paginate customer.addresses by 10 -%}
+    <div class="address-grid">
+      {%- for address in customer.addresses -%}
+        <div class="address-card">
+          {%- if address == customer.default_address -%}<span class="badge badge--disponible">{{ 'customer.default_address' | t }}</span>{%- endif -%}
+          {{ address | format_address }}
+          <details>
+            <summary class="link-arrow">{{ 'customer.edit' | t }}</summary>
+            {%- form 'customer_address', address, class: 'address-form' -%}
+              {% render 'address-fields', address: address, form: form, id: address.id %}
+              <button class="btn btn--holo btn--sm" type="submit"><span>{{ 'customer.save' | t }}</span></button>
+            {%- endform -%}
+          </details>
+          <form method="post" action="{{ address.url }}">
+            <input type="hidden" name="_method" value="delete">
+            <button class="link-arrow" type="submit">{{ 'customer.delete' | t }}</button>
+          </form>
+        </div>
+      {%- endfor -%}
+      <div class="address-card">
+        <h2>{{ 'customer.add_address' | t }}</h2>
+        {%- form 'customer_address', customer.new_address, class: 'address-form' -%}
+          {% render 'address-fields', address: customer.new_address, form: form, id: 'new' %}
+          <button class="btn btn--holo btn--sm" type="submit"><span>{{ 'customer.add_address' | t }}</span></button>
+        {%- endform -%}
+      </div>
+    </div>
+    {%- if paginate.pages > 1 -%}{% render 'pagination', paginate: paginate %}{%- endif -%}
+  {%- endpaginate -%}
+</section>
+
+{% schema %}
+{ "name": "Adresses", "settings": [] }
+{% endschema %}

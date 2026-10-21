@@ -1,0 +1,16 @@
+{%- comment -%}
+  Logo du site : image choisie dans les réglages, sinon pictogramme + nom en deux parties.
+  - size : 'lg' pour la version footer
+{%- endcomment -%}
+<a class="logo{% if size == 'lg' %} logo--lg{% endif %}" href="{{ routes.root_url }}" aria-label="{{ 'general.home' | t: shop: shop.name | escape }}">
+  {%- if settings.logo != blank -%}
+    {%- assign logo_w = settings.logo_width -%}
+    {%- if size == 'lg' -%}{%- assign logo_w = settings.logo_width | times: 1.3 | round -%}{%- endif -%}
+    {%- capture logo_style -%}--logo-w: {{ logo_w }}px{%- endcapture -%}
+    {%- capture logo_sizes -%}{{ logo_w }}px{%- endcapture -%}
+    {{ settings.logo | image_url: width: 600 | image_tag: class: 'header__logo-img', style: logo_style, widths: '150, 300, 450, 600', sizes: logo_sizes, alt: shop.name, loading: 'eager' }}
+  {%- else -%}
+    {% render 'logo-mark' %}
+    <span class="logo__text">{{ settings.logo_text_start }}<span>{{ settings.logo_text_end }}</span></span>
+  {%- endif -%}
+</a>

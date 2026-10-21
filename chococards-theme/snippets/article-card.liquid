@@ -1,0 +1,22 @@
+{%- comment -%} Carte d'article de blog. - article, lazy (numéro dans la liste) {%- endcomment -%}
+{%- liquid
+  assign loading = 'lazy'
+  if lazy == 1
+    assign loading = 'eager'
+  endif
+  assign article_date = article.published_at | date: '%Y-%m-%d'
+-%}
+<article class="article-card holo-card"{% if settings.enable_holo %} data-tilt data-tilt-max="4"{% endif %}>
+  <div class="article-card__media">
+    {%- if article.image -%}
+      {{ article.image | image_url: width: 1100 | image_tag: loading: loading, widths: '400, 700, 1100', sizes: '(min-width: 1100px) 33vw, (min-width: 750px) 50vw, 100vw', alt: article.image.alt }}
+    {%- else -%}
+      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </div>
+  <div class="article-card__body">
+    <p class="article-card__meta"><time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{% render 'date-label', date: article_date %}</time>{% if article.tags.size > 0 %} · {{ article.tags.first }}{% endif %}</p>
+    <h2 class="article-card__title"><a href="{{ article.url }}">{{ article.title | escape }}</a></h2>
+    <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 26 }}</p>
+  </div>
+</article>

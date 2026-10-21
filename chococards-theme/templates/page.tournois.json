@@ -1,0 +1,72 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "eyebrow": "Tournois & événements",
+        "holo_suffix": ""
+      }
+    },
+    "events": {
+      "type": "events-list",
+      "blocks": {
+        "ev1": {
+          "type": "event",
+          "settings": {
+            "date": "2026-10-24",
+            "time": "14h",
+            "game": "One Piece",
+            "title": "Store Tournament One Piece",
+            "price": "8 €",
+            "link": ""
+          }
+        },
+        "ev2": {
+          "type": "event",
+          "settings": {
+            "date": "2026-10-25",
+            "time": "14h",
+            "game": "One Piece",
+            "title": "Store Tournament One Piece",
+            "price": "8 €",
+            "link": ""
+          }
+        },
+        "ev3": {
+          "type": "event",
+          "settings": {
+            "date": "2026-10-31",
+            "time": "14h",
+            "game": "One Piece",
+            "title": "Store Tournament One Piece",
+            "price": "8 €",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "ev1",
+        "ev2",
+        "ev3"
+      ],
+      "settings": {
+        "eyebrow": "Inscriptions ouvertes",
+        "heading": "Prochains",
+        "heading_holo": "tournois",
+        "link_label": "",
+        "cta_label": "S’inscrire",
+        "limit": 24,
+        "use_metaobjects": true,
+        "metaobject_type": "evenement",
+        "scheme": "dark",
+        "anchor": "tournois",
+        "padding_top": 48,
+        "padding_bottom": 120
+      }
+    }
+  },
+  "order": [
+    "main",
+    "events"
+  ]
+}

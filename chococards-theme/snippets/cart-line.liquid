@@ -1,0 +1,41 @@
+{%- comment -%}
+  Ligne du panier (tiroir et page panier).
+  - item  : ligne du panier
+  - index : position (1, 2, 3…) utilisée par /cart/change.js
+{%- endcomment -%}
+{%- assign item_title = item.product.title | escape -%}
+<li class="cart-line">
+  <a href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+    {%- if item.image -%}
+      {{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '', widths: '100, 200', sizes: '96px' }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </a>
+  <div>
+    <a class="cart-line__name" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+    {%- unless item.product.has_only_default_variant -%}
+      <p class="cart-line__variant">{{ item.variant.title }}</p>
+    {%- endunless -%}
+    {%- for property in item.properties -%}
+      {%- assign first_char = property.first | slice: 0 -%}
+      {%- if property.last != blank and first_char != '_' -%}
+        <p class="cart-line__variant">{{ property.first }} : {{ property.last }}</p>
+      {%- endif -%}
+    {%- endfor -%}
+    <p class="cart-line__price">
+      {%- if item.original_price != item.final_price -%}<s>{{ item.original_price | money }}</s> {% endif -%}
+      {{ item.final_price | money }}
+      {%- if item.selling_plan_allocation %} · {{ item.selling_plan_allocation.selling_plan.name }}{% endif -%}
+    </p>
+    <div class="qty" role="group" aria-label="{{ 'cart.quantity_for' | t: title: item_title }}">
+      <button type="button" data-qty-change="-1" data-line="{{ index }}" data-focus-key="minus-{{ item.key }}" aria-label="{{ 'cart.decrease' | t: title: item_title }}">{% render 'icon', name: 'minus' %}</button>
+      <input type="number" min="0" inputmode="numeric" value="{{ item.quantity }}" data-line="{{ index }}" aria-label="{{ 'cart.quantity_for' | t: title: item_title }}">
+      <button type="button" data-qty-change="1" data-line="{{ index }}" data-focus-key="plus-{{ item.key }}" aria-label="{{ 'cart.increase' | t: title: item_title }}">{% render 'icon', name: 'plus' %}</button>
+    </div>
+  </div>
+  <div class="cart-line__end">
+    <a class="cart-line__remove" href="{{ item.url_to_remove }}" data-line-remove="{{ index }}" aria-label="{{ 'cart.remove' | t: title: item_title }}">{% render 'icon', name: 'trash' %}</a>
+    <span class="cart-line__total">{{ item.final_line_price | money }}</span>
+  </div>
+</li>

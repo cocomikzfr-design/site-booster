@@ -1,0 +1,147 @@
+{%- comment -%}
+  Footer : présentation + coordonnées, menus, newsletter (formulaire client Shopify),
+  moyens de paiement natifs (shop.enabled_payment_types), liens légaux.
+{%- endcomment -%}
+{%- liquid
+  assign menu_count = 0
+  for block in section.blocks
+    if block.type == 'link_list'
+      assign menu_count = menu_count | plus: 1
+    endif
+  endfor
+  assign legal = linklists[section.settings.legal_menu]
+  assign wordmark = section.settings.wordmark | default: shop.name
+-%}
+<footer class="footer" style="--footer-cols: {{ menu_count | at_least: 1 }}">
+  <div class="container">
+    <div class="footer__top">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'brand' -%}
+            <div class="footer__brand" {{ block.shopify_attributes }}>
+              {% render 'logo', size: 'lg' %}
+              {%- if block.settings.text != blank -%}<div class="rte">{{ block.settings.text }}</div>{%- endif -%}
+              {%- if block.settings.show_contact -%}
+                <ul class="footer__contact" role="list">
+                  {%- if settings.store_address != blank -%}
+                    <li>{% render 'icon', name: 'pin' %}<a href="{{ settings.store_maps_url }}" target="_blank" rel="noopener">{{ settings.store_address }}, {{ settings.store_zip_city }}</a></li>
+                  {%- endif -%}
+                  {%- if settings.store_phone != blank -%}
+                    <li>{% render 'icon', name: 'phone' %}<a href="tel:{{ settings.store_phone | remove: ' ' }}">{{ settings.store_phone }}</a></li>
+                  {%- endif -%}
+                  {%- if settings.store_email != blank -%}
+                    <li>{% render 'icon', name: 'mail' %}<a href="mailto:{{ settings.store_email }}">{{ settings.store_email }}</a></li>
+                  {%- endif -%}
+                  {%- if settings.social_instagram_link != blank -%}
+                    <li>{% render 'icon', name: 'instagram' %}<a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener">{{ settings.social_instagram_handle | default: 'Instagram' }}</a></li>
+                  {%- endif -%}
+                  {%- if settings.social_facebook_link != blank -%}
+                    <li>{% render 'icon', name: 'facebook' %}<a href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener">Facebook</a></li>
+                  {%- endif -%}
+                  {%- if settings.social_tiktok_link != blank -%}
+                    <li>{% render 'icon', name: 'tiktok' %}<a href="{{ settings.social_tiktok_link }}" target="_blank" rel="noopener">TikTok</a></li>
+                  {%- endif -%}
+                </ul>
+              {%- endif -%}
+            </div>
+
+          {%- when 'link_list' -%}
+            {%- assign col_menu = linklists[block.settings.menu] -%}
+            <nav class="footer__col" aria-label="{{ block.settings.heading | default: col_menu.title | escape }}" {{ block.shopify_attributes }}>
+              <h2>{{ block.settings.heading | default: col_menu.title }}</h2>
+              <ul role="list">
+                {%- for link in col_menu.links -%}
+                  <li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            </nav>
+
+          {%- when 'newsletter' -%}
+            <div class="footer__newsletter" {{ block.shopify_attributes }}>
+              <h2>{{ block.settings.heading }}</h2>
+              {%- if block.settings.text != blank -%}<p>{{ block.settings.text }}</p>{%- endif -%}
+              {%- form 'customer', id: 'NewsletterFooter', class: 'newsletter' -%}
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                <label class="visually-hidden" for="NewsletterEmail">{{ 'newsletter.label' | t }}</label>
+                <input id="NewsletterEmail" type="email" name="contact[email]" required autocomplete="email" placeholder="{{ 'newsletter.placeholder' | t }}" value="{{ form.email }}"{% if form.errors %} aria-invalid="true" aria-describedby="NewsletterMsg"{% endif %}>
+                <button class="btn btn--holo btn--sm" type="submit" data-magnetic><span>{{ block.settings.button_label }}</span></button>
+                {%- if form.posted_successfully? -%}
+                  <p class="newsletter__msg is-ok" id="NewsletterMsg" role="status">{{ 'newsletter.success' | t }}</p>
+                {%- elsif form.errors -%}
+                  <p class="newsletter__msg is-error" id="NewsletterMsg" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+                {%- endif -%}
+              {%- endform -%}
+              {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+                <h2 class="footer__pay-title">{{ 'footer.payments' | t }}</h2>
+                <ul class="payments" role="list" aria-label="{{ 'footer.payments' | t }}">
+                  {%- for type in shop.enabled_payment_types -%}
+                    <li>{{ type | payment_type_svg_tag: class: 'pay-icon' }}</li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_wordmark -%}
+      <div class="footer__giant" aria-hidden="true">{{ wordmark }}</div>
+    {%- endif -%}
+
+    <div class="footer__bottom">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }}{% if section.settings.copyright != blank %} — {{ section.settings.copyright }}{% endif %}</p>
+      {%- if legal.links.size > 0 -%}
+        <ul class="footer__legal" role="list">
+          {%- for link in legal.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Afficher les moyens de paiement", "default": true, "info": "Icônes automatiques selon vos moyens de paiement Shopify (Bancontact, Visa, Mastercard, Apple Pay, Google Pay, Klarna…)." },
+    { "type": "checkbox", "id": "show_wordmark", "label": "Grand nom holographique", "default": true },
+    { "type": "text", "id": "wordmark", "label": "Texte du grand nom", "default": "ChocoCards" },
+    { "type": "link_list", "id": "legal_menu", "label": "Menu des liens légaux", "default": "footer", "info": "Mentions légales, CGV, confidentialité, livraison & retours, cookies…" },
+    { "type": "text", "id": "copyright", "label": "Texte après le copyright", "default": "Nivelles, Belgique" }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Présentation",
+      "limit": 1,
+      "settings": [
+        { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Boutique TCG physique et en ligne à Nivelles. Pokémon, One Piece, japonais, cartes à l’unité, goodies et accessoires.</p>" },
+        { "type": "checkbox", "id": "show_contact", "label": "Afficher adresse, téléphone, e-mail et réseaux", "default": true, "info": "Modifiables dans Paramètres du thème > Boutique physique / Réseaux sociaux." }
+      ]
+    },
+    {
+      "type": "link_list",
+      "name": "Menu",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Titre", "default": "Boutique" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Titre", "default": "Newsletter" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Sorties, précommandes et tournois : recevez les infos avant tout le monde." },
+        { "type": "text", "id": "button_label", "label": "Bouton", "default": "S’inscrire" }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

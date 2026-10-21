@@ -1,0 +1,63 @@
+{%- comment -%}
+  Filtres Search & Discovery dans un tiroir (mobile) ou une colonne (ordinateur).
+  - results   : collection ou search
+  - drawer_id : id unique du tiroir
+  - url       : URL d'envoi du formulaire
+  - clear_url : URL « Tout effacer »
+  - terms     : termes de recherche (page recherche)
+{%- endcomment -%}
+{%- assign sort_by = results.sort_by | default: results.default_sort_by -%}
+<side-drawer id="{{ drawer_id }}" class="drawer drawer--left facets-drawer" hidden>
+  <div class="drawer__overlay" data-drawer-close></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="{{ drawer_id }}-title">
+    <div class="drawer__head facets__head">
+      <h2 class="drawer__title" id="{{ drawer_id }}-title">{{ 'collections.filters' | t }}</h2>
+      <button class="icon-btn" type="button" data-drawer-close aria-label="{{ 'collections.close_filters' | t }}">{% render 'icon', name: 'close' %}</button>
+    </div>
+    <form class="facets facets__body" data-facets method="get" action="{{ url }}" data-lenis-prevent>
+      {%- if terms != blank -%}
+        <input type="hidden" name="q" value="{{ terms | escape }}">
+        <input type="hidden" name="options[prefix]" value="last">
+        <input type="hidden" name="type" value="product">
+      {%- endif -%}
+      <div data-facets-filters>
+        <input type="hidden" name="sort_by" value="{{ sort_by }}">
+        {%- for filter in results.filters -%}
+          <details class="facet" data-facet-id="{{ filter.param_name | handle }}"{% if forloop.index <= 3 or filter.active_values.size > 0 %} open{% endif %}>
+            <summary>
+              <span>{{ filter.label }}{% if filter.active_values.size > 0 %} ({{ filter.active_values.size }}){% endif %}</span>
+              {%- render 'icon', name: 'chevron' -%}
+            </summary>
+            {%- if filter.type == 'price_range' -%}
+              {%- assign max_euros = filter.range_max | divided_by: 100.0 | ceil -%}
+              <div class="facet__price">
+                <label>{{ 'collections.price_min' | t }}
+                  <input type="number" name="{{ filter.min_value.param_name }}" min="0" max="{{ max_euros }}" step="1" placeholder="0" inputmode="numeric" value="{% if filter.min_value.value %}{{ filter.min_value.value | divided_by: 100 }}{% endif %}">
+                </label>
+                <label>{{ 'collections.price_max' | t }}
+                  <input type="number" name="{{ filter.max_value.param_name }}" min="0" max="{{ max_euros }}" step="1" placeholder="{{ max_euros }}" inputmode="numeric" value="{% if filter.max_value.value %}{{ filter.max_value.value | divided_by: 100 }}{% endif %}">
+                </label>
+              </div>
+            {%- else -%}
+              <div class="facet__list">
+                {%- for value in filter.values -%}
+                  <label class="facet__option">
+                    <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}"{% if value.active %} checked{% endif %}{% if value.count == 0 and value.active == false %} disabled{% endif %}>
+                    <span class="facet__check">{% render 'icon', name: 'check' %}</span>
+                    <span>{{ value.label }}</span>
+                    <span class="facet__count">{{ value.count }}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </details>
+        {%- endfor -%}
+      </div>
+      <noscript><button class="btn btn--holo btn--sm" type="submit">{{ 'collections.apply' | t }}</button></noscript>
+    </form>
+    <div class="facets__foot">
+      <a class="btn btn--ghost btn--sm" href="{{ clear_url }}" data-facet-link>{{ 'collections.clear_all' | t }}</a>
+      <button class="btn btn--holo btn--sm" type="button" data-drawer-close>{{ 'collections.show_results' | t }}</button>
+    </div>
+  </div>
+</side-drawer>

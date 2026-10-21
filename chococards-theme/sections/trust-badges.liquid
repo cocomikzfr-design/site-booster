@@ -1,0 +1,75 @@
+{%- comment -%} Arguments de réassurance avec icônes animées (blocs). {%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign deep = false
+  if s.scheme == 'light'
+    assign deep = true
+  endif
+-%}
+<section class="section trust{% if deep %} panel panel--light{% endif %}" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px" aria-label="{{ s.label | escape }}">
+  <div class="container">
+    <h2 class="visually-hidden">{{ s.label }}</h2>
+    <ul class="trust__grid" role="list" data-reveal-stagger>
+      {%- for block in section.blocks -%}
+        <li class="trust__item" {{ block.shopify_attributes }}>
+          {% render 'trust-icon', name: block.settings.icon %}
+          <h3>{{ block.settings.title }}</h3>
+          {%- if block.settings.text != blank -%}<p>{{ block.settings.text }}</p>{%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Réassurance",
+  "class": "section-trust",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "label", "label": "Nom de la zone (lecteurs d'écran)", "default": "Nos engagements" },
+    {
+      "type": "select", "id": "scheme", "label": "Fond", "default": "dark",
+      "options": [ { "value": "dark", "label": "Chocolat" }, { "value": "light", "label": "Crème" } ]
+    },
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Argument",
+      "settings": [
+        {
+          "type": "select", "id": "icon", "label": "Icône animée", "default": "truck",
+          "options": [
+            { "value": "truck", "label": "Camion (expédition)" },
+            { "value": "shield", "label": "Bouclier (authenticité)" },
+            { "value": "lock", "label": "Cadenas (paiement)" },
+            { "value": "store", "label": "Boutique (retrait)" },
+            { "value": "chat", "label": "Bulle (service client)" },
+            { "value": "star", "label": "Étoile" },
+            { "value": "gift", "label": "Cadeau" },
+            { "value": "card", "label": "Carte" }
+          ]
+        },
+        { "type": "text", "id": "title", "label": "Titre", "default": "Expédition rapide" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Vos commandes partent vite et bien protégées partout en Belgique." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Réassurance",
+      "blocks": [
+        { "type": "badge", "settings": { "icon": "truck", "title": "Expédition rapide", "text": "Vos commandes partent vite et bien protégées partout en Belgique." } },
+        { "type": "badge", "settings": { "icon": "shield", "title": "Produits authentiques", "text": "Uniquement des produits officiels, issus de distributeurs agréés." } },
+        { "type": "badge", "settings": { "icon": "lock", "title": "Paiement sécurisé", "text": "Bancontact, cartes, Apple Pay, Google Pay, Klarna… 100 % sécurisé." } },
+        { "type": "badge", "settings": { "icon": "store", "title": "Retrait en boutique", "text": "Gratuit, à Nivelles, dès que votre commande est prête." } },
+        { "type": "badge", "settings": { "icon": "chat", "title": "Service client", "text": "Une question ? On vous répond vite, par mail, téléphone ou en boutique." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

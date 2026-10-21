@@ -1,0 +1,5 @@
+{%- comment -%} Compteur du panier (re-rendu par la section cart-icon-bubble) {%- endcomment -%}
+<span class="visually-hidden">{{ 'cart.title' | t }} – {{ 'cart.count' | t: count: cart.item_count }}</span>
+{%- if cart.item_count > 0 -%}
+  <span class="cart-btn__count" aria-hidden="true">{% if cart.item_count < 100 %}{{ cart.item_count }}{% else %}99+{% endif %}</span>
+{%- endif -%}

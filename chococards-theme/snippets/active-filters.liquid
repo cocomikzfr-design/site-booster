@@ -1,0 +1,19 @@
+{%- comment -%} Filtres actifs (pastilles cliquables pour les retirer). - results, clear_url {%- endcomment -%}
+{%- assign active_count = 0 -%}
+{%- for filter in results.filters -%}
+  {%- for value in filter.active_values -%}
+    {%- assign active_count = active_count | plus: 1 -%}
+    <a href="{{ value.url_to_remove }}" data-facet-link aria-label="{{ 'collections.remove_filter' | t: filter: value.label | escape }}">{{ filter.label }} : {{ value.label }}{% render 'icon', name: 'close' %}</a>
+  {%- endfor -%}
+  {%- if filter.type == 'price_range' -%}
+    {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+      {%- assign active_count = active_count | plus: 1 -%}
+      {%- assign min_price = filter.min_value.value | default: 0 | money -%}
+      {%- assign max_price = filter.max_value.value | default: filter.range_max | money -%}
+      <a href="{{ filter.url_to_remove }}" data-facet-link>{{ filter.label }} : {{ min_price }} – {{ max_price }}{% render 'icon', name: 'close' %}</a>
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if active_count > 0 -%}
+  <a href="{{ clear_url }}" data-facet-link>{{ 'collections.clear_all' | t }}</a>
+{%- endif -%}

@@ -1,0 +1,33 @@
+{%- comment -%}
+  Affiche une date en toutes lettres, traduite (ex. « samedi 24 octobre 2026 »).
+  - date   : date (texte AAAA-MM-JJ ou objet date)
+  - part   : 'day' | 'month' | 'month_short' | 'weekday' | 'weekday_short' | 'full' (défaut) | 'long' (avec le jour de la semaine)
+{%- endcomment -%}
+{%- liquid
+  assign iso = date | date: '%Y-%m-%d'
+  assign noon = iso | append: 'T12:00:00'
+  assign d = noon | date: '%d' | plus: 0
+  assign m = noon | date: '%m' | plus: 0 | minus: 1
+  assign y = noon | date: '%Y'
+  assign w = noon | date: '%w' | plus: 0
+  assign months = 'general.dates.months' | t | split: ','
+  assign months_short = 'general.dates.months_short' | t | split: ','
+  assign weekdays = 'general.dates.weekdays' | t | split: ','
+  assign weekdays_short = 'general.dates.weekdays_short' | t | split: ','
+  case part
+    when 'day'
+      echo d
+    when 'month'
+      echo months[m]
+    when 'month_short'
+      echo months_short[m]
+    when 'weekday'
+      echo weekdays[w]
+    when 'weekday_short'
+      echo weekdays_short[w]
+    when 'long'
+      echo weekdays[w] | append: ' ' | append: d | append: ' ' | append: months[m] | append: ' ' | append: y
+    else
+      echo d | append: ' ' | append: months[m] | append: ' ' | append: y
+  endcase
+-%}

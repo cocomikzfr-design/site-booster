@@ -1,0 +1,15 @@
+{%- comment -%} Ligne de résultat de recherche (produit). - product {%- endcomment -%}
+{%- capture status -%}{%- render 'product-status', product: product -%}{%- endcapture -%}
+{%- assign status_key = 'products.status.' | append: status -%}
+<a class="search-item" href="{{ product.url }}">
+  {%- if product.featured_media -%}
+    {{ product.featured_media | image_url: width: 120, height: 120, crop: 'center' | image_tag: loading: 'lazy', alt: '' }}
+  {%- else -%}
+    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+  {%- endif -%}
+  <span>
+    <span class="search-item__name">{{ product.title | escape }}</span><br>
+    <span class="search-item__meta">{% if product.type != blank %}{{ product.type }} · {% endif %}{{ status_key | t }}{% if product.metafields.custom.langue.value != blank %} · {{ product.metafields.custom.langue.value }}{% endif %}</span>
+  </span>
+  <span class="search-item__price">{{ product.price | money }}</span>
+</a>

@@ -1,0 +1,77 @@
+{%- comment -%} « Rejoignez la communauté » : texte + mosaïque de publications Instagram (blocs = images). {%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign anchor = s.anchor | default: section.id | handleize
+  assign deep = false
+  if s.scheme == 'light'
+    assign deep = true
+  endif
+  assign insta = s.link | default: settings.social_instagram_link
+  assign title_id = 'Title-' | append: section.id
+-%}
+<section class="section community{% if deep %} panel panel--light{% endif %}" id="{{ anchor }}" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px" aria-labelledby="{{ title_id }}">
+  <div class="container community__grid">
+    <div class="community__text" data-reveal>
+      <p class="eyebrow">{% render 'icon', name: 'instagram' %}{{ settings.social_instagram_handle }}</p>
+      <h2 class="section-title" id="{{ title_id }}">{{ s.heading }} <span class="holo-text{% if deep %} holo-text--deep{% endif %}">{{ s.heading_holo }}</span></h2>
+      {%- if s.text != blank -%}<div class="section-lead rte">{{ s.text }}</div>{%- endif -%}
+      {%- if s.button_label != blank -%}
+        <a class="btn {% if deep %}btn--dark{% else %}btn--holo{% endif %}" href="{{ insta }}" target="_blank" rel="noopener" data-magnetic>{% render 'icon', name: 'instagram' %}<span>{{ s.button_label }}</span></a>
+      {%- endif -%}
+    </div>
+    <div class="insta-grid" data-reveal-stagger>
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <a class="insta-post holo-card" href="{{ b.link | default: insta }}" target="_blank" rel="noopener"{% if settings.enable_holo %} data-tilt data-tilt-max="8"{% endif %} {{ block.shopify_attributes }}>
+          {%- if b.image -%}
+            {%- assign alt = b.image.alt | default: s.heading | escape -%}
+            {{ b.image | image_url: width: 600, height: 600, crop: 'center' | image_tag: loading: 'lazy', widths: '200, 400, 600', sizes: '(min-width: 900px) 17vw, 33vw', alt: alt }}
+          {%- else -%}
+            {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+          <span class="insta-post__over" aria-hidden="true">{% render 'icon', name: 'instagram' %}</span>
+          <span class="visually-hidden">{{ 'sections.community.post' | t }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Communauté Instagram",
+  "class": "section-community",
+  "max_blocks": 9,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Rejoignez la communauté" },
+    { "type": "text", "id": "heading_holo", "label": "Fin du titre (holographique)", "default": "ChocoCards" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Arrivages, ouvertures de boosters, résultats de tournois et pépites du moment : suivez la vie de la boutique au quotidien et partagez vos plus belles pulls avec nous !</p>" },
+    { "type": "text", "id": "button_label", "label": "Bouton", "default": "Suivre @chococards.be" },
+    { "type": "url", "id": "link", "label": "Lien (vide = Instagram des paramètres du thème)" },
+    {
+      "type": "select", "id": "scheme", "label": "Fond", "default": "light",
+      "options": [ { "value": "dark", "label": "Chocolat" }, { "value": "light", "label": "Crème" } ]
+    },
+    { "type": "text", "id": "anchor", "label": "Ancre (lien #…)", "default": "communaute" },
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 }
+  ],
+  "blocks": [
+    {
+      "type": "post",
+      "name": "Publication",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "url", "id": "link", "label": "Lien de la publication (optionnel)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Communauté Instagram",
+      "blocks": [ { "type": "post" }, { "type": "post" }, { "type": "post" }, { "type": "post" }, { "type": "post" }, { "type": "post" } ]
+    }
+  ]
+}
+{% endschema %}

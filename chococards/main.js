@@ -87,7 +87,7 @@
     const disabledLabel = { rupture: 'Épuisé', bientot: 'Bientôt', boutique: 'En boutique' };
     const button = st.achat
       ? `<button class="add-btn" type="button" data-add="${esc(p.id)}" aria-label="${esc(st.bouton)} : ${esc(p.nom)}">${icon('plus')}<span>${short[p.statut] || 'Ajouter'}</span></button>`
-      : `<button class="add-btn" type="button" disabled aria-label="${esc(st.label)}">${disabledLabel[p.statut] || st.label}</button>`;
+      : `<button class="add-btn" type="button" disabled>${disabledLabel[p.statut] || st.label}</button>`;
     return `
       <article class="product-card holo-card${light ? ' product-card--light' : ''}" data-tilt data-tilt-max="9" data-product="${esc(p.id)}">
         <div class="product-card__media">
@@ -333,7 +333,8 @@
   /* ---------- 03. Scroll fluide + ancres ---------- */
 
   function initSmoothScroll() {
-    if (!OPTIONS.scrollFluide || !motionOK || typeof window.Lenis !== 'function') return;
+    // Sur écran tactile le défilement natif est déjà fluide : pas de Lenis
+    if (!OPTIONS.scrollFluide || !motionOK || !finePointer || typeof window.Lenis !== 'function') return;
     lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 1 });
     root.classList.add('lenis');
     if (window.gsap && window.ScrollTrigger) {
@@ -391,11 +392,12 @@
   function initHeader() {
     const header = $('[data-header]');
     if (!header) return;
-    const setHeight = () => root.style.setProperty('--header-h', `${header.offsetHeight}px`);
-    setHeight();
-    if ('ResizeObserver' in window) new ResizeObserver(setHeight).observe(header);
+    // ResizeObserver se déclenche après la mise en page : pas de calcul forcé au chargement
+    const setHeight = (h) => root.style.setProperty('--header-h', `${Math.round(h)}px`);
+    if ('ResizeObserver' in window) new ResizeObserver(([e]) => setHeight(e.borderBoxSize?.[0]?.blockSize ?? header.offsetHeight)).observe(header);
+    else setHeight(header.offsetHeight);
     const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 30);
-    onScroll();
+    requestAnimationFrame(onScroll);
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
@@ -853,6 +855,11 @@
 
   /* Bandeau défilant infini : on duplique le contenu pour une boucle sans couture */
   function initMarquee() {
+    // Fait quand le navigateur est libre (évite un calcul de mise en page au chargement)
+    const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 200));
+    idle(fillMarquees, { timeout: 1500 });
+  }
+  function fillMarquees() {
     $$('[data-marquee]').forEach((marquee) => {
       const track = $('.marquee__track', marquee);
       if (!track || marquee.dataset.ready) return;
@@ -1050,7 +1057,11 @@
       next?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: motionOK ? 'smooth' : 'auto' }));
       track.addEventListener('scroll', update, { passive: true });
       window.addEventListener('resize', update);
-      update();
+      // Première mesure quand le carrousel approche de l'écran
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); update(); } }, { rootMargin: '200px' });
+        io.observe(track);
+      } else update();
 
       // Glisser à la souris
       if (!finePointer) return;
@@ -1088,9 +1099,22 @@
     }
     gsap.registerPlugin(ScrollTrigger);
 
+    // Chaque animation n'est créée que lorsque sa section approche de l'écran :
+    // le chargement de la page reste léger (pas de calculs ScrollTrigger inutiles).
+    const whenNear = (el, fn) => {
+      if (!el) return;
+      if (!('IntersectionObserver' in window)) { fn(); return; }
+      const io = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        fn();
+      }, { rootMargin: '120% 0px 120% 0px' });
+      io.observe(el);
+    };
+
     // --- Booster qui se déchire et cartes en éventail ---
     const section = $('[data-booster-section]');
-    if (section) {
+    if (section) whenNear(section, () => {
       const booster = $('[data-booster]', section);
       const top = $('[data-booster-top]', section);
       const cardsWrap = $('[data-booster-cards]', section);
@@ -1133,21 +1157,20 @@
             pin: $('[data-booster-pin]', section), scrub: 0.8, animation: tl,
             anticipatePin: 1, invalidateOnRefresh: true
           });
-          return () => { tl.progress(0).kill(); gsap.set([booster, top, burst, hint, ...cards], { clearProps: 'all' }); };
+          // gsap.matchMedia annule tout seul animations et ScrollTriggers au changement de format
         });
         mm.add('(max-width: 899px)', () => {
           const tl = build();
           ScrollTrigger.create({ trigger: stage, start: 'top 70%', once: true, onEnter: () => tl.play() });
-          return () => { tl.progress(0).kill(); gsap.set([booster, top, burst, hint, ...cards], { clearProps: 'all' }); };
         });
       }
-    }
+    });
 
     // --- Ligne de la timeline qui se dessine au scroll ---
     const progress = $('[data-timeline-progress]');
     if (progress) {
       if (!motionOK) progress.style.transform = 'none';
-      else {
+      else whenNear($('.timeline-wrap'), () => {
         const mm = gsap.matchMedia();
         const make = (prop) => () => {
           gsap.fromTo(progress, { [prop]: 0 }, {
@@ -1157,36 +1180,41 @@
         };
         mm.add('(min-width: 900px)', make('scaleX'));
         mm.add('(max-width: 899px)', make('scaleY'));
-      }
+      });
     }
 
     if (!motionOK) return;
 
     // --- Parallaxe des bannières ---
-    $$('[data-parallax]').forEach((img) => {
+    $$('[data-parallax]').forEach((img) => whenNear(img.parentElement, () => {
       gsap.fromTo(img, { yPercent: -5 }, {
         yPercent: 5, ease: 'none',
         scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true }
       });
-    });
+    }));
 
-    // --- Le contenu du hero s'efface doucement en scrollant ---
+    // --- Le contenu du hero s'efface doucement en scrollant (sans GSAP, simple écouteur) ---
+    const hero = $('[data-hero]');
     const heroInner = $('.hero__inner');
-    if (heroInner) {
-      gsap.to(heroInner, {
-        yPercent: -12, opacity: 0.15, ease: 'none',
-        scrollTrigger: { trigger: '[data-hero]', start: 'top top', end: 'bottom top', scrub: true }
-      });
+    if (hero && heroInner) {
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const p = Math.min(1, Math.max(0, window.scrollY / (hero.offsetHeight || 1)));
+        heroInner.style.transform = p ? `translate3d(0, ${(-12 * p).toFixed(2)}%, 0)` : '';
+        heroInner.style.opacity = p ? String(1 - 0.85 * p) : '';
+      };
+      window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
     }
 
     // --- Le grand "30" glisse légèrement ---
     const thirty = $('.anniversary__bg');
-    if (thirty) {
+    if (thirty) whenNear(thirty.closest('section'), () => {
       gsap.fromTo(thirty, { xPercent: -8 }, {
         xPercent: 8, ease: 'none',
         scrollTrigger: { trigger: '.anniversary', start: 'top bottom', end: 'bottom top', scrub: true }
       });
-    }
+    });
 
     // Recalcul après chargement complet (images, polices)
     window.addEventListener('load', () => ScrollTrigger.refresh());
@@ -1426,17 +1454,11 @@
     return { color, mask };
   }
 
-  function hasWebGL() {
-    try {
-      const c = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')));
-    } catch { return false; }
-  }
 
   async function initHero3D() {
     const hero = $('[data-hero]');
     const canvas = $('[data-hero-canvas]');
-    if (!hero || !canvas || !OPTIONS.hero3d || !motionOK || !hasWebGL()) return;
+    if (!hero || !canvas || !OPTIONS.hero3d || !motionOK || !('WebGLRenderingContext' in window)) return;
     const lite = mqMobile.matches || (navigator.hardwareConcurrency || 8) <= 4 || navigator.connection?.saveData === true;
 
     let THREE;
@@ -1444,7 +1466,14 @@
     catch (err) { console.warn('[ChocoCards] Three.js n’a pas pu être chargé, on garde la version légère.', err); return; }
     try { await Promise.race([document.fonts.load('800 100px "Bricolage Grotesque"'), wait(1500)]); } catch { /* police non bloquante */ }
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: !lite, alpha: true, powerPreference: 'high-performance' });
+    // Pas de test WebGL préalable (coûteux) : si la création échoue, la version CSS reste affichée
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: !lite, alpha: true, powerPreference: 'high-performance' });
+    } catch (err) {
+      console.info('[ChocoCards] WebGL indisponible : version légère conservée.');
+      return;
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lite ? 1.5 : 2));
     renderer.setClearColor(0x000000, 0);
     const scene = new THREE.Scene();
@@ -1648,18 +1677,23 @@
     initSliders();
     initGsapAnimations();
 
-    // Entrée du hero
-    const hero = $('[data-hero]');
+    // Ordre d'entrée des éléments du hero (animation CSS)
     $$('[data-hero-item]').forEach((el, i) => el.style.setProperty('--i', i));
-    requestAnimationFrame(() => hero?.classList.add('is-ready'));
 
-    // 4. La 3D arrive en dernier, quand le navigateur est disponible
-    const startHero = () => {
-      const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 300));
-      idle(() => initHero3D(), { timeout: 2000 });
-    };
-    if (document.readyState === 'complete') startHero();
-    else window.addEventListener('load', startHero, { once: true });
+    // 4. La 3D arrive en dernier : quand le navigateur est disponible (ordinateur)
+    //    ou au premier geste sur mobile (affichage initial plus rapide ; les cartes CSS
+    //    sont visibles en attendant).
+    let heroStarted = false;
+    const startHero = () => { if (heroStarted) return; heroStarted = true; initHero3D(); };
+    if (mqMobile.matches) {
+      const events = ['touchstart', 'scroll', 'pointerdown', 'keydown'];
+      const once = () => { events.forEach((ev) => window.removeEventListener(ev, once)); startHero(); };
+      events.forEach((ev) => window.addEventListener(ev, once, { passive: true }));
+    } else {
+      const idle = () => (window.requestIdleCallback || ((cb) => setTimeout(cb, 300)))(startHero, { timeout: 2000 });
+      if (document.readyState === 'complete') idle();
+      else window.addEventListener('load', idle, { once: true });
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

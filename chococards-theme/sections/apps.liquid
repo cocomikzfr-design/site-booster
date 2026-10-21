@@ -1,0 +1,15 @@
+{%- comment -%} Section libre pour les blocs d'applications. {%- endcomment -%}
+<div class="container section" style="--pt: 48px; --pb: 48px">
+  {%- for block in section.blocks -%}
+    {% render block %}
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Applications",
+  "class": "section-apps",
+  "blocks": [ { "type": "@app" } ],
+  "presets": [ { "name": "Applications" } ]
+}
+{% endschema %}

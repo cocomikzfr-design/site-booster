@@ -1,0 +1,33 @@
+{%- comment -%}
+  Élément de la timeline « Prochaines sorties ».
+  - date (AAAA-MM-JJ ou objet date), jeu, titre, texte, lien, color (optionnel)
+  - link_label : texte du lien
+  - index : position (délai d'animation)
+  - attrs : attributs de l'éditeur (block.shopify_attributes)
+{%- endcomment -%}
+{%- liquid
+  assign iso = date | date: '%Y-%m-%d'
+  assign today_s = 'now' | date: '%Y-%m-%d' | date: '%s' | plus: 0
+  assign day_s = iso | date: '%s' | plus: 0
+  assign diff = day_s | minus: today_s | divided_by: 86400
+  assign href = lien | default: routes.collections_url
+-%}
+<li class="release" style="--i: {{ index }}" data-date="{{ iso }}" data-hide-past {{ attrs }}>
+  <span class="release__dot" aria-hidden="true"></span>
+  <a class="release__card" href="{{ href }}">
+    <span class="release__date">
+      <span class="release__day">{% render 'date-label', date: iso, part: 'day' %}</span>
+      <span class="release__month">{% render 'date-label', date: iso, part: 'month_short' %}</span>
+      <span class="release__weekday">{% render 'date-label', date: iso, part: 'weekday' %}</span>
+    </span>
+    <span class="release__meta">
+      {%- if jeu != blank -%}<span class="game-tag" data-game="{{ jeu | escape }}"{% if color != blank %} style="--tag: {{ color }}"{% endif %}>{{ jeu }}</span>{%- endif -%}
+      <span class="days-left" data-days-left>
+        {%- if diff <= 0 -%}{{ 'general.dates.today' | t }}{%- elsif diff == 1 -%}{{ 'general.dates.tomorrow' | t }}{%- else -%}{{ 'general.dates.days_prefix' | t }}{{ diff }}{%- endif -%}
+      </span>
+    </span>
+    <h3 class="release__title">{{ titre }}</h3>
+    {%- if texte != blank -%}<p class="release__text">{{ texte }}</p>{%- endif -%}
+    {%- if link_label != blank -%}<span class="release__link">{{ link_label }}{% render 'icon', name: 'arrow' %}</span>{%- endif -%}
+  </a>
+</li>

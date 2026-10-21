@@ -1,0 +1,41 @@
+{%- comment -%} Produits similaires (Product Recommendations API, chargés quand la section approche de l'écran). {%- endcomment -%}
+<script src="{{ 'product.js' | asset_url }}" type="module"></script>
+<script src="{{ 'carousels.js' | asset_url }}" type="module"></script>
+{%- assign s = section.settings -%}
+<product-recommendations class="section products" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px" data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ s.limit }}&intent=related">
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <product-slider>
+      <div class="container">
+        {%- capture extra -%}
+          <div class="slider-nav">
+            <button class="round-btn" type="button" data-slider-prev aria-label="{{ 'sections.slider.previous' | t }}">{% render 'icon', name: 'arrow-left' %}</button>
+            <button class="round-btn" type="button" data-slider-next aria-label="{{ 'sections.slider.next' | t }}">{% render 'icon', name: 'arrow' %}</button>
+          </div>
+        {%- endcapture -%}
+        {% render 'section-heading', eyebrow: s.eyebrow, heading: s.heading, heading_holo: s.heading_holo, align: 'split', extra: extra %}
+      </div>
+      <div class="slider" data-slider-track tabindex="0" role="region" aria-label="{{ s.heading | escape }}">
+        {%- for product in recommendations.products -%}
+          {% render 'product-card', product: product, sizes: '(min-width: 750px) 300px, 70vw' %}
+        {%- endfor -%}
+      </div>
+      <div class="container"><div class="slider-progress"><span data-slider-progress></span></div></div>
+    </product-slider>
+  {%- endif -%}
+</product-recommendations>
+
+{% schema %}
+{
+  "name": "Produits similaires",
+  "class": "section-recommendations",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "À découvrir aussi" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Vous aimerez" },
+    { "type": "text", "id": "heading_holo", "label": "Fin du titre (holographique)", "default": "aussi" },
+    { "type": "range", "id": "limit", "label": "Nombre de produits", "min": 2, "max": 10, "step": 1, "default": 8 },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 }
+  ],
+  "presets": [ { "name": "Produits similaires" } ]
+}
+{% endschema %}

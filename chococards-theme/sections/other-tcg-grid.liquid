@@ -1,0 +1,76 @@
+{%- comment -%} « Découvrez nos autres TCG » : tuiles colorées inclinables (blocs = jeux). {%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign anchor = s.anchor | default: section.id | handleize
+  assign deep = false
+  if s.scheme == 'light'
+    assign deep = true
+  endif
+  assign title_id = 'Title-' | append: section.id
+-%}
+<section class="section other-tcg{% if deep %} panel panel--light{% endif %}" id="{{ anchor }}" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px; --tcg-cols: {{ section.blocks.size | at_most: 6 | at_least: 1 }}" aria-labelledby="{{ title_id }}">
+  <div class="container">
+    {% render 'section-heading', eyebrow: s.eyebrow, heading: s.heading, heading_holo: s.heading_holo, deep: deep, align: 'center', id: title_id %}
+    <div class="tcg-grid" data-reveal-stagger>
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <a class="tcg-card holo-card" href="{{ b.link | default: routes.collections_url }}"{% if settings.enable_holo %} data-tilt data-tilt-max="10"{% endif %} style="--c1: {{ b.color_1 }}; --c2: {{ b.color_2 }}" {{ block.shopify_attributes }}>
+          {%- if b.image -%}
+            {{ b.image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '300, 500, 700', sizes: '(min-width: 1100px) 20vw, 50vw', alt: '' }}
+          {%- endif -%}
+          <span class="tcg-card__shade" aria-hidden="true"></span>
+          <span class="tcg-card__arrow" aria-hidden="true">{% render 'icon', name: 'arrow' %}</span>
+          <h3 class="tcg-card__name">{{ b.title }}</h3>
+          {%- if b.text != blank -%}<p class="tcg-card__text">{{ b.text }}</p>{%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Autres TCG",
+  "class": "section-other-tcg",
+  "max_blocks": 10,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Plus de jeux, plus de fun" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Découvrez nos" },
+    { "type": "text", "id": "heading_holo", "label": "Fin du titre (holographique)", "default": "autres TCG" },
+    {
+      "type": "select", "id": "scheme", "label": "Fond", "default": "light",
+      "options": [ { "value": "dark", "label": "Chocolat" }, { "value": "light", "label": "Crème" } ]
+    },
+    { "type": "text", "id": "anchor", "label": "Ancre (lien #…)", "default": "autres-tcg" },
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 }
+  ],
+  "blocks": [
+    {
+      "type": "tcg",
+      "name": "Jeu",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Nom", "default": "Dragon Ball" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Fusion World & Masters" },
+        { "type": "url", "id": "link", "label": "Lien" },
+        { "type": "image_picker", "id": "image", "label": "Image (optionnelle)" },
+        { "type": "color", "id": "color_1", "label": "Couleur 1", "default": "#FF8A00" },
+        { "type": "color", "id": "color_2", "label": "Couleur 2", "default": "#FFD43B" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Autres TCG",
+      "blocks": [
+        { "type": "tcg", "settings": { "title": "Dragon Ball", "text": "Fusion World & Masters", "color_1": "#FF8A00", "color_2": "#FFD43B" } },
+        { "type": "tcg", "settings": { "title": "Digimon", "text": "Digimon Card Game", "color_1": "#2F80ED", "color_2": "#56CCF2" } },
+        { "type": "tcg", "settings": { "title": "Gundam", "text": "Gundam Card Game", "color_1": "#E63946", "color_2": "#457B9D" } },
+        { "type": "tcg", "settings": { "title": "Lorcana", "text": "Disney Lorcana", "color_1": "#7B2FF7", "color_2": "#F5C542" } },
+        { "type": "tcg", "settings": { "title": "Riftbound", "text": "Le TCG League of Legends", "color_1": "#0BC5EA", "color_2": "#C89B3C" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,604 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-3d",
+      "settings": {}
+    },
+    "anniversary": {
+      "type": "featured-collection-3d",
+      "settings": {
+        "collection": "",
+        "limit": 6,
+        "eyebrow": "Événement collector",
+        "heading": "Pokémon fête ses",
+        "heading_holo": "30 ans",
+        "background_text": "30",
+        "show_note": true,
+        "note": "Vendue exclusivement en boutique physique — Rue du Géant 15, Nivelles",
+        "autoplay": true,
+        "scheme": "light",
+        "anchor": "pokemon-30-ans",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "categories": {
+      "type": "category-grid",
+      "blocks": {
+        "cat1": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Pokémon",
+            "text": "Displays, boosters, ETB et coffrets",
+            "link": "",
+            "hue": 45
+          }
+        },
+        "cat2": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "One Piece",
+            "text": "Displays, boosters et starter decks",
+            "link": "",
+            "hue": 0
+          }
+        },
+        "cat3": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Japonais",
+            "text": "Boosters et displays importés du Japon",
+            "link": "",
+            "hue": 340
+          }
+        },
+        "cat4": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Cartes à l’unité",
+            "text": "La carte qui manque à votre collection",
+            "link": "",
+            "hue": 265
+          }
+        },
+        "cat5": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Cartes gradées",
+            "text": "Des cartes certifiées et protégées",
+            "link": "",
+            "hue": 190
+          }
+        },
+        "cat6": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Goodies",
+            "text": "Peluches, figurines et produits dérivés",
+            "link": "",
+            "hue": 320
+          }
+        },
+        "cat7": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Accessoires",
+            "text": "Sleeves, classeurs, protections acryliques",
+            "link": "",
+            "hue": 160
+          }
+        },
+        "cat8": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Autres TCG",
+            "text": "Dragon Ball, Digimon, Lorcana, Gundam…",
+            "link": "",
+            "hue": 220
+          }
+        },
+        "cat9": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Précommandes",
+            "text": "Réservez les prochaines sorties",
+            "link": "",
+            "hue": 30
+          }
+        }
+      },
+      "block_order": [
+        "cat1",
+        "cat2",
+        "cat3",
+        "cat4",
+        "cat5",
+        "cat6",
+        "cat7",
+        "cat8",
+        "cat9"
+      ],
+      "settings": {
+        "eyebrow": "Nos univers",
+        "heading": "Explorez la",
+        "heading_holo": "boutique",
+        "show_numbers": true,
+        "scheme": "dark",
+        "anchor": "explorer",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "preorder": {
+      "type": "preorder-countdown",
+      "settings": {
+        "eyebrow": "Précommande ouverte",
+        "heading": "ME06 —",
+        "heading_holo": "Règne Delta",
+        "release_date": "2026-11-06",
+        "release_time": "00:00",
+        "timezone": "+01:00",
+        "release_label": "Sortie le",
+        "product": "",
+        "animate_booster": true,
+        "anchor": "precommande"
+      }
+    },
+    "releases": {
+      "type": "release-timeline",
+      "blocks": {
+        "rel1": {
+          "type": "release",
+          "settings": {
+            "date": "2026-10-30",
+            "game": "One Piece",
+            "title": "EB-05",
+            "text": "Extra Booster",
+            "link": ""
+          }
+        },
+        "rel2": {
+          "type": "release",
+          "settings": {
+            "date": "2026-10-30",
+            "game": "Gundam",
+            "title": "GD-06",
+            "text": "Nouvelle extension",
+            "link": ""
+          }
+        },
+        "rel3": {
+          "type": "release",
+          "settings": {
+            "date": "2026-11-06",
+            "game": "Pokémon",
+            "title": "ME06 — Règne Delta",
+            "text": "Displays, ETB et boosters",
+            "link": ""
+          }
+        },
+        "rel4": {
+          "type": "release",
+          "settings": {
+            "date": "2026-11-20",
+            "game": "One Piece",
+            "title": "OP-18",
+            "text": "Nouvelle extension",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "rel1",
+        "rel2",
+        "rel3",
+        "rel4"
+      ],
+      "settings": {
+        "eyebrow": "Calendrier TCG",
+        "heading": "Prochaines sorties",
+        "heading_holo": "TCG",
+        "link_label": "Voir le calendrier complet",
+        "link": "",
+        "item_link_label": "Voir les produits",
+        "limit": 4,
+        "show_past": false,
+        "use_metaobjects": true,
+        "metaobject_type": "sortie_tcg",
+        "scheme": "light",
+        "anchor": "sorties",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "pokemon": {
+      "type": "product-carousel",
+      "settings": {
+        "collection": "",
+        "limit": 12,
+        "eyebrow": "Pokémon",
+        "heading": "L’univers",
+        "heading_holo": "Pokémon",
+        "view_all_label": "Tout voir",
+        "scheme": "dark",
+        "anchor": "pokemon",
+        "padding_top": 120,
+        "padding_bottom": 64
+      }
+    },
+    "onepiece": {
+      "type": "product-carousel",
+      "settings": {
+        "collection": "",
+        "limit": 12,
+        "eyebrow": "One Piece",
+        "heading": "One Piece",
+        "heading_holo": "Card Game",
+        "view_all_label": "Tout voir",
+        "scheme": "dark",
+        "anchor": "one-piece",
+        "padding_top": 32,
+        "padding_bottom": 120
+      }
+    },
+    "other_tcg": {
+      "type": "other-tcg-grid",
+      "blocks": {
+        "tcg1": {
+          "type": "tcg",
+          "settings": {
+            "title": "Dragon Ball",
+            "text": "Fusion World & Masters",
+            "link": "",
+            "color_1": "#FF8A00",
+            "color_2": "#FFD43B"
+          }
+        },
+        "tcg2": {
+          "type": "tcg",
+          "settings": {
+            "title": "Digimon",
+            "text": "Digimon Card Game",
+            "link": "",
+            "color_1": "#2F80ED",
+            "color_2": "#56CCF2"
+          }
+        },
+        "tcg3": {
+          "type": "tcg",
+          "settings": {
+            "title": "Gundam",
+            "text": "Gundam Card Game",
+            "link": "",
+            "color_1": "#E63946",
+            "color_2": "#457B9D"
+          }
+        },
+        "tcg4": {
+          "type": "tcg",
+          "settings": {
+            "title": "Lorcana",
+            "text": "Disney Lorcana",
+            "link": "",
+            "color_1": "#7B2FF7",
+            "color_2": "#F5C542"
+          }
+        },
+        "tcg5": {
+          "type": "tcg",
+          "settings": {
+            "title": "Riftbound",
+            "text": "Le TCG League of Legends",
+            "link": "",
+            "color_1": "#0BC5EA",
+            "color_2": "#C89B3C"
+          }
+        }
+      },
+      "block_order": [
+        "tcg1",
+        "tcg2",
+        "tcg3",
+        "tcg4",
+        "tcg5"
+      ],
+      "settings": {
+        "eyebrow": "Plus de jeux, plus de fun",
+        "heading": "Découvrez nos",
+        "heading_holo": "autres TCG",
+        "scheme": "light",
+        "anchor": "autres-tcg",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "banners": {
+      "type": "promo-banners",
+      "blocks": {
+        "b1": {
+          "type": "banner",
+          "settings": {
+            "eyebrow": "Accessoires",
+            "heading": "Protégez vos trésors",
+            "text": "Sleeves, classeurs, toploaders et protections acryliques UPC, ETB et Display.",
+            "button_label": "Découvrir les accessoires",
+            "link": "",
+            "tint": "choco"
+          }
+        },
+        "b2": {
+          "type": "banner",
+          "settings": {
+            "eyebrow": "Click & Collect",
+            "heading": "Retrait gratuit en boutique",
+            "text": "Commandez en ligne, récupérez votre colis à Nivelles. Zéro frais de port.",
+            "button_label": "Comment ça marche ?",
+            "link": "",
+            "tint": "violet"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2"
+      ],
+      "settings": {
+        "anchor": "accessoires",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "community": {
+      "type": "community-instagram",
+      "blocks": {
+        "post1": {
+          "type": "post",
+          "settings": {
+            "link": ""
+          }
+        },
+        "post2": {
+          "type": "post",
+          "settings": {
+            "link": ""
+          }
+        },
+        "post3": {
+          "type": "post",
+          "settings": {
+            "link": ""
+          }
+        },
+        "post4": {
+          "type": "post",
+          "settings": {
+            "link": ""
+          }
+        },
+        "post5": {
+          "type": "post",
+          "settings": {
+            "link": ""
+          }
+        },
+        "post6": {
+          "type": "post",
+          "settings": {
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "post1",
+        "post2",
+        "post3",
+        "post4",
+        "post5",
+        "post6"
+      ],
+      "settings": {
+        "heading": "Rejoignez la communauté",
+        "heading_holo": "ChocoCards",
+        "button_label": "Suivre @chococards.be",
+        "link": "",
+        "scheme": "light",
+        "anchor": "communaute",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "events": {
+      "type": "events-list",
+      "blocks": {
+        "ev1": {
+          "type": "event",
+          "settings": {
+            "date": "2026-10-24",
+            "time": "14h",
+            "game": "One Piece",
+            "title": "Store Tournament One Piece",
+            "price": "8 €",
+            "link": ""
+          }
+        },
+        "ev2": {
+          "type": "event",
+          "settings": {
+            "date": "2026-10-25",
+            "time": "14h",
+            "game": "One Piece",
+            "title": "Store Tournament One Piece",
+            "price": "8 €",
+            "link": ""
+          }
+        },
+        "ev3": {
+          "type": "event",
+          "settings": {
+            "date": "2026-10-31",
+            "time": "14h",
+            "game": "One Piece",
+            "title": "Store Tournament One Piece",
+            "price": "8 €",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "ev1",
+        "ev2",
+        "ev3"
+      ],
+      "settings": {
+        "eyebrow": "En boutique",
+        "heading": "Tournois &",
+        "heading_holo": "événements",
+        "link_label": "Tous les tournois",
+        "link": "",
+        "cta_label": "S’inscrire",
+        "limit": 6,
+        "use_metaobjects": true,
+        "metaobject_type": "evenement",
+        "scheme": "dark",
+        "anchor": "tournois",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "store": {
+      "type": "store-info",
+      "blocks": {
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "source": "open_days",
+            "number": 6,
+            "suffix": "",
+            "label": "jours d’ouverture par semaine"
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "source": "manual",
+            "number": 8,
+            "suffix": "",
+            "label": "jeux de cartes en rayon"
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "source": "events",
+            "number": 3,
+            "suffix": "",
+            "label": "tournois à venir"
+          }
+        },
+        "s4": {
+          "type": "stat",
+          "settings": {
+            "source": "manual",
+            "number": 100,
+            "suffix": " %",
+            "label": "produits authentiques"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "settings": {
+        "scheme": "light",
+        "anchor": "boutique",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "trust": {
+      "type": "trust-badges",
+      "blocks": {
+        "trust1": {
+          "type": "badge",
+          "settings": {
+            "icon": "truck",
+            "title": "Expédition rapide",
+            "text": "Vos commandes partent vite et bien protégées partout en Belgique."
+          }
+        },
+        "trust2": {
+          "type": "badge",
+          "settings": {
+            "icon": "shield",
+            "title": "Produits authentiques",
+            "text": "Uniquement des produits officiels, issus de distributeurs agréés."
+          }
+        },
+        "trust3": {
+          "type": "badge",
+          "settings": {
+            "icon": "lock",
+            "title": "Paiement sécurisé",
+            "text": "Bancontact, cartes, Apple Pay, Google Pay, Klarna… 100 % sécurisé."
+          }
+        },
+        "trust4": {
+          "type": "badge",
+          "settings": {
+            "icon": "store",
+            "title": "Retrait en boutique",
+            "text": "Gratuit, à Nivelles, dès que votre commande est prête."
+          }
+        },
+        "trust5": {
+          "type": "badge",
+          "settings": {
+            "icon": "chat",
+            "title": "Service client",
+            "text": "Une question ? On vous répond vite, par mail, téléphone ou en boutique."
+          }
+        }
+      },
+      "block_order": [
+        "trust1",
+        "trust2",
+        "trust3",
+        "trust4",
+        "trust5"
+      ],
+      "settings": {
+        "label": "Nos engagements",
+        "scheme": "dark",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "anniversary",
+    "categories",
+    "preorder",
+    "releases",
+    "pokemon",
+    "onepiece",
+    "other_tcg",
+    "banners",
+    "community",
+    "events",
+    "store",
+    "trust"
+  ]
+}

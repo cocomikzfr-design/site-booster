@@ -1,0 +1,51 @@
+{%- comment -%}
+  Tiroir panier. Re-rendu après chaque ajout / modification
+  (Section Rendering API, id de section : cart-drawer).
+{%- endcomment -%}
+<side-drawer id="cart-drawer" class="drawer drawer--right" hidden>
+  <div class="drawer__overlay" data-drawer-close></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle">
+    <div class="drawer__head">
+      <h2 class="drawer__title" id="CartDrawerTitle">{{ 'cart.title' | t }}</h2>
+      <button class="icon-btn" type="button" data-drawer-close aria-label="{{ 'cart.close' | t }}">{% render 'icon', name: 'close' %}</button>
+    </div>
+    <cart-items class="cart-wrap" data-section="cart-drawer">
+      <div id="CartDrawerContents" class="cart">
+        {%- if cart.item_count > 0 -%}
+          <ul class="cart__items" role="list" data-lenis-prevent>
+            {%- for item in cart.items -%}
+              {% render 'cart-line', item: item, index: forloop.index %}
+            {%- endfor -%}
+          </ul>
+          <div class="cart__foot">
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <p class="cart__discounts">{{ discount.title }} (−{{ discount.total_allocated_amount | money }})</p>
+            {%- endfor -%}
+            <div class="cart__subtotal"><span>{{ 'cart.subtotal' | t }}</span><strong>{{ cart.total_price | money_with_currency }}</strong></div>
+            <p class="cart__note">{% render 'icon', name: 'store' %}{{ 'cart.pickup_note' | t: city: settings.store_city }}</p>
+            <form action="{{ routes.cart_url }}" method="post">
+              <button class="btn btn--holo cart__checkout" type="submit" name="checkout" style="width:100%">
+                {%- render 'icon', name: 'lock' -%}<span>{{ 'cart.checkout' | t }}</span>
+              </button>
+            </form>
+            <a class="link-arrow" href="{{ routes.cart_url }}" style="justify-self:center">{{ 'cart.view' | t }}{% render 'icon', name: 'arrow' %}</a>
+          </div>
+        {%- else -%}
+          <div class="cart__empty">
+            <div class="cart__empty-cards" aria-hidden="true"><span></span><span></span></div>
+            <h3>{{ 'cart.empty' | t }}</h3>
+            <p>{{ 'cart.empty_text' | t }}</p>
+            <a class="btn btn--holo" href="{{ routes.all_products_collection_url }}"><span>{{ 'cart.continue' | t }}</span></a>
+          </div>
+        {%- endif -%}
+      </div>
+    </cart-items>
+  </div>
+</side-drawer>
+
+{% schema %}
+{
+  "name": "Tiroir panier",
+  "settings": []
+}
+{% endschema %}

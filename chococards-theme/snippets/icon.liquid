@@ -1,0 +1,6 @@
+{%- comment -%}
+  Icône SVG du sprite.
+  - name : nom de l'icône (search, bag, arrow…)
+  - class : classe CSS optionnelle
+{%- endcomment -%}
+<svg class="icon icon-{{ name }}{% if class %} {{ class }}{% endif %}" aria-hidden="true" focusable="false"><use href="#icon-{{ name }}"/></svg>

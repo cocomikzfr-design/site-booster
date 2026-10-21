@@ -1,0 +1,47 @@
+{%- comment -%}
+  Résultats de la recherche instantanée (Predictive Search API).
+  Rendu à la demande par predictive-search.js (section_id=predictive-search).
+{%- endcomment -%}
+{%- if predictive_search.performed -%}
+  {%- assign res = predictive_search.resources -%}
+  {%- assign total = res.products.size | plus: res.collections.size | plus: res.pages.size | plus: res.articles.size -%}
+  {%- if total > 0 -%}
+    {%- if res.collections.size > 0 -%}
+      <div class="search-group">
+        <h3>{{ 'search.collections' | t }}</h3>
+        <div class="search-chips">
+          {%- for collection in res.collections -%}<a class="btn btn--ghost btn--sm" href="{{ collection.url }}">{{ collection.title }}</a>{%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+    {%- if res.products.size > 0 -%}
+      <div class="search-group">
+        <h3>{{ 'search.products' | t }}</h3>
+        {%- for product in res.products -%}
+          {% render 'search-item', product: product %}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+    {%- if res.articles.size > 0 or res.pages.size > 0 -%}
+      <div class="search-group">
+        <h3>{{ 'search.content' | t }}</h3>
+        <div class="search-chips">
+          {%- for article in res.articles -%}<a class="btn btn--ghost btn--sm" href="{{ article.url }}">{{ article.title }}</a>{%- endfor -%}
+          {%- for page in res.pages -%}<a class="btn btn--ghost btn--sm" href="{{ page.url }}">{{ page.title }}</a>{%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+    <div class="search-group">
+      <a class="link-arrow" href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&amp;options%5Bprefix%5D=last">{{ 'search.view_all' | t: terms: predictive_search.terms }}{% render 'icon', name: 'arrow' %}</a>
+    </div>
+  {%- else -%}
+    <p class="search-empty">{{ 'search.no_results' | t: terms: predictive_search.terms }}</p>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Recherche prédictive",
+  "settings": []
+}
+{% endschema %}

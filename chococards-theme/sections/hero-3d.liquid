@@ -1,0 +1,111 @@
+{%- comment -%}
+  Hero 3D : cartes ChocoCards en Three.js (chargé en différé, uniquement ici),
+  reflet holo qui suit la souris / le gyroscope, paillettes dorées.
+  Version CSS légère si la 3D est désactivée, avant chargement ou en mouvement réduit.
+{%- endcomment -%}
+<script src="{{ 'hero-3d.js' | asset_url }}" type="module"></script>
+<script src="{{ 'scroll-fx.js' | asset_url }}" type="module"></script>
+{%- liquid
+  assign s = section.settings
+  assign btn1_link = s.button_1_link | default: settings.social_instagram_link
+  assign brand = s.card_brand | default: shop.name
+-%}
+<section class="hero" data-hero aria-labelledby="HeroTitle-{{ section.id }}">
+  <hero-scene class="hero__scene" data-enabled="{{ s.enable_3d }}" data-brand="{{ brand | escape }}" data-monogram="{{ s.card_monogram | escape }}" data-tagline="{{ s.card_tagline | escape }}" data-cards="{{ s.cards_desktop }}" data-mobile-cards="{{ s.cards_mobile }}" data-mobile-mode="{{ s.mobile_3d }}" data-sparkles="{{ s.sparkles }}">
+    <canvas class="hero__canvas" aria-hidden="true"></canvas>
+  </hero-scene>
+  <div class="hero__poster" aria-hidden="true">
+    <div class="poster-card poster-card--1"></div>
+    <div class="poster-card poster-card--2"></div>
+    <div class="poster-card poster-card--3"></div>
+  </div>
+  <div class="hero__glow" aria-hidden="true"></div>
+
+  <scroll-fade class="hero__inner container">
+    {%- if s.eyebrow != blank -%}
+      <p class="hero__eyebrow chip chip--live" data-hero-item style="--i:0">{% if s.show_dot %}<span class="dot"></span>{% endif %}{{ s.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="hero__title" id="HeroTitle-{{ section.id }}" data-hero-item style="--i:1">
+      <span class="line">{{ s.title_line_1 }}</span>
+      <span class="line holo-text">{{ s.title_line_2 }}</span>
+    </h1>
+    {%- if s.text != blank -%}
+      <div class="hero__lead rte" data-hero-item style="--i:2">{{ s.text }}</div>
+    {%- endif -%}
+
+    <div class="hero__infos" data-hero-item style="--i:3">
+      {%- if s.hours_label_1 != blank or s.hours_label_2 != blank -%}
+        <div class="info-pill glass">
+          {%- render 'icon', name: 'clock' -%}
+          <div>
+            {%- if s.hours_label_1 != blank -%}<strong>{{ s.hours_label_1 }}</strong> {{ s.hours_value_1 }}{%- endif -%}
+            {%- if s.hours_label_2 != blank -%}<br><strong>{{ s.hours_label_2 }}</strong> {{ s.hours_value_2 }}{%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+      {%- if s.show_address -%}
+        <a class="info-pill glass" href="{{ settings.store_maps_url }}" target="_blank" rel="noopener">
+          {%- render 'icon', name: 'pin' -%}
+          <div><strong>{{ settings.store_address }}</strong><br>{{ settings.store_zip_city }}</div>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="hero__ctas" data-hero-item style="--i:4">
+      {%- if s.button_1_label != blank -%}
+        <a class="btn btn--holo" href="{{ btn1_link }}"{% if btn1_link contains 'http' %} target="_blank" rel="noopener"{% endif %} data-magnetic>
+          {%- if btn1_link contains 'instagram' -%}{% render 'icon', name: 'instagram' %}{%- endif -%}<span>{{ s.button_1_label }}</span>
+        </a>
+      {%- endif -%}
+      {%- if s.button_2_label != blank -%}
+        <a class="btn btn--ghost" href="{{ s.button_2_link | default: routes.all_products_collection_url }}" data-magnetic><span>{{ s.button_2_label }}</span>{% render 'icon', name: 'arrow' %}</a>
+      {%- endif -%}
+    </div>
+  </scroll-fade>
+
+  <a class="hero__scroll" href="#HeroNext-{{ section.id }}" aria-label="{{ 'sections.hero.scroll' | t }}"><span></span></a>
+</section>
+<div id="HeroNext-{{ section.id }}"></div>
+
+{% schema %}
+{
+  "name": "Hero 3D",
+  "class": "section-hero",
+  "settings": [
+    { "type": "header", "content": "Message d'accueil" },
+    { "type": "text", "id": "eyebrow", "label": "Pastille", "default": "Notre magasin est ouvert !" },
+    { "type": "checkbox", "id": "show_dot", "label": "Point vert animé", "default": true },
+    { "type": "text", "id": "title_line_1", "label": "Titre : ligne 1", "default": "Bienvenue chez" },
+    { "type": "text", "id": "title_line_2", "label": "Titre : ligne 2 (holographique)", "default": "ChocoCards" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Votre boutique de cartes à collectionner à Nivelles : Pokémon, One Piece, japonais, cartes à l’unité, goodies et accessoires. Passez nous voir, on adore parler cartes !</p>" },
+    { "type": "header", "content": "Horaires et adresse" },
+    { "type": "text", "id": "hours_label_1", "label": "Horaires : jours (ligne 1)", "default": "Mardi – samedi" },
+    { "type": "text", "id": "hours_value_1", "label": "Horaires : heures (ligne 1)", "default": "10h – 19h" },
+    { "type": "text", "id": "hours_label_2", "label": "Horaires : jours (ligne 2)", "default": "Dimanche" },
+    { "type": "text", "id": "hours_value_2", "label": "Horaires : heures (ligne 2)", "default": "10h – 18h" },
+    { "type": "checkbox", "id": "show_address", "label": "Afficher l'adresse (Paramètres du thème > Boutique physique)", "default": true },
+    { "type": "header", "content": "Boutons" },
+    { "type": "text", "id": "button_1_label", "label": "Bouton 1", "default": "Suivez-nous sur Instagram" },
+    { "type": "url", "id": "button_1_link", "label": "Lien du bouton 1", "info": "Vide = lien Instagram des paramètres du thème." },
+    { "type": "text", "id": "button_2_label", "label": "Bouton 2", "default": "Explorer la boutique" },
+    { "type": "url", "id": "button_2_link", "label": "Lien du bouton 2", "default": "/collections/all" },
+    { "type": "header", "content": "Scène 3D" },
+    { "type": "checkbox", "id": "enable_3d", "label": "Activer la 3D dans cette section", "default": true, "info": "Doit aussi être activée dans Paramètres du thème > Effets." },
+    { "type": "range", "id": "cards_desktop", "label": "Nombre de cartes (ordinateur)", "min": 3, "max": 14, "step": 1, "default": 9 },
+    { "type": "range", "id": "cards_mobile", "label": "Nombre de cartes (mobile)", "min": 2, "max": 8, "step": 1, "default": 5 },
+    {
+      "type": "select", "id": "mobile_3d", "label": "3D sur mobile", "default": "interaction",
+      "options": [
+        { "value": "interaction", "label": "Au premier geste (recommandé, plus rapide)" },
+        { "value": "always", "label": "Dès le chargement" },
+        { "value": "never", "label": "Jamais (version légère)" }
+      ]
+    },
+    { "type": "checkbox", "id": "sparkles", "label": "Paillettes dorées", "default": true },
+    { "type": "text", "id": "card_brand", "label": "Nom sur les cartes", "default": "ChocoCards" },
+    { "type": "text", "id": "card_monogram", "label": "Monogramme (2-3 lettres)", "default": "CC" },
+    { "type": "text", "id": "card_tagline", "label": "Mention sur la face holo", "default": "Carte collector · Nivelles" }
+  ],
+  "presets": [ { "name": "Hero 3D" } ]
+}
+{% endschema %}

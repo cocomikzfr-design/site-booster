@@ -1,0 +1,99 @@
+{%- comment -%} Page de résultats de recherche (produits avec filtres + articles et pages). {%- endcomment -%}
+{{ 'templates.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'facets.js' | asset_url }}" type="module"></script>
+{%- liquid
+  assign s = section.settings
+  assign drawer_id = 'Facets-' | append: section.id
+  assign sort_by = search.sort_by | default: search.default_sort_by
+  assign terms_url = search.terms | url_encode
+  assign clear_url = routes.search_url | append: '?q=' | append: terms_url | append: '&options%5Bprefix%5D=last&type=product&sort_by=' | append: sort_by
+  assign has_filters = false
+  if search.performed and search.filters.size > 0
+    assign has_filters = true
+  endif
+-%}
+<div class="page-hero">
+  <div class="container page-hero__inner">
+    <h1 class="page-hero__title">{% if search.performed %}{{ 'search.results_for' | t: terms: search.terms }}{% else %}{{ 'search.title' | t }}{% endif %}</h1>
+    <form class="search-page__form" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="visually-hidden" for="SearchPageInput">{{ 'search.title' | t }}</label>
+      <input class="input" id="SearchPageInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'search.placeholder' | t }}">
+      <input type="hidden" name="options[prefix]" value="last">
+      <button class="btn btn--holo" type="submit">{% render 'icon', name: 'search' %}<span>{{ 'search.submit' | t }}</span></button>
+    </form>
+  </div>
+</div>
+
+{%- if search.performed -%}
+  {%- paginate search.results by s.per_page -%}
+    <facets-form class="collection container" data-section-id="{{ section.id }}">
+      <div class="collection__layout{% if has_filters %} collection__layout--sidebar{% endif %}">
+        {%- if has_filters -%}
+          {% render 'facets', results: search, drawer_id: drawer_id, url: routes.search_url, clear_url: clear_url, terms: search.terms %}
+        {%- endif -%}
+        <div>
+          <div class="collection__toolbar">
+            {%- if has_filters -%}
+              <button class="facets-toggle" type="button" data-drawer-open="{{ drawer_id }}" aria-controls="{{ drawer_id }}" aria-expanded="false">{% render 'icon', name: 'filter' %}{{ 'collections.filters' | t }}</button>
+            {%- endif -%}
+            <p class="collection__count" data-facets-count role="status">{{ 'search.result_count' | t: count: search.results_count }}</p>
+            <form class="collection__tools" data-facets method="get" action="{{ routes.search_url }}">
+              <input type="hidden" name="q" value="{{ search.terms | escape }}">
+              <input type="hidden" name="options[prefix]" value="last">
+              <label class="visually-hidden" for="SortBy-{{ section.id }}">{{ 'collections.sort_by' | t }}</label>
+              <div class="sort-select">
+                <select id="SortBy-{{ section.id }}" name="sort_by">
+                  {%- for option in search.sort_options -%}
+                    <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+                  {%- endfor -%}
+                </select>
+                {%- render 'icon', name: 'chevron' -%}
+              </div>
+              <noscript><button class="btn btn--ghost btn--sm" type="submit">{{ 'collections.apply' | t }}</button></noscript>
+            </form>
+          </div>
+          <div class="active-filters" data-facets-active>{% render 'active-filters', results: search, clear_url: clear_url %}</div>
+          <h2 class="visually-hidden">{{ 'collections.products_heading' | t }}</h2>
+          <div data-facets-results>
+            {%- if search.results_count > 0 -%}
+              <div class="product-grid product-grid--4" data-reveal-stagger>
+                {%- for item in search.results -%}
+                  {%- case item.object_type -%}
+                    {%- when 'product' -%}
+                      {% render 'product-card', product: item, sizes: '(min-width: 1100px) 25vw, (min-width: 750px) 33vw, 50vw' %}
+                    {%- when 'article' -%}
+                      <a class="result-row" href="{{ item.url }}">
+                        {%- if item.image -%}{{ item.image | image_url: width: 160, height: 160, crop: 'center' | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}{%- endif -%}
+                        <span><h3>{{ item.title }}</h3><p>{{ item.excerpt_or_content | strip_html | truncatewords: 16 }}</p></span>
+                      </a>
+                    {%- when 'page' -%}
+                      <a class="result-row" href="{{ item.url }}">
+                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                        <span><h3>{{ item.title }}</h3><p>{{ item.content | strip_html | truncatewords: 16 }}</p></span>
+                      </a>
+                  {%- endcase -%}
+                {%- endfor -%}
+              </div>
+              {%- if paginate.pages > 1 -%}{% render 'pagination', paginate: paginate %}{%- endif -%}
+            {%- else -%}
+              <div class="collection__empty">
+                <h2>{{ 'search.no_results' | t: terms: search.terms }}</h2>
+                <p>{{ 'search.try_again' | t }}</p>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </facets-form>
+  {%- endpaginate -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Résultats de recherche",
+  "class": "section-main-search",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Résultats par page", "min": 8, "max": 48, "step": 4, "default": 24 }
+  ]
+}
+{% endschema %}

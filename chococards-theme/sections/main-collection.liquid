@@ -1,0 +1,113 @@
+{%- comment -%}
+  Page collection : en-tête, filtres Search & Discovery, tri, grille de produits holo, pagination.
+{%- endcomment -%}
+{{ 'templates.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'facets.js' | asset_url }}" type="module"></script>
+{%- liquid
+  assign s = section.settings
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign has_filters = false
+  if s.enable_filtering and collection.filters.size > 0
+    assign has_filters = true
+  endif
+  assign drawer_id = 'Facets-' | append: section.id
+  assign clear_url = collection.url | append: '?sort_by=' | append: sort_by
+-%}
+<div class="page-hero">
+  {%- if s.show_image and collection.image -%}
+    <div class="page-hero__media">{{ collection.image | image_url: width: 1800 | image_tag: loading: 'eager', widths: '800, 1200, 1800', sizes: '100vw', alt: '' }}</div>
+  {%- endif -%}
+  <div class="container page-hero__inner">
+    <nav class="breadcrumbs" aria-label="{{ 'general.breadcrumbs' | t }}">
+      <a href="{{ routes.root_url }}">{{ 'general.breadcrumb_home' | t }}</a><span aria-hidden="true">/</span><span aria-current="page">{{ collection.title }}</span>
+    </nav>
+    <h1 class="page-hero__title">{{ collection.title }}</h1>
+    {%- if s.show_description and collection.description != blank -%}
+      <div class="page-hero__text rte">{{ collection.description }}</div>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- paginate collection.products by s.products_per_page -%}
+  <facets-form class="collection container" data-section-id="{{ section.id }}">
+    <div class="collection__layout{% if has_filters and s.filter_layout == 'sidebar' %} collection__layout--sidebar{% endif %}">
+      {%- if has_filters -%}
+        {% render 'facets', results: collection, drawer_id: drawer_id, url: collection.url, clear_url: clear_url %}
+      {%- endif -%}
+
+      <div>
+        <div class="collection__toolbar">
+          {%- if has_filters -%}
+            <button class="facets-toggle" type="button" data-drawer-open="{{ drawer_id }}" aria-controls="{{ drawer_id }}" aria-expanded="false">
+              {%- render 'icon', name: 'filter' -%}{{ 'collections.filters' | t }}
+            </button>
+          {%- endif -%}
+          <p class="collection__count" data-facets-count role="status">{{ 'collections.product_count' | t: count: collection.products_count }}</p>
+          {%- if s.enable_sorting -%}
+            <form class="collection__tools" data-facets method="get" action="{{ collection.url }}">
+              <noscript>
+                {%- for filter in collection.filters -%}
+                  {%- for value in filter.active_values -%}<input type="hidden" name="{{ value.param_name }}" value="{{ value.value }}">{%- endfor -%}
+                {%- endfor -%}
+              </noscript>
+              <label class="visually-hidden" for="SortBy-{{ section.id }}">{{ 'collections.sort_by' | t }}</label>
+              <div class="sort-select">
+                <select id="SortBy-{{ section.id }}" name="sort_by">
+                  {%- for option in collection.sort_options -%}
+                    <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+                  {%- endfor -%}
+                </select>
+                {%- render 'icon', name: 'chevron' -%}
+              </div>
+              <noscript><button class="btn btn--ghost btn--sm" type="submit">{{ 'collections.apply' | t }}</button></noscript>
+            </form>
+          {%- endif -%}
+        </div>
+
+        <div class="active-filters" data-facets-active>{% render 'active-filters', results: collection, clear_url: clear_url %}</div>
+
+        <h2 class="visually-hidden">{{ 'collections.products_heading' | t }}</h2>
+        <div data-facets-results>
+          {%- if collection.products.size > 0 -%}
+            <div class="product-grid product-grid--{{ s.columns_desktop }}" data-reveal-stagger>
+              {%- for product in collection.products -%}
+                {%- assign lazy = true -%}
+                {%- if forloop.index <= 4 -%}{%- assign lazy = false -%}{%- endif -%}
+                {% render 'product-card', product: product, lazy: lazy, sizes: '(min-width: 1100px) 25vw, (min-width: 750px) 33vw, 50vw' %}
+              {%- endfor -%}
+            </div>
+            {%- if paginate.pages > 1 -%}{% render 'pagination', paginate: paginate %}{%- endif -%}
+          {%- else -%}
+            <div class="collection__empty">
+              <h2>{{ 'collections.empty' | t }}</h2>
+              <a class="btn btn--holo" href="{{ clear_url }}" data-facet-link><span>{{ 'collections.clear_all' | t }}</span></a>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </facets-form>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "class": "section-main-collection",
+  "settings": [
+    { "type": "checkbox", "id": "show_image", "label": "Afficher l'image de la collection en fond", "default": true },
+    { "type": "checkbox", "id": "show_description", "label": "Afficher la description", "default": true },
+    { "type": "range", "id": "products_per_page", "label": "Produits par page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    {
+      "type": "select", "id": "columns_desktop", "label": "Colonnes (ordinateur)", "default": "4",
+      "options": [ { "value": "3", "label": "3" }, { "value": "4", "label": "4" } ]
+    },
+    { "type": "header", "content": "Filtres et tri" },
+    { "type": "checkbox", "id": "enable_filtering", "label": "Activer les filtres", "default": true, "info": "Filtres gérés avec l'application gratuite Shopify Search & Discovery." },
+    {
+      "type": "select", "id": "filter_layout", "label": "Position des filtres (ordinateur)", "default": "sidebar",
+      "options": [ { "value": "sidebar", "label": "Colonne à gauche" }, { "value": "drawer", "label": "Tiroir" } ]
+    },
+    { "type": "checkbox", "id": "enable_sorting", "label": "Activer le tri", "default": true }
+  ]
+}
+{% endschema %}

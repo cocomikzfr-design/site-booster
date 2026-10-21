@@ -1,0 +1,217 @@
+{%- comment -%}
+  « Votre boutique TCG à Nivelles » : adresse, horaires (jour actuel surligné),
+  parking, retrait, prochain événement (automatique via les metaobjects « Événement »),
+  carte stylisée ou image, photo, boutons Itinéraire / Tournois / Contact, compteurs animés.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign anchor = s.anchor | default: section.id | handleize
+  assign deep = false
+  if s.scheme == 'light'
+    assign deep = true
+  endif
+  assign title_id = 'Title-' | append: section.id
+  assign events_link = s.events_link | default: pages['tournois'].url
+  assign contact_link = s.contact_link | default: pages['contact'].url | default: routes.root_url
+  assign day_ids = 'monday,tuesday,wednesday,thursday,friday,saturday,sunday' | split: ','
+  assign day_nums = '1,2,3,4,5,6,0' | split: ','
+  assign weekdays = 'general.dates.weekdays' | t | split: ','
+  assign open_days = 0
+  for id in day_ids
+    assign hkey = 'hours_' | append: id
+    if s[hkey] != blank
+      assign open_days = open_days | plus: 1
+    endif
+  endfor
+
+  assign definition = shop.metaobjects[s.metaobject_type]
+  assign today = 'now' | date: '%Y%m%d' | plus: 0
+  assign next_event = nil
+  assign next_d = 99999999
+  assign upcoming_count = 0
+  if definition.values_count > 0
+    for entry in definition.values
+      assign dn = entry.date.value | date: '%Y%m%d' | plus: 0
+      if dn >= today and dn > 0
+        assign upcoming_count = upcoming_count | plus: 1
+        if dn < next_d
+          assign next_d = dn
+          assign next_event = entry
+        endif
+      endif
+    endfor
+  endif
+-%}
+<section class="section store{% if deep %} panel panel--light{% endif %}" id="{{ anchor }}" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px" aria-labelledby="{{ title_id }}">
+  <div class="container">
+    {% render 'section-heading', eyebrow: s.eyebrow, eyebrow_icon: 'pin', heading: s.heading, heading_holo: s.heading_holo, deep: deep, align: 'left', id: title_id %}
+
+    <div class="store__grid">
+      <div class="store__info" data-reveal>
+        <ul class="store-list" role="list">
+          <li>
+            <span class="store-list__icon">{% render 'icon', name: 'pin' %}</span>
+            <div><h3>{{ 'sections.store.address' | t }}</h3><p>{{ settings.store_address }}<br>{{ settings.store_zip_city }}, {{ settings.store_country }}</p></div>
+          </li>
+          <li>
+            <span class="store-list__icon">{% render 'icon', name: 'clock' %}</span>
+            <div>
+              <h3>{{ 'sections.store.hours' | t }}</h3>
+              <ul class="hours" role="list" data-today-index style="--today: ' · {{ 'sections.store.today' | t }}'">
+                {%- for id in day_ids -%}
+                  {%- assign hkey = 'hours_' | append: id -%}
+                  {%- assign value = s[hkey] -%}
+                  {%- assign num = day_nums[forloop.index0] | plus: 0 -%}
+                  <li data-weekday="{{ num }}"{% if value == blank %} class="is-closed"{% endif %}>
+                    <span>{{ weekdays[num] | capitalize }}</span><span>{% if value != blank %}{{ value }}{% else %}{{ 'sections.store.closed' | t }}{% endif %}</span>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          </li>
+          {%- if s.parking != blank -%}
+            <li><span class="store-list__icon">{% render 'icon', name: 'parking' %}</span><div><h3>{{ 'sections.store.parking' | t }}</h3><p>{{ s.parking }}</p></div></li>
+          {%- endif -%}
+          {%- if s.pickup != blank -%}
+            <li><span class="store-list__icon">{% render 'icon', name: 'store' %}</span><div><h3>{{ 'sections.store.pickup' | t }}</h3><p>{{ s.pickup }}</p></div></li>
+          {%- endif -%}
+          {%- if s.show_next_event -%}
+            <li class="store-list__next">
+              <span class="store-list__icon">{% render 'icon', name: 'ticket' %}</span>
+              <div>
+                <h3>{{ 'sections.store.next_event' | t }}</h3>
+                {%- if next_event -%}
+                  {%- assign ticket = next_event.produit.value -%}
+                  {%- assign href = ticket.url | default: next_event.lien.value | default: events_link -%}
+                  <p>
+                    <a href="{{ href | default: routes.root_url }}">{{ next_event.titre.value }}</a><br>
+                    <span>{% render 'date-label', date: next_event.date.value, part: 'long' %}{% if next_event.heure.value != blank %} · {{ next_event.heure.value }}{% endif %}</span>
+                  </p>
+                {%- else -%}
+                  <p>{{ s.next_event_fallback }}</p>
+                {%- endif -%}
+              </div>
+            </li>
+          {%- endif -%}
+        </ul>
+        <div class="store__ctas">
+          <a class="btn {% if deep %}btn--dark{% else %}btn--holo{% endif %}" href="{{ settings.store_maps_url }}" target="_blank" rel="noopener" data-magnetic>{% render 'icon', name: 'pin' %}<span>{{ 'sections.store.directions' | t }}</span></a>
+          {%- if events_link != blank -%}
+            <a class="btn btn--outline" href="{{ events_link }}" data-magnetic>{% render 'icon', name: 'ticket' %}<span>{{ 'sections.store.events' | t }}</span></a>
+          {%- endif -%}
+          <a class="btn btn--outline" href="{{ contact_link }}" data-magnetic>{% render 'icon', name: 'mail' %}<span>{{ 'sections.store.contact' | t }}</span></a>
+        </div>
+      </div>
+
+      <div class="store__visual" data-reveal>
+        {%- if s.map_image -%}
+          <div class="map holo-card"{% if settings.enable_holo %} data-tilt data-tilt-max="4"{% endif %}>
+            {{ s.map_image | image_url: width: 1200 | image_tag: class: 'store__map-img', loading: 'lazy', widths: '600, 900, 1200', sizes: '(min-width: 900px) 50vw, 100vw', alt: s.map_image.alt }}
+          </div>
+        {%- else -%}
+          {% render 'store-map', street: s.map_street, city: s.map_city %}
+        {%- endif -%}
+        {%- if s.photo -%}
+          <figure class="store__photo holo-card"{% if settings.enable_holo %} data-tilt{% endif %}>
+            {{ s.photo | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '220px', alt: s.photo.alt }}
+          </figure>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="stats" role="list" data-reveal-stagger style="--stats-cols: {{ section.blocks.size | at_most: 4 }}">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign b = block.settings
+            assign value = b.number
+            case b.source
+              when 'events'
+                assign value = upcoming_count
+              when 'open_days'
+                assign value = open_days
+            endcase
+          -%}
+          <li {{ block.shopify_attributes }}>
+            <strong class="stats__num"><count-up data-to="{{ value }}" data-suffix="{{ b.suffix | escape }}">{{ value }}{{ b.suffix }}</count-up></strong>
+            <span>{{ b.label }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Boutique physique",
+  "class": "section-store",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Nivelles, Brabant wallon" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Votre boutique TCG" },
+    { "type": "text", "id": "heading_holo", "label": "Fin du titre (holographique)", "default": "à Nivelles" },
+    { "type": "paragraph", "content": "Adresse, téléphone et lien Itinéraire : Paramètres du thème > Boutique physique." },
+    { "type": "header", "content": "Horaires (vide = fermé)" },
+    { "type": "text", "id": "hours_monday", "label": "Lundi" },
+    { "type": "text", "id": "hours_tuesday", "label": "Mardi", "default": "10h – 19h" },
+    { "type": "text", "id": "hours_wednesday", "label": "Mercredi", "default": "10h – 19h" },
+    { "type": "text", "id": "hours_thursday", "label": "Jeudi", "default": "10h – 19h" },
+    { "type": "text", "id": "hours_friday", "label": "Vendredi", "default": "10h – 19h" },
+    { "type": "text", "id": "hours_saturday", "label": "Samedi", "default": "10h – 19h" },
+    { "type": "text", "id": "hours_sunday", "label": "Dimanche", "default": "10h – 18h" },
+    { "type": "header", "content": "Infos pratiques" },
+    { "type": "text", "id": "parking", "label": "Parking", "default": "Stationnement facile dans les rues voisines et parkings publics à quelques minutes à pied." },
+    { "type": "text", "id": "pickup", "label": "Retrait", "default": "Commandez en ligne et récupérez gratuitement votre colis en boutique." },
+    { "type": "checkbox", "id": "show_next_event", "label": "Afficher le prochain événement", "default": true, "info": "Automatique à partir des metaobjects « Événement »." },
+    { "type": "text", "id": "metaobject_type", "label": "Type du metaobject des événements", "default": "evenement" },
+    { "type": "text", "id": "next_event_fallback", "label": "Texte si aucun événement", "default": "Bientôt annoncé : suivez-nous sur Instagram !" },
+    { "type": "header", "content": "Boutons" },
+    { "type": "url", "id": "events_link", "label": "Lien « Voir les tournois »", "info": "Vide = page avec l'identifiant « tournois »." },
+    { "type": "url", "id": "contact_link", "label": "Lien « Contact »", "info": "Vide = page avec l'identifiant « contact »." },
+    { "type": "header", "content": "Visuels" },
+    { "type": "image_picker", "id": "map_image", "label": "Image de carte (vide = carte stylisée)" },
+    { "type": "text", "id": "map_street", "label": "Nom de rue sur la carte stylisée", "default": "RUE DU GÉANT" },
+    { "type": "text", "id": "map_city", "label": "Ville sur la carte stylisée", "default": "NIVELLES" },
+    { "type": "image_picker", "id": "photo", "label": "Photo de la boutique" },
+    {
+      "type": "select", "id": "scheme", "label": "Fond", "default": "light",
+      "options": [ { "value": "dark", "label": "Chocolat" }, { "value": "light", "label": "Crème" } ]
+    },
+    { "type": "text", "id": "anchor", "label": "Ancre (lien #…)", "default": "boutique" },
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Compteur animé",
+      "settings": [
+        {
+          "type": "select", "id": "source", "label": "Valeur", "default": "manual",
+          "options": [
+            { "value": "manual", "label": "Nombre saisi" },
+            { "value": "open_days", "label": "Jours d'ouverture (calculé)" },
+            { "value": "events", "label": "Événements à venir (calculé)" }
+          ]
+        },
+        { "type": "number", "id": "number", "label": "Nombre", "default": 8 },
+        { "type": "text", "id": "suffix", "label": "Suffixe (ex. %)" },
+        { "type": "text", "id": "label", "label": "Libellé", "default": "jeux de cartes en rayon" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Boutique physique",
+      "blocks": [
+        { "type": "stat", "settings": { "source": "open_days", "number": 6, "label": "jours d’ouverture par semaine" } },
+        { "type": "stat", "settings": { "source": "manual", "number": 8, "label": "jeux de cartes en rayon" } },
+        { "type": "stat", "settings": { "source": "events", "number": 3, "label": "tournois à venir" } },
+        { "type": "stat", "settings": { "source": "manual", "number": 100, "suffix": " %", "label": "produits authentiques" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

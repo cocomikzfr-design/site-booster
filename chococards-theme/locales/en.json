@@ -1,0 +1,309 @@
+{
+  "date_formats": {
+    "date": "%m/%d/%Y",
+    "date_at_time": "%m/%d/%Y at %l:%M%P"
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content"
+  },
+  "general": {
+    "home": "{{ shop }} – home",
+    "announcements": "Announcements",
+    "breadcrumbs": "Breadcrumbs",
+    "breadcrumb_home": "Home",
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {{ number }}"
+    },
+    "dates": {
+      "months": "January,February,March,April,May,June,July,August,September,October,November,December",
+      "months_short": "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
+      "weekdays": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday",
+      "weekdays_short": "Sun,Mon,Tue,Wed,Thu,Fri,Sat",
+      "today": "Today!",
+      "tomorrow": "Tomorrow",
+      "days_prefix": "D-"
+    }
+  },
+  "header": {
+    "menu": "Menu",
+    "menu_open": "Open menu",
+    "menu_close": "Close menu",
+    "main_nav": "Main menu",
+    "view_all": "View all {{ title }}",
+    "discover": "Discover"
+  },
+  "localization": {
+    "country_label": "Country",
+    "language_label": "Language",
+    "update": "Update"
+  },
+  "search": {
+    "title": "Search",
+    "open": "Search products",
+    "close": "Close search",
+    "placeholder": "Pokémon, One Piece, display, ETB…",
+    "submit": "Search",
+    "suggestions": "Suggestions",
+    "popular": "Trending now",
+    "collections": "Categories",
+    "products": "Products",
+    "content": "Guides and pages",
+    "view_all": "See all results for \"{{ terms }}\"",
+    "no_results": "No results for \"{{ terms }}\".",
+    "try_again": "Try \"display\", \"ETB\" or \"One Piece\".",
+    "results_for": "Results for \"{{ terms }}\"",
+    "result_count": {
+      "one": "{{ count }} result",
+      "other": "{{ count }} results"
+    }
+  },
+  "cart": {
+    "title": "Your cart",
+    "close": "Close cart",
+    "count": {
+      "one": "{{ count }} item",
+      "other": "{{ count }} items"
+    },
+    "added": "Added to cart",
+    "view": "View cart",
+    "error": "Oops, something went wrong. Please try again.",
+    "subtotal": "Subtotal",
+    "checkout": "Check out",
+    "pickup_note": "Free in-store pickup in {{ city }}, or fast shipping in Belgium.",
+    "taxes_shipping": "VAT included. Shipping calculated at checkout.",
+    "empty": "Your cart is empty",
+    "empty_text": "A booster, a display, a single card? Treat yourself!",
+    "continue": "Explore the shop",
+    "note": "Anything to add to your order?",
+    "quantity_for": "Quantity for {{ title }}",
+    "decrease": "Remove one {{ title }}",
+    "increase": "Add one {{ title }}",
+    "remove": "Remove {{ title }} from cart"
+  },
+  "products": {
+    "status": {
+      "disponible": "In stock",
+      "precommande": "Pre-order",
+      "bientot": "Coming soon",
+      "rupture": "Sold out",
+      "boutique": "Not available online"
+    },
+    "language_title": "Card language",
+    "price_from": "From {{ price }}",
+    "regular_price": "Regular price",
+    "add_to_cart": "Add to cart",
+    "preorder": "Pre-order",
+    "add_short": "Add",
+    "preorder_short": "Pre-order",
+    "add_aria": "Add {{ title }} to cart",
+    "preorder_aria": "Pre-order {{ title }}",
+    "choose": "Choose",
+    "store_short": "In store",
+    "soon_short": "Soon",
+    "soldout_short": "Sold out",
+    "unavailable": "Unavailable",
+    "store_only_note": "Available in our {{ city }} store",
+    "taxes_included": "VAT included.",
+    "taxes_excluded": "Excluding taxes.",
+    "variant": "Variant",
+    "quantity": "Quantity",
+    "quantity_decrease": "Decrease quantity",
+    "quantity_increase": "Increase quantity",
+    "gallery_previous": "Previous image",
+    "gallery_next": "Next image",
+    "gallery_show": "Show image {{ number }}",
+    "placeholder_title": "Your product here",
+    "placeholder_type": "Example",
+    "pickup": {
+      "available_at": "Pickup available at {{ location }}",
+      "unavailable_at": "Pickup currently unavailable at {{ location }}",
+      "view_details": "View store information",
+      "available": "Pickup available",
+      "unavailable": "Pickup unavailable"
+    }
+  },
+  "collections": {
+    "filters": "Filters",
+    "close_filters": "Close filters",
+    "apply": "Apply",
+    "clear_all": "Clear all",
+    "show_results": "Show products",
+    "price_min": "Min price (€)",
+    "price_max": "Max price (€)",
+    "sort_by": "Sort by",
+    "remove_filter": "Remove filter {{ filter }}",
+    "empty": "No products match these filters.",
+    "product_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
+    "products_heading": "Products"
+  },
+  "sections": {
+    "hero": {
+      "scroll": "Scroll down"
+    },
+    "coverflow": {
+      "carousel": "carousel",
+      "slide": "Product",
+      "previous": "Previous product",
+      "next": "Next product"
+    },
+    "slider": {
+      "previous": "Previous products",
+      "next": "Next products"
+    },
+    "countdown": {
+      "label": "Time left before release",
+      "days": "days",
+      "hours": "hours",
+      "minutes": "minutes",
+      "seconds": "seconds"
+    },
+    "releases": {
+      "empty": "New releases are coming soon: stay tuned!"
+    },
+    "events": {
+      "empty": "No tournaments scheduled right now: follow us on Instagram so you don’t miss a thing!",
+      "per_entry": "entry"
+    },
+    "community": {
+      "post": "View on Instagram"
+    },
+    "store": {
+      "address": "Address",
+      "hours": "Opening hours",
+      "today": "today",
+      "closed": "Closed",
+      "parking": "Parking",
+      "pickup": "In-store pickup",
+      "next_event": "Next tournament",
+      "directions": "Directions",
+      "events": "See tournaments",
+      "contact": "Contact",
+      "map_label": "Illustrated map: {{ shop }} is at {{ address }}"
+    }
+  },
+  "newsletter": {
+    "label": "Your email address",
+    "placeholder": "your@email.com",
+    "success": "Thanks! You’ll get our next releases and tournaments first.",
+    "notify": "Notify me"
+  },
+  "footer": {
+    "payments": "Accepted payments"
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send",
+    "success": "Thanks for your message! We’ll get back to you soon.",
+    "details": "Contact details"
+  },
+  "blogs": {
+    "tags": "Filter by topic",
+    "all": "All",
+    "empty": "No articles yet.",
+    "back": "Back to {{ blog }}",
+    "comments": "Comments",
+    "comments_count": {
+      "one": "{{ count }} comment",
+      "other": "{{ count }} comments"
+    },
+    "leave_comment": "Leave a comment",
+    "moderated": "Thanks! Your comment will be published after review.",
+    "posted": "Thanks! Your comment has been posted.",
+    "submit": "Post"
+  },
+  "not_found": {
+    "title": "This card doesn’t exist",
+    "text": "The page you’re looking for may have moved. Don’t worry: the rest of the collection is waiting for you!",
+    "back": "Back to home"
+  },
+  "password": {
+    "enter": "Enter using password",
+    "label": "Password",
+    "submit": "Enter",
+    "admin_html": "Are you the store owner? <a href=\"/admin\">Log in here</a>"
+  },
+  "gift_card": {
+    "title": "Gift card",
+    "balance": "Remaining balance: {{ value }}",
+    "expired": "This gift card has expired or is disabled.",
+    "code": "Code:",
+    "expires_on": "Valid until {{ date }}",
+    "shop": "Use my gift card",
+    "apple_wallet": "Add to Apple Wallet"
+  },
+  "customer": {
+    "login_title": "Log in",
+    "account_title": "My account",
+    "email": "Email",
+    "password": "Password",
+    "password_confirm": "Confirm password",
+    "sign_in": "Sign in",
+    "forgot_password": "Forgot your password?",
+    "create_account": "Create account",
+    "recover_title": "Reset your password",
+    "recover_success": "We’ve sent you an email with a link to reset your password.",
+    "recover_submit": "Submit",
+    "guest": "Continue as guest",
+    "register_title": "Create account",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "accepts_marketing": "Get new releases and tournaments by email",
+    "create": "Create my account",
+    "have_account": "Already have an account? Log in",
+    "hello": "Hello {{ name }}!",
+    "log_out": "Log out",
+    "orders": "My orders",
+    "order": "Order",
+    "date": "Date",
+    "payment": "Payment",
+    "fulfillment": "Fulfillment",
+    "total": "Total",
+    "no_orders": "You haven’t placed any orders yet.",
+    "account_details": "My details",
+    "view_addresses": {
+      "one": "View address ({{ count }})",
+      "other": "View addresses ({{ count }})"
+    },
+    "back_to_account": "Back to my account",
+    "cancelled": "Order cancelled on {{ date }}",
+    "product": "Product",
+    "quantity": "Quantity",
+    "track": "Track package",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "billing_address": "Billing address",
+    "shipping_address": "Shipping address",
+    "addresses": "My addresses",
+    "default_address": "Default address",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "add_address": "Add a new address",
+    "company": "Company",
+    "address1": "Address",
+    "address2": "Apartment, suite, etc.",
+    "zip": "Postal code",
+    "city": "City",
+    "country": "Country",
+    "phone": "Phone",
+    "set_default": "Set as default address",
+    "activate_title": "Activate my account",
+    "activate": "Activate",
+    "decline": "Decline invitation",
+    "reset_title": "New password",
+    "reset": "Save password"
+  }
+}

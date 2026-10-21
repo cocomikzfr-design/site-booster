@@ -1,0 +1,17 @@
+{{ 'templates.css' | asset_url | stylesheet_tag }}
+<section class="account container page-hero">
+  <div class="account-card">
+    <h1>{{ 'customer.activate_title' | t }}</h1>
+    {%- form 'activate_customer_password' -%}
+      {%- if form.errors -%}<div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+      <div class="field"><label for="ActivatePassword">{{ 'customer.password' | t }}</label><input id="ActivatePassword" type="password" name="customer[password]" autocomplete="new-password" required></div>
+      <div class="field"><label for="ActivatePasswordConfirm">{{ 'customer.password_confirm' | t }}</label><input id="ActivatePasswordConfirm" type="password" name="customer[password_confirmation]" autocomplete="new-password" required></div>
+      <button class="btn btn--holo" type="submit" style="margin-top:12px"><span>{{ 'customer.activate' | t }}</span></button>
+      <button class="btn btn--ghost" type="submit" name="decline" style="margin-top:8px"><span>{{ 'customer.decline' | t }}</span></button>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Activation du compte", "settings": [] }
+{% endschema %}

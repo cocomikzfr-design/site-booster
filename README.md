@@ -1,5 +1,14 @@
 # site-booster
 
+## ChocoCards (refonte de chococards.be)
+
+| Dossier | Contenu |
+|---------|---------|
+| [`chococards/`](chococards/) | **Maquette statique** de la nouvelle page d’accueil (HTML / CSS / JS, Three.js, GSAP, Lenis). Données dans `data.js`, images de remplacement nommées dans `assets/images/`. |
+| [`chococards-theme/`](chococards-theme/) | **Thème Shopify Online Store 2.0** complet (sections, réglages, metaobjects, panier AJAX, recherche prédictive, filtres). Guide d’installation et liste des éléments à créer dans l’admin : [`chococards-theme/README.md`](chococards-theme/README.md). |
+
+## Autres prototypes
+
 Deux pages statiques autonomes (HTML, CSS et JS dans un seul fichier, sans build ni bibliothèque externe).
 
 | Fichier | Contenu |

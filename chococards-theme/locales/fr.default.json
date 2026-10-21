@@ -1,0 +1,309 @@
+{
+  "date_formats": {
+    "date": "%d/%m/%Y",
+    "date_at_time": "%d/%m/%Y à %Hh%M"
+  },
+  "accessibility": {
+    "skip_to_content": "Aller au contenu"
+  },
+  "general": {
+    "home": "{{ shop }} – accueil",
+    "announcements": "Informations",
+    "breadcrumbs": "Fil d’Ariane",
+    "breadcrumb_home": "Accueil",
+    "meta": {
+      "tags": "Tag « {{ tags }} »",
+      "page": "Page {{ page }}"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Page précédente",
+      "next": "Page suivante",
+      "page": "Page {{ number }}"
+    },
+    "dates": {
+      "months": "janvier,février,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre",
+      "months_short": "janv.,févr.,mars,avr.,mai,juin,juil.,août,sept.,oct.,nov.,déc.",
+      "weekdays": "dimanche,lundi,mardi,mercredi,jeudi,vendredi,samedi",
+      "weekdays_short": "dim.,lun.,mar.,mer.,jeu.,ven.,sam.",
+      "today": "Aujourd’hui !",
+      "tomorrow": "Demain",
+      "days_prefix": "J-"
+    }
+  },
+  "header": {
+    "menu": "Menu",
+    "menu_open": "Ouvrir le menu",
+    "menu_close": "Fermer le menu",
+    "main_nav": "Menu principal",
+    "view_all": "Voir tout {{ title }}",
+    "discover": "Découvrir"
+  },
+  "localization": {
+    "country_label": "Pays",
+    "language_label": "Langue",
+    "update": "Mettre à jour"
+  },
+  "search": {
+    "title": "Rechercher",
+    "open": "Rechercher un produit",
+    "close": "Fermer la recherche",
+    "placeholder": "Pokémon, One Piece, display, ETB…",
+    "submit": "Rechercher",
+    "suggestions": "Suggestions",
+    "popular": "Populaire en ce moment",
+    "collections": "Catégories",
+    "products": "Produits",
+    "content": "Guides et pages",
+    "view_all": "Voir tous les résultats pour « {{ terms }} »",
+    "no_results": "Aucun résultat pour « {{ terms }} ».",
+    "try_again": "Essayez « display », « ETB » ou « One Piece ».",
+    "results_for": "Résultats pour « {{ terms }} »",
+    "result_count": {
+      "one": "{{ count }} résultat",
+      "other": "{{ count }} résultats"
+    }
+  },
+  "cart": {
+    "title": "Votre panier",
+    "close": "Fermer le panier",
+    "count": {
+      "one": "{{ count }} article",
+      "other": "{{ count }} articles"
+    },
+    "added": "Ajouté au panier",
+    "view": "Voir le panier",
+    "error": "Oups, une erreur est survenue. Réessayez dans un instant.",
+    "subtotal": "Sous-total",
+    "checkout": "Passer commande",
+    "pickup_note": "Retrait gratuit en boutique à {{ city }}, ou livraison rapide en Belgique.",
+    "taxes_shipping": "TVA incluse. Frais de livraison calculés à l’étape suivante.",
+    "empty": "Votre panier est vide",
+    "empty_text": "Un booster, un display, une petite carte à l’unité ? Faites-vous plaisir !",
+    "continue": "Explorer la boutique",
+    "note": "Une précision pour votre commande ?",
+    "quantity_for": "Quantité pour {{ title }}",
+    "decrease": "Retirer un exemplaire de {{ title }}",
+    "increase": "Ajouter un exemplaire de {{ title }}",
+    "remove": "Supprimer {{ title }} du panier"
+  },
+  "products": {
+    "status": {
+      "disponible": "Disponible",
+      "precommande": "Précommande",
+      "bientot": "Bientôt disponible",
+      "rupture": "Rupture de stock",
+      "boutique": "Non disponible en ligne"
+    },
+    "language_title": "Langue des cartes",
+    "price_from": "Dès {{ price }}",
+    "regular_price": "Prix normal",
+    "add_to_cart": "Ajouter au panier",
+    "preorder": "Précommander",
+    "add_short": "Ajouter",
+    "preorder_short": "Précommander",
+    "add_aria": "Ajouter {{ title }} au panier",
+    "preorder_aria": "Précommander {{ title }}",
+    "choose": "Choisir",
+    "store_short": "En boutique",
+    "soon_short": "Bientôt",
+    "soldout_short": "Épuisé",
+    "unavailable": "Indisponible",
+    "store_only_note": "Disponible en boutique à {{ city }}",
+    "taxes_included": "TVA incluse.",
+    "taxes_excluded": "Hors taxes.",
+    "variant": "Variante",
+    "quantity": "Quantité",
+    "quantity_decrease": "Diminuer la quantité",
+    "quantity_increase": "Augmenter la quantité",
+    "gallery_previous": "Image précédente",
+    "gallery_next": "Image suivante",
+    "gallery_show": "Afficher l’image {{ number }}",
+    "placeholder_title": "Votre produit ici",
+    "placeholder_type": "Exemple",
+    "pickup": {
+      "available_at": "Retrait disponible à {{ location }}",
+      "unavailable_at": "Retrait indisponible pour le moment à {{ location }}",
+      "view_details": "Voir les informations du magasin",
+      "available": "Retrait disponible",
+      "unavailable": "Retrait indisponible"
+    }
+  },
+  "collections": {
+    "filters": "Filtres",
+    "close_filters": "Fermer les filtres",
+    "apply": "Appliquer",
+    "clear_all": "Tout effacer",
+    "show_results": "Voir les produits",
+    "price_min": "Prix min. (€)",
+    "price_max": "Prix max. (€)",
+    "sort_by": "Trier par",
+    "remove_filter": "Retirer le filtre {{ filter }}",
+    "empty": "Aucun produit ne correspond à ces filtres.",
+    "product_count": {
+      "one": "{{ count }} produit",
+      "other": "{{ count }} produits"
+    },
+    "products_heading": "Produits"
+  },
+  "sections": {
+    "hero": {
+      "scroll": "Défiler vers la suite"
+    },
+    "coverflow": {
+      "carousel": "carrousel",
+      "slide": "Produit",
+      "previous": "Produit précédent",
+      "next": "Produit suivant"
+    },
+    "slider": {
+      "previous": "Produits précédents",
+      "next": "Produits suivants"
+    },
+    "countdown": {
+      "label": "Temps restant avant la sortie",
+      "days": "jours",
+      "hours": "heures",
+      "minutes": "minutes",
+      "seconds": "secondes"
+    },
+    "releases": {
+      "empty": "Les prochaines sorties arrivent bientôt : restez connectés !"
+    },
+    "events": {
+      "empty": "Aucun tournoi prévu pour le moment : suivez-nous sur Instagram pour ne rien rater !",
+      "per_entry": "l’inscription"
+    },
+    "community": {
+      "post": "Voir sur Instagram"
+    },
+    "store": {
+      "address": "Adresse",
+      "hours": "Horaires",
+      "today": "aujourd’hui",
+      "closed": "Fermé",
+      "parking": "Parking",
+      "pickup": "Retrait en boutique",
+      "next_event": "Prochain tournoi",
+      "directions": "Itinéraire",
+      "events": "Voir les tournois",
+      "contact": "Contact",
+      "map_label": "Plan stylisé : {{ shop }} se trouve {{ address }}"
+    }
+  },
+  "newsletter": {
+    "label": "Votre adresse e-mail",
+    "placeholder": "votre@email.be",
+    "success": "Merci ! Vous recevrez nos prochaines sorties et tournois en avant-première.",
+    "notify": "Me prévenir"
+  },
+  "footer": {
+    "payments": "Paiements acceptés"
+  },
+  "contact": {
+    "name": "Nom",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "message": "Message",
+    "send": "Envoyer",
+    "success": "Merci pour votre message ! On vous répond très vite.",
+    "details": "Nos coordonnées"
+  },
+  "blogs": {
+    "tags": "Filtrer par thème",
+    "all": "Tout",
+    "empty": "Aucun article pour le moment.",
+    "back": "Retour à {{ blog }}",
+    "comments": "Commentaires",
+    "comments_count": {
+      "one": "{{ count }} commentaire",
+      "other": "{{ count }} commentaires"
+    },
+    "leave_comment": "Laisser un commentaire",
+    "moderated": "Merci ! Votre commentaire sera publié après validation.",
+    "posted": "Merci ! Votre commentaire est publié.",
+    "submit": "Publier"
+  },
+  "not_found": {
+    "title": "Cette carte n’existe pas",
+    "text": "La page que vous cherchez a peut-être été déplacée. Pas de panique : le reste de la collection vous attend !",
+    "back": "Retour à l’accueil"
+  },
+  "password": {
+    "enter": "Entrer avec le mot de passe",
+    "label": "Mot de passe",
+    "submit": "Entrer",
+    "admin_html": "Vous êtes le propriétaire ? <a href=\"/admin\">Connectez-vous ici</a>"
+  },
+  "gift_card": {
+    "title": "Carte cadeau",
+    "balance": "Solde restant : {{ value }}",
+    "expired": "Cette carte cadeau a expiré ou est désactivée.",
+    "code": "Code :",
+    "expires_on": "Valable jusqu’au {{ date }}",
+    "shop": "Utiliser ma carte cadeau",
+    "apple_wallet": "Ajouter à Apple Wallet"
+  },
+  "customer": {
+    "login_title": "Connexion",
+    "account_title": "Mon compte",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "password_confirm": "Confirmer le mot de passe",
+    "sign_in": "Se connecter",
+    "forgot_password": "Mot de passe oublié ?",
+    "create_account": "Créer un compte",
+    "recover_title": "Réinitialiser le mot de passe",
+    "recover_success": "Un e-mail de réinitialisation vous a été envoyé.",
+    "recover_submit": "Envoyer",
+    "guest": "Continuer en tant qu’invité",
+    "register_title": "Créer un compte",
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "accepts_marketing": "Recevoir les nouveautés et les tournois par e-mail",
+    "create": "Créer mon compte",
+    "have_account": "Déjà un compte ? Connectez-vous",
+    "hello": "Bonjour {{ name }} !",
+    "log_out": "Se déconnecter",
+    "orders": "Mes commandes",
+    "order": "Commande",
+    "date": "Date",
+    "payment": "Paiement",
+    "fulfillment": "Expédition",
+    "total": "Total",
+    "no_orders": "Vous n’avez pas encore passé de commande.",
+    "account_details": "Mes coordonnées",
+    "view_addresses": {
+      "one": "Voir mon adresse ({{ count }})",
+      "other": "Voir mes adresses ({{ count }})"
+    },
+    "back_to_account": "Retour à mon compte",
+    "cancelled": "Commande annulée le {{ date }}",
+    "product": "Produit",
+    "quantity": "Quantité",
+    "track": "Suivre le colis",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "billing_address": "Adresse de facturation",
+    "shipping_address": "Adresse de livraison",
+    "addresses": "Mes adresses",
+    "default_address": "Adresse par défaut",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "save": "Enregistrer",
+    "add_address": "Ajouter une adresse",
+    "company": "Société",
+    "address1": "Adresse",
+    "address2": "Complément d’adresse",
+    "zip": "Code postal",
+    "city": "Ville",
+    "country": "Pays",
+    "phone": "Téléphone",
+    "set_default": "Définir comme adresse par défaut",
+    "activate_title": "Activer mon compte",
+    "activate": "Activer",
+    "decline": "Refuser l’invitation",
+    "reset_title": "Nouveau mot de passe",
+    "reset": "Enregistrer le mot de passe"
+  }
+}

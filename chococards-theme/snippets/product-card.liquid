@@ -1,0 +1,68 @@
+{%- comment -%}
+  Carte produit ChocoCards : tilt 3D + reflet holo, badges de statut et de langue,
+  ajout rapide au panier (la carte "vole" vers le panier).
+  - product    : produit (obligatoire)
+  - light      : true pour la variante claire
+  - show_label : true pour afficher le libellé court (metafield custom.libelle_court, sinon type)
+  - sizes      : attribut sizes de l'image (optionnel)
+  - lazy       : false pour charger l'image tout de suite (premiers produits visibles)
+{%- endcomment -%}
+{%- liquid
+  capture status
+    render 'product-status', product: product
+  endcapture
+  assign status = status | strip
+  assign variant = product.selected_or_first_available_variant
+  assign langue = product.metafields.custom.langue.value
+  assign img_sizes = sizes | default: '(min-width: 1100px) 300px, (min-width: 750px) 33vw, 70vw'
+  assign loading = 'lazy'
+  if lazy == false
+    assign loading = 'eager'
+  endif
+  assign media_alt = product.featured_media.alt | default: product.title | escape
+  assign short_label = product.metafields.custom.libelle_court.value | default: product.type
+-%}
+<article class="product-card holo-card{% if light %} product-card--light{% endif %}"{% if settings.enable_holo %} data-tilt data-tilt-max="9"{% endif %} data-product-card>
+  <div class="product-card__media">
+    {%- if product.featured_media -%}
+      {{ product.featured_media | image_url: width: 900 | image_tag: loading: loading, widths: '240, 360, 480, 600, 900', sizes: img_sizes, alt: media_alt }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+    <span class="product-card__badges">{% render 'product-badges', status: status, langue: langue %}</span>
+  </div>
+  <div class="product-card__body">
+    {%- if show_label and short_label != blank -%}
+      <span class="product-card__label">{{ short_label }}</span>
+    {%- elsif product.type != blank -%}
+      <p class="product-card__cat">{{ product.type }}</p>
+    {%- endif -%}
+    <h3 class="product-card__title"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+    <div class="product-card__foot">
+      {% render 'price', product: product %}
+      {%- case status -%}
+        {%- when 'disponible', 'precommande' -%}
+          {%- if product.has_only_default_variant -%}
+            {%- form 'product', product, class: 'quick-add', data-product-form: '' -%}
+              <input type="hidden" name="id" value="{{ variant.id }}">
+              <button class="add-btn" type="submit" aria-label="{% if status == 'precommande' %}{{ 'products.preorder_aria' | t: title: product.title | escape }}{% else %}{{ 'products.add_aria' | t: title: product.title | escape }}{% endif %}">
+                {%- render 'icon', name: 'plus' -%}
+                <span>{% if status == 'precommande' %}{{ 'products.preorder_short' | t }}{% else %}{{ 'products.add_short' | t }}{% endif %}</span>
+              </button>
+            {%- endform -%}
+          {%- else -%}
+            <a class="add-btn" href="{{ product.url }}">{% render 'icon', name: 'arrow' %}<span>{{ 'products.choose' | t }}</span></a>
+          {%- endif -%}
+        {%- when 'boutique' -%}
+          <button class="add-btn" type="button" disabled>{{ 'products.store_short' | t }}</button>
+        {%- when 'bientot' -%}
+          <button class="add-btn" type="button" disabled>{{ 'products.soon_short' | t }}</button>
+        {%- else -%}
+          <button class="add-btn" type="button" disabled>{{ 'products.soldout_short' | t }}</button>
+      {%- endcase -%}
+    </div>
+    {%- if status == 'boutique' -%}
+      <p class="product-card__note">{% render 'icon', name: 'store' %}{{ 'products.store_only_note' | t: city: settings.store_city }}</p>
+    {%- endif -%}
+  </div>
+</article>

@@ -1,0 +1,26 @@
+{%- comment -%}
+  Booster ChocoCards générique (aucun logo officiel) + 5 cartes qui en sortent.
+  - brand, label, sub : textes imprimés sur le booster
+  - hint : texte d'aide sous le booster
+  - animate : 'true' / 'false'
+{%- endcomment -%}
+<booster-reveal class="booster-stage" aria-hidden="true" data-animate="{{ animate }}">
+  <div class="booster-burst" data-booster-burst></div>
+  <div class="booster-cards" data-booster-cards>
+    <div class="mini-card mini-card--1"><span class="mini-card__star">★</span></div>
+    <div class="mini-card mini-card--2"><span class="mini-card__star">★</span></div>
+    <div class="mini-card mini-card--3 mini-card--rare"><span class="mini-card__star">★★★</span></div>
+    <div class="mini-card mini-card--4"><span class="mini-card__star">★</span></div>
+    <div class="mini-card mini-card--5"><span class="mini-card__star">★</span></div>
+  </div>
+  <div class="booster" data-booster>
+    <div class="booster__top" data-booster-top><span></span></div>
+    <div class="booster__body">
+      <span class="booster__brand">{{ brand }}</span>
+      <span class="booster__emblem"></span>
+      <span class="booster__label">{{ label }}</span>
+      <span class="booster__sub">{{ sub }}</span>
+    </div>
+  </div>
+  {%- if hint != blank and animate != false -%}<p class="booster-hint" data-booster-hint>{{ hint }}</p>{%- endif -%}
+</booster-reveal>

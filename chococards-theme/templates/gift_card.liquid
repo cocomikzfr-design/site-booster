@@ -1,0 +1,41 @@
+{%- layout none -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ 'gift_card.title' | t }} – {{ shop.name }}</title>
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'templates.css' | asset_url | stylesheet_tag }}
+    {% render 'css-variables' %}
+    <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
+    {{ content_for_header }}
+  </head>
+  <body>
+    {% render 'icon-sprite' %}
+    <main class="password">
+      <div class="password__inner">
+        {% render 'logo', size: 'lg' %}
+        <h1 class="password__title">{{ 'gift_card.title' | t }} <span class="holo-text">{{ gift_card.initial_value | money_without_trailing_zeros }}</span></h1>
+        {%- if gift_card.expired or gift_card.enabled == false -%}
+          <p class="form-message form-message--error">{{ 'gift_card.expired' | t }}</p>
+        {%- else -%}
+          {%- assign balance = gift_card.balance | money -%}
+          <p class="section-lead">{{ 'gift_card.balance' | t: value: balance }}</p>
+        {%- endif -%}
+        <div class="poster-card" style="position:relative;--w:220px;transform:none;left:auto;top:auto" aria-hidden="true"></div>
+        <p><strong>{{ 'gift_card.code' | t }}</strong> <code id="GiftCardCode">{{ gift_card.code | format_code }}</code></p>
+        <div id="QrCode" data-identifier="{{ gift_card.qr_identifier }}" style="background:#fff;padding:12px;border-radius:16px"></div>
+        {%- if gift_card.expires_on -%}<p>{{ 'gift_card.expires_on' | t: date: gift_card.expires_on }}</p>{%- endif -%}
+        <a class="btn btn--holo" href="{{ shop.url }}"><span>{{ 'gift_card.shop' | t }}</span></a>
+        {%- if gift_card.pass_url -%}<a href="{{ gift_card.pass_url }}"><img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" width="120" height="40" alt="{{ 'gift_card.apple_wallet' | t }}" loading="lazy"></a>{%- endif -%}
+      </div>
+    </main>
+    <script>
+      window.addEventListener('load', function () {
+        var qr = document.getElementById('QrCode');
+        if (window.QRCode && qr) new QRCode(qr, { text: qr.dataset.identifier, width: 120, height: 120 });
+      });
+    </script>
+  </body>
+</html>

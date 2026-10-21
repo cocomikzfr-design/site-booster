@@ -1,0 +1,75 @@
+{%- comment -%}
+  Collection mise en avant en carrousel 3D (ex. « Pokémon fête ses 30 ans »),
+  avec mention optionnelle « vendue exclusivement en boutique physique ».
+{%- endcomment -%}
+<script src="{{ 'carousels.js' | asset_url }}" type="module"></script>
+{%- liquid
+  assign s = section.settings
+  assign collection = s.collection
+  assign anchor = s.anchor | default: section.id | handleize
+  assign deep = false
+  if s.scheme == 'light'
+    assign deep = true
+  endif
+  assign title_id = 'Title-' | append: section.id
+  assign carousel_label = s.heading | append: ' ' | append: s.heading_holo | escape
+-%}
+<section class="section anniversary{% if deep %} panel panel--light{% endif %}" id="{{ anchor }}" style="--pt: {{ s.padding_top }}px; --pb: {{ s.padding_bottom }}px" aria-labelledby="{{ title_id }}">
+  {%- if s.background_text != blank -%}<div class="anniversary__bg" aria-hidden="true">{{ s.background_text }}</div>{%- endif -%}
+  <div class="container">
+    {% render 'section-heading', eyebrow: s.eyebrow, eyebrow_icon: 'star', heading: s.heading, heading_holo: s.heading_holo, deep: deep, lead: s.text, align: 'center', id: title_id %}
+
+    <coverflow-carousel class="coverflow" data-autoplay="{{ s.autoplay }}" data-dot-label="{{ 'sections.coverflow.slide' | t }}" aria-roledescription="{{ 'sections.coverflow.carousel' | t }}" aria-label="{{ carousel_label }}">
+      <div class="coverflow__stage" data-coverflow-stage>
+        {%- if collection != blank and collection.products_count > 0 -%}
+          {%- for product in collection.products limit: s.limit -%}
+            <div class="coverflow__item" role="group" aria-roledescription="{{ 'sections.coverflow.slide' | t }}" aria-label="{{ forloop.index }} / {{ forloop.length }}">
+              {% render 'product-card', product: product, light: deep, show_label: true, sizes: '320px' %}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for i in (1..4) -%}
+            <div class="coverflow__item">{% render 'product-card-placeholder', index: i, light: deep %}</div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+      <div class="coverflow__controls">
+        <button class="round-btn" type="button" data-coverflow-prev aria-label="{{ 'sections.coverflow.previous' | t }}">{% render 'icon', name: 'arrow-left' %}</button>
+        <div class="coverflow__dots" data-coverflow-dots></div>
+        <button class="round-btn" type="button" data-coverflow-next aria-label="{{ 'sections.coverflow.next' | t }}">{% render 'icon', name: 'arrow' %}</button>
+      </div>
+    </coverflow-carousel>
+
+    {%- if s.show_note and s.note != blank -%}
+      <p class="exclusive-note" data-reveal>{% render 'icon', name: 'store' %}{{ s.note }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection 3D",
+  "class": "section-featured-3d",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Ex. Pokémon 30 ans (ETB, UPC, Mini Tin, Booster Bundle)." },
+    { "type": "range", "id": "limit", "label": "Nombre de produits", "min": 3, "max": 12, "step": 1, "default": 6 },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Événement collector" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Pokémon fête ses" },
+    { "type": "text", "id": "heading_holo", "label": "Fin du titre (holographique)", "default": "30 ans" },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>ETB, UPC, Mini Tin et Booster Bundle de l’anniversaire sont arrivés chez ChocoCards. Cette collection est <strong>vendue exclusivement en boutique physique</strong> : venez la découvrir à Nivelles !</p>" },
+    { "type": "text", "id": "background_text", "label": "Grand texte décoratif en fond", "default": "30" },
+    { "type": "checkbox", "id": "show_note", "label": "Afficher la mention « vente en boutique »", "default": true },
+    { "type": "text", "id": "note", "label": "Mention", "default": "Vendue exclusivement en boutique physique — Rue du Géant 15, Nivelles" },
+    { "type": "checkbox", "id": "autoplay", "label": "Défilement automatique", "default": true },
+    {
+      "type": "select", "id": "scheme", "label": "Fond", "default": "light",
+      "options": [ { "value": "dark", "label": "Chocolat" }, { "value": "light", "label": "Crème" } ]
+    },
+    { "type": "text", "id": "anchor", "label": "Ancre (lien #…)", "default": "pokemon-30-ans" },
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "label": "Marge haute", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 },
+    { "type": "range", "id": "padding_bottom", "label": "Marge basse", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 120 }
+  ],
+  "presets": [ { "name": "Collection 3D" } ]
+}
+{% endschema %}

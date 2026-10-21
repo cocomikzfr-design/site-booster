@@ -1,0 +1,42 @@
+{{ 'templates.css' | asset_url | stylesheet_tag }}
+<section class="account container page-hero">
+  <div class="account-card" id="login">
+    <h1>{{ 'customer.login_title' | t }}</h1>
+    {%- form 'customer_login', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}<div class="form-message form-message--error" role="alert">{% render 'icon', name: 'alert' %}{{ form.errors | default_errors }}</div>{%- endif -%}
+      <div class="field"><label for="LoginEmail">{{ 'customer.email' | t }}</label><input id="LoginEmail" type="email" name="customer[email]" autocomplete="email" autocapitalize="off" required></div>
+      {%- if form.password_needed -%}
+        <div class="field"><label for="LoginPassword">{{ 'customer.password' | t }}</label><input id="LoginPassword" type="password" name="customer[password]" autocomplete="current-password" required></div>
+      {%- endif -%}
+      <button class="btn btn--holo" type="submit" style="margin-top:12px"><span>{{ 'customer.sign_in' | t }}</span></button>
+    {%- endform -%}
+    <div class="account-links">
+      <a href="#recover">{{ 'customer.forgot_password' | t }}</a>
+      <a href="{{ routes.account_register_url }}">{{ 'customer.create_account' | t }}</a>
+    </div>
+  </div>
+
+  <div class="account-card" id="recover" style="margin-top:24px">
+    <h2>{{ 'customer.recover_title' | t }}</h2>
+    {%- form 'recover_customer_password' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-message form-message--success" role="status">{% render 'icon', name: 'check' %}{{ 'customer.recover_success' | t }}</p>
+      {%- endif -%}
+      {%- if form.errors -%}<div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+      <div class="field"><label for="RecoverEmail">{{ 'customer.email' | t }}</label><input id="RecoverEmail" type="email" name="email" autocomplete="email" required></div>
+      <button class="btn btn--ghost" type="submit" style="margin-top:12px"><span>{{ 'customer.recover_submit' | t }}</span></button>
+    {%- endform -%}
+  </div>
+
+  {%- if shop.checkout.guest_login -%}
+    <div class="account-card" style="margin-top:24px">
+      {%- form 'guest_login' -%}
+        <button class="btn btn--ghost" type="submit"><span>{{ 'customer.guest' | t }}</span></button>
+      {%- endform -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{ "name": "Connexion", "settings": [] }
+{% endschema %}

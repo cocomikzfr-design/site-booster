@@ -1,0 +1,10 @@
+{%- comment -%}
+  Badges d'une fiche produit.
+  - status : statut calculé par product-status
+  - langue : valeur du metafield custom.langue (FR, JP, EN…)
+{%- endcomment -%}
+{%- assign status_key = 'products.status.' | append: status -%}
+<span class="badge badge--{{ status }}">{{ status_key | t }}</span>
+{%- if langue != blank -%}
+  <span class="badge badge--lang" title="{{ 'products.language_title' | t }}">{{ langue }}</span>
+{%- endif -%}

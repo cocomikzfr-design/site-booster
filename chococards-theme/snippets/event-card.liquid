@@ -1,0 +1,27 @@
+{%- comment -%}
+  Carte « ticket » d'un tournoi / événement.
+  - date, heure, jeu, titre, prix (texte déjà formaté), lien, cta, attrs
+{%- endcomment -%}
+{%- assign iso = date | date: '%Y-%m-%d' -%}
+{%- capture long_date -%}{% render 'date-label', date: iso, part: 'long' %}{%- endcapture -%}
+<article class="event holo-card"{% if settings.enable_holo %} data-tilt data-tilt-max="6"{% endif %} data-date="{{ iso }}" data-hide-past {{ attrs }}>
+  <div class="event__date" aria-hidden="true">
+    <span class="event__weekday">{% render 'date-label', date: iso, part: 'weekday_short' %}</span>
+    <span class="event__day">{% render 'date-label', date: iso, part: 'day' %}</span>
+    <span class="event__month">{% render 'date-label', date: iso, part: 'month_short' %}</span>
+  </div>
+  <div class="event__body">
+    {%- if jeu != blank -%}<span class="game-tag" data-game="{{ jeu | escape }}">{{ jeu }}</span>{%- endif -%}
+    <h3 class="event__title">{{ titre }}</h3>
+    <p class="event__details">
+      <span>{% render 'icon', name: 'calendar' %}<span>{{ long_date }}</span></span>
+      {%- if heure != blank -%}<span>{% render 'icon', name: 'clock' %}{{ heure }}</span>{%- endif -%}
+    </p>
+    <div class="event__foot">
+      {%- if prix != blank -%}<span class="event__price">{{ prix }}<small>{{ 'sections.events.per_entry' | t }}</small></span>{%- endif -%}
+      {%- if lien != blank -%}
+        <a class="btn btn--holo btn--sm" href="{{ lien }}" data-magnetic aria-label="{{ cta | escape }} : {{ titre | escape }} — {{ long_date | strip }}"><span>{{ cta }}</span>{% render 'icon', name: 'arrow' %}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</article>
