@@ -89,6 +89,7 @@
    (hauteur du header) fait croire au navigateur que l'élément est masqué, et il recentre
    la page pour rien. Une marge de défilement négative équivalente l'en dissuade. */
 .header :is(a, button, [tabindex]) { scroll-margin-top: calc(-1 * (var(--header-h) + 16px)); }
+/* (La tabulation vers le header est en plus gérée en JS, sans défilement : header.js.) */
 
 .header .header__bar {
   position: relative;
@@ -271,6 +272,16 @@ html.hdr-hidden.cart-filled .cart-satellite {
 }
 .hdr-scrim.is-on { opacity: 1; pointer-events: auto; }
 @media (max-width: 1023px) { .hdr-scrim { display: none; } }
+
+/* Petits téléphones : le bouton menu garde sa cible tactile de 44 px (il ne se tasse
+   jamais) ; le logo et les espacements cèdent quelques pixels à la place. */
+.header .header__burger { flex: none; }
+@media (max-width: 389px) {
+  .header .header__bar { gap: 4px; padding-inline: 6px; }
+  .header .header__logo { padding-inline: 2px; gap: 6px; }
+  .header .header__logo .logo__mark { width: 30px; height: 30px; }
+  .header .header__logo .logo__text { font-size: 1rem; }
+}
 
 /* 11. SANS JAVASCRIPT / MOUVEMENT RÉDUIT -------------------------------------------- */
 @media (max-width: 1023px) {

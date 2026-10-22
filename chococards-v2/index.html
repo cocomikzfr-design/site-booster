@@ -363,13 +363,25 @@
       <div class="container">
         <div class="sheet anniv__sheet" data-surface="papier">
           <span class="anniv__num" aria-hidden="true">30</span>
-          <div class="section-head anniv__head">
-            <p class="eyebrow"><svg aria-hidden="true" focusable="false"><use href="#i-star"/></svg>Événement collector</p>
-            <h2 class="h2" id="anniv-title" data-reveal="lines">Pokémon fête ses <em class="accent">30&nbsp;ans</em></h2>
-            <p class="lead">ETB, UPC, Mini Tin et Booster Bundle de l’anniversaire sont arrivés chez ChocoCards. Cette collection est <strong>vendue exclusivement en boutique physique</strong>&nbsp;: venez la découvrir à Nivelles&nbsp;!</p>
+          <div class="anniv__layout">
+            <div class="section-head anniv__head">
+              <p class="eyebrow"><svg aria-hidden="true" focusable="false"><use href="#i-star"/></svg>Événement collector</p>
+              <h2 class="h2" id="anniv-title" data-reveal="lines">Pokémon fête ses <em class="accent">30&nbsp;ans</em></h2>
+              <p class="lead">ETB, UPC, Mini Tin et Booster Bundle de l’anniversaire sont arrivés chez ChocoCards. Cette collection est <strong>vendue exclusivement en boutique physique</strong>&nbsp;: venez la découvrir à Nivelles&nbsp;!</p>
+            </div>
+            <!-- Vitrine 3D (desktop, ≥ 1024 px) : remplie par js/sections/showcase/vitrine.js.
+                 Sans JavaScript, en mouvement réduit ou sur mobile : la liste de cartes ci-dessous. -->
+            <div class="vitrine" id="vitrine-30" data-vitrine hidden>
+              <div class="vitrine__scene" data-vitrine-scene aria-hidden="true"></div>
+              <div class="vitrine__nav">
+                <button class="round-btn vitrine__btn" type="button" data-vitrine-prev aria-controls="vitrine-30" aria-label="Produit précédent de la vitrine"><svg aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg></button>
+                <button class="round-btn vitrine__btn" type="button" data-vitrine-next aria-controls="vitrine-30" aria-label="Produit suivant de la vitrine"><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></button>
+              </div>
+            </div>
+            <ol class="anniv__index" data-anniv-index hidden aria-label="Collection Pokémon 30 ans"></ol>
+            <ul class="anniv__list" data-render="products" data-render-custom data-categorie="pokemon-30-ans" data-reveal-stagger aria-label="Collection Pokémon 30 ans"></ul>
+            <p class="anniv__note"><svg aria-hidden="true" focusable="false"><use href="#i-store"/></svg><span>Vendue exclusivement en boutique physique — Rue du Géant 15, Nivelles</span></p>
           </div>
-          <ul class="anniv__list" data-render="products" data-categorie="pokemon-30-ans" data-reveal-stagger aria-label="Collection Pokémon 30 ans"></ul>
-          <p class="anniv__note"><svg aria-hidden="true" focusable="false"><use href="#i-store"/></svg><span>Vendue exclusivement en boutique physique — Rue du Géant 15, Nivelles</span></p>
         </div>
       </div>
     </section>
@@ -391,28 +403,39 @@
     <!-- ===== SECTION:precommande START ===== -->
     <section class="section preorder" id="precommande" data-world="delta" aria-labelledby="preorder-title">
       <div class="container preorder__grid">
-        <div class="preorder__content">
+        <div class="preorder__content" data-reveal-stagger>
           <p class="chip chip--accent"><span class="chip__dot" aria-hidden="true"></span>Précommande ouverte</p>
           <h2 class="h2 preorder__title" id="preorder-title"><span data-bind="precommandeVedette.titreDebut">ME06 —</span> <em class="accent" data-bind="precommandeVedette.titreAccent">Règne Delta</em></h2>
           <p class="preorder__date"><svg aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg><span>Sortie le <strong data-bind="precommandeVedette.sortieTexte">6 novembre 2026</strong></span></p>
           <p class="preorder__text" data-bind="precommandeVedette.texte">La nouvelle extension Pokémon arrive le 6 novembre 2026. Réservez dès maintenant vos displays et coffrets : on vous les met de côté dès l’arrivée du stock.</p>
-          <div class="countdown" data-countdown="2026-11-06T00:00:00+01:00" role="timer" aria-label="Temps restant avant la sortie de Règne Delta">
-            <div class="countdown__unit"><span class="countdown__value" data-unit="days">00</span><span class="countdown__label">jours</span></div>
-            <div class="countdown__unit"><span class="countdown__value" data-unit="hours">00</span><span class="countdown__label">heures</span></div>
-            <div class="countdown__unit"><span class="countdown__value" data-unit="minutes">00</span><span class="countdown__label">minutes</span></div>
-            <div class="countdown__unit"><span class="countdown__value" data-unit="seconds">00</span><span class="countdown__label">secondes</span></div>
+          <div class="preorder__timer">
+            <div class="countdown" data-countdown="2026-11-06T00:00:00+01:00" role="timer" aria-label="Temps restant avant la sortie de Règne Delta">
+              <div class="countdown__unit"><span class="countdown__value" data-unit="days">00</span><span class="countdown__label">jours</span></div>
+              <div class="countdown__unit"><span class="countdown__value" data-unit="hours">00</span><span class="countdown__label">heures</span></div>
+              <div class="countdown__unit"><span class="countdown__value" data-unit="minutes">00</span><span class="countdown__label">minutes</span></div>
+              <div class="countdown__unit"><span class="countdown__value" data-unit="seconds">00</span><span class="countdown__label">secondes</span></div>
+            </div>
+            <p class="countdown__over" data-countdown-over hidden>C’est sorti ! Règne Delta est disponible en boutique.</p>
           </div>
           <ul class="preorder__products" data-render="preorder-products" aria-label="Produits Règne Delta en précommande"></ul>
         </div>
-        <!-- Scène du booster : vraie photo ME06 + dos de cartes (section booster : ouverture 3D) -->
-        <div class="preorder__stage" aria-hidden="true" data-booster-stage>
-          <span class="preorder__halo"></span>
-          <span class="card-back preorder__card preorder__card--1"></span>
-          <span class="card-back preorder__card preorder__card--2"></span>
-          <span class="card-back preorder__card preorder__card--3"></span>
-          <img class="preorder__photo" src="assets/img/produits/pokemon-me06-etb.webp" alt="" width="800" height="800" loading="lazy" decoding="async">
-          <span class="preorder__code">ME06</span>
-          <canvas class="preorder__canvas" data-booster-canvas></canvas>
+        <!-- Scène du booster : affiche CSS (état final, repli sans WebGL / mouvement réduit) + canvas 3D (booster.js) -->
+        <div class="preorder__visual" data-booster-visual>
+          <div class="preorder__stage" aria-hidden="true" data-booster-stage>
+            <span class="preorder__halo"></span>
+            <span class="preorder__code">ME06</span>
+            <span class="card-back preorder__card preorder__card--1"></span>
+            <span class="card-back preorder__card preorder__card--2"></span>
+            <span class="card-back preorder__card preorder__card--3"></span>
+            <span class="card-back preorder__card preorder__card--4"></span>
+            <span class="card-back preorder__card preorder__card--5"></span>
+            <span class="preorder__lift"><img class="preorder__photo" src="assets/img/produits/pokemon-me06-etb.webp" alt="" width="800" height="800" loading="lazy" decoding="async"></span>
+            <canvas class="preorder__canvas" data-booster-canvas></canvas>
+          </div>
+          <div class="preorder__hud">
+            <p class="booster-hud" data-booster-hud aria-hidden="true" hidden><span class="booster-hud__text"></span><span class="booster-hud__bar"><span></span></span></p>
+            <button class="btn btn--ghost btn--sm preorder__replay" type="button" data-booster-replay hidden><svg aria-hidden="true" focusable="false"><use href="#i-sparkle"/></svg><span>Ouvrir le booster</span></button>
+          </div>
         </div>
       </div>
     </section>
@@ -429,7 +452,14 @@
             </div>
             <a class="link-arrow" href="#sorties"><span>Voir le calendrier complet</span><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
           </div>
-          <ol class="timeline" data-render="sorties" data-reveal-stagger></ol>
+          <!-- Frise : repère « Aujourd'hui » + ligne qui se trace (booster.js) ; les dates passées disparaissent -->
+          <div class="releases__track" data-releases-track>
+            <div class="releases__rail" aria-hidden="true">
+              <span class="releases__today"><span class="releases__today-dot"></span>Aujourd’hui · <span data-today></span></span>
+              <span class="releases__line"></span>
+            </div>
+            <ol class="timeline" data-render="sorties"></ol>
+          </div>
         </div>
       </div>
     </section>
@@ -444,6 +474,7 @@
             <h2 class="h2" id="pokemon-title" data-reveal="lines">L’univers <em class="accent">Pokémon</em></h2>
           </div>
           <div class="shelf__nav">
+            <p class="shelf__count" aria-hidden="true"><span data-shelf-index>01</span><span class="shelf__count-sep">/</span><span data-shelf-total>08</span></p>
             <a class="link-arrow" href="#pokemon"><span>Tout voir</span><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
             <button class="round-btn" type="button" data-scroll-prev="piste-pokemon" aria-label="Produits Pokémon précédents"><svg aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg></button>
             <button class="round-btn" type="button" data-scroll-next="piste-pokemon" aria-label="Produits Pokémon suivants"><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></button>
@@ -451,7 +482,11 @@
         </div>
       </div>
       <div class="shelf__viewport">
-        <ul class="shelf__track no-scrollbar" id="piste-pokemon" data-render="products" data-categorie="pokemon" tabindex="0" aria-label="Produits Pokémon (défilement horizontal)"></ul>
+        <ul class="shelf__track no-scrollbar" id="piste-pokemon" data-render="products" data-render-custom data-categorie="pokemon" data-shelf data-reveal-stagger data-cursor="Glisser" tabindex="0" aria-label="Produits Pokémon (défilement horizontal)"></ul>
+      </div>
+      <div class="container shelf__foot" aria-hidden="true">
+        <span class="shelf__progress"><span class="shelf__thumb" data-shelf-thumb></span></span>
+        <span class="shelf__hint"><span class="shelf__hint-mouse">Glisser ou utiliser les flèches</span><span class="shelf__hint-touch">Balayer pour voir la suite</span></span>
       </div>
     </section>
     <!-- ===== SECTION:pokemon END ===== -->
@@ -465,6 +500,7 @@
             <h2 class="h2" id="onepiece-title" data-reveal="lines">One Piece <em class="accent">Card Game</em></h2>
           </div>
           <div class="shelf__nav">
+            <p class="shelf__count" aria-hidden="true"><span data-shelf-index>01</span><span class="shelf__count-sep">/</span><span data-shelf-total>08</span></p>
             <a class="link-arrow" href="#one-piece"><span>Tout voir</span><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
             <button class="round-btn" type="button" data-scroll-prev="piste-one-piece" aria-label="Produits One Piece précédents"><svg aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg></button>
             <button class="round-btn" type="button" data-scroll-next="piste-one-piece" aria-label="Produits One Piece suivants"><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></button>
@@ -472,7 +508,11 @@
         </div>
       </div>
       <div class="shelf__viewport">
-        <ul class="shelf__track no-scrollbar" id="piste-one-piece" data-render="products" data-categorie="one-piece" tabindex="0" aria-label="Produits One Piece (défilement horizontal)"></ul>
+        <ul class="shelf__track no-scrollbar" id="piste-one-piece" data-render="products" data-render-custom data-categorie="one-piece" data-shelf data-reveal-stagger data-cursor="Glisser" tabindex="0" aria-label="Produits One Piece (défilement horizontal)"></ul>
+      </div>
+      <div class="container shelf__foot" aria-hidden="true">
+        <span class="shelf__progress"><span class="shelf__thumb" data-shelf-thumb></span></span>
+        <span class="shelf__hint"><span class="shelf__hint-mouse">Glisser ou utiliser les flèches</span><span class="shelf__hint-touch">Balayer pour voir la suite</span></span>
       </div>
     </section>
     <!-- ===== SECTION:one-piece END ===== -->
@@ -676,7 +716,7 @@
     <section class="section trust" id="confiance" data-world="nuit" aria-labelledby="trust-title">
       <div class="container">
         <div class="trust__head" data-reveal="fade">
-          <h2 class="trust__heading" id="trust-title">Nos engagements</h2>
+          <h2 class="trust__heading" id="trust-title">Nos <em class="accent">engagements</em></h2>
           <span class="trust__rule" aria-hidden="true"></span>
           <p class="trust__where" aria-hidden="true">Nivelles · boutique &amp; en ligne</p>
         </div>

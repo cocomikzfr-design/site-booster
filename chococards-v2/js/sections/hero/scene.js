@@ -13,8 +13,9 @@
      rendu dans gsap.ticker APRÈS Lenis (aucun décalage avec le défilement).
      + 2 dos de cartes en profondeur, poussière holo, sortie au défilement :
      les photos s'envolent, l'éventail s'ouvre, la carte centrale se retourne
-     (recto « 30 ans ») pendant que la caméra avance ; la feuille de la section
-     suivante glisse par-dessus.
+     (recto « 30 ans ») pendant que la caméra avance ; chaque objet se dissout
+     ensuite (découpe en bruit, liseré irisé) pendant que la feuille de la
+     section suivante glisse par-dessus et que le fond passe au monde « gala ».
    - « compact » (tablette, téléphone) : canvas dans le visuel, définition
      plafonnée, sans antialias, sans extras ni défilement piloté ; gyroscope /
      doigt / mouvement automatique doux.
@@ -72,9 +73,11 @@ function spriteMaterial(THREE, map, { black = false, opacity = 1 } = {}) {
  *   métallisées des photos) : les fonds sombres restent propres, aucune « poussière » ;
  * - un reflet doux suit la lumière (= le pointeur, exprimé dans le repère de l'objet) ;
  * - quelques paillettes rares, seulement dans le reflet.
- * Uniformes : uMap, uTime, uLight (vec2 ~[-1.4, 1.4]), uStrength, uGlint, uOpacity.
+ * - dissolution (sortie du hero) : l'objet se désagrège selon un bruit, du haut vers le bas,
+ *   avec un liseré irisé au bord de la découpe (uDissolve 0 → intact, 1 → disparu).
+ * Uniformes : uMap, uTime, uLight (vec2 ~[-1.4, 1.4]), uStrength, uGlint, uOpacity, uDissolve, uSeed.
  */
-function holoMaterial(THREE, map, { strength = 0.5, glint = 0.6 } = {}) {
+function holoMaterial(THREE, map, { strength = 0.5, glint = 0.6, seed = Math.random() * 50 } = {}) {
   return new THREE.ShaderMaterial({
     uniforms: {
       uMap: { value: map },
@@ -83,6 +86,8 @@ function holoMaterial(THREE, map, { strength = 0.5, glint = 0.6 } = {}) {
       uStrength: { value: strength },
       uGlint: { value: glint },
       uOpacity: { value: 1 },
+      uDissolve: { value: 0 },
+      uSeed: { value: seed },
     },
     vertexShader: /* glsl */`
       varying vec2 vUv;
@@ -102,13 +107,32 @@ function holoMaterial(THREE, map, { strength = 0.5, glint = 0.6 } = {}) {
       uniform float uStrength;
       uniform float uGlint;
       uniform float uOpacity;
+      uniform float uDissolve;
+      uniform float uSeed;
       varying vec2 vUv;
       varying vec3 vN;
       varying vec3 vV;
       float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      // Bruit de valeur lissé (dissolution)
+      float vnoise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        float a = hash(i), b = hash(i + vec2(1.0, 0.0)), c = hash(i + vec2(0.0, 1.0)), d = hash(i + vec2(1.0, 1.0));
+        return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+      }
       void main() {
         vec4 tex = texture2D(uMap, vUv);           // texture prémultipliée
         if (tex.a < 0.003) discard;
+        // Dissolution : seuil qui monte avec uDissolve ; le haut part en premier (les objets s'envolent)
+        float edge = 0.0;
+        if (uDissolve > 0.001) {
+          float n = 0.62 * vnoise(vUv * vec2(6.0, 8.4) + uSeed) + 0.38 * vnoise(vUv * vec2(17.0, 23.0) + uSeed * 1.7);
+          n = mix(n, 1.0 - vUv.y, 0.38);
+          float th = uDissolve * 1.2 - 0.1;
+          if (n < th) discard;
+          edge = 1.0 - smoothstep(th, th + 0.06, n);
+        }
         vec3 rgb = tex.rgb / tex.a;                 // couleur « droite » (linéaire)
         vec3 n = normalize(vN);
         vec3 v = normalize(vV);
@@ -129,6 +153,9 @@ function holoMaterial(THREE, map, { strength = 0.5, glint = 0.6 } = {}) {
         // Mélange « écran » : la lumière éclaircit sans brûler les blancs
         vec3 add = foil + sheen + glints;
         vec3 col = 1.0 - (1.0 - rgb) * (1.0 - clamp(add, 0.0, 1.0));
+        // Liseré irisé au bord de la découpe
+        vec3 rim = 0.55 + 0.45 * cos(6.28318 * (vUv.x * 0.8 + vUv.y * 0.5 + uTime * 0.08 + vec3(0.0, 0.33, 0.67)));
+        col = mix(col, rim * 1.25, edge);
         vec4 o = linearToOutputTexel(vec4(col, 1.0));
         gl_FragColor = vec4(o.rgb * tex.a, tex.a) * uOpacity;
       }`,
@@ -203,7 +230,9 @@ export async function createScene({ section, visual, deck, canvas, pointer, full
     // full : boucle pilotée ici (gsap.ticker) → observateur factice qui ne démarre jamais la boucle interne
     observe: full ? document.createElement('div') : visual,
     rootMargin: '10% 0px',
-    dprMax: full ? undefined : (prefs.tier === 'low' ? 1 : 2),
+    // Compact : petit canvas (≈ 460 × 420 px CSS) → 1,5 garde les vraies photos nettes
+    // (à 1, elles seraient plus floues que l'affiche qu'elles remplacent) ; 1 sur appareil modeste
+    dprMax: full ? undefined : (prefs.tier === 'low' ? 1 : 1.5),
     antialias: full ? undefined : false,
     onResize: () => { if (ready) relayout(); },
     onFrame: full ? null : (t, dt) => frame(t, dt),
@@ -304,7 +333,7 @@ export async function createScene({ section, visual, deck, canvas, pointer, full
     const cfg = PHOTO[key];
     const sh = photoShadow(photoTex[i].image, { size: 128 });
     const o = {
-      kind: 'photo', key, el, ...cfg,
+      kind: 'photo', key, el, order: i, ...cfg,
       holder: new THREE.Object3D(),
       lift: { x: 0, v: 0 }, jump: { x: 0, v: 0 }, phase: 0,
     };
@@ -474,7 +503,8 @@ export async function createScene({ section, visual, deck, canvas, pointer, full
       let dz = -140 * sp;
       let scale = 1 + 0.04 * o.lift.x;
       let ry = 0;
-      let alpha = 1 - smooth(0.72, 0.96, e);
+      // Fin de sortie : dissolution irisée en cascade (de l'extérieur de l'éventail vers le centre)
+      let dis = smooth(0.7 - 0.05 * Math.abs(o.i - (backs.length - 1) / 2), 0.96, e);
       let lift = 0;
       if (o.flip) {
         const f = smooth(0.12, 0.6, e);
@@ -485,8 +515,9 @@ export async function createScene({ section, visual, deck, canvas, pointer, full
         // Elle « tient » à l'écran (glue faible) : la feuille de la section suivante vient la recouvrir
         glue = 1 - 0.86 * smooth(0, 0.65, e);
         lift = 30 * f;
-        alpha = 1 - smooth(0.88, 1, e);
+        dis = smooth(0.84, 1, e);
       }
+      const alpha = 1 - 0.3 * dis;
       const c = rotateAround(p.px, p.py, p.vx, p.vy, deg);
       const x = ox0 + c.x + px * o.k;
       const y = oy0 + c.y + lag(glue) + py * o.k * 0.75 + lift;
@@ -494,17 +525,19 @@ export async function createScene({ section, visual, deck, canvas, pointer, full
       place(o.holder, x, y, z, p.w * scale, p.w * scale);
       o.holder.rotation.set(py * 0.12 * g, ry + px * 0.16 * g, -deg * RAD);
       o.mat.uniforms.uOpacity.value = alpha;
+      o.mat.uniforms.uDissolve.value = dis;
       o.mat.uniforms.uTime.value = t;
       o.mat.uniforms.uStrength.value = 0.6 + 0.3 * o.lift.x;
       lightFor(o.mat, x, y, p.w);
       if (o.faceMat) {
         o.faceMat.uniforms.uOpacity.value = alpha;
+        o.faceMat.uniforms.uDissolve.value = dis;
         o.faceMat.uniforms.uTime.value = t;
         o.faceMat.uniforms.uLight.value.set(-o.mat.uniforms.uLight.value.x, o.mat.uniforms.uLight.value.y);
       }
       const shy = 24 + 16 * o.lift.x + 40 * (dz > 0 ? dz / 230 : 0);
-      placeShadow(o.shadow, x, y, z, p.w * scale, p.h * scale, deg, 0, shy, o.shadow.base * alpha * (1 - 0.25 * o.lift.x) * (1 - 0.6 * smooth(0, 0.4, e)));
-      screen.set(o, { x, y, w: p.w * scale, h: p.h * scale, deg, alpha });
+      placeShadow(o.shadow, x, y, z, p.w * scale, p.h * scale, deg, 0, shy, o.shadow.base * (1 - dis) * (1 - 0.25 * o.lift.x) * (1 - 0.6 * smooth(0, 0.4, e)));
+      screen.set(o, { x, y, w: p.w * scale, h: p.h * scale, deg, alpha: 1 - dis });
     });
 
     // Cartes lointaines (desktop)
@@ -522,11 +555,13 @@ export async function createScene({ section, visual, deck, canvas, pointer, full
       const deg = o.deg * d + Math.sin(t * 0.21 + o.u) * 3;
       place(o.holder, x, y, z, w, w);
       o.holder.rotation.set(py * 0.1 * g, px * 0.14 * g, -deg * RAD);
-      const alpha = Math.min(1, d) * 0.9 * (1 - smooth(0.25, 0.6, e));
+      const dis = smooth(0.22, 0.6, e);
+      const alpha = Math.min(1, d) * 0.9 * (1 - 0.3 * dis);
       o.mat.uniforms.uOpacity.value = alpha;
+      o.mat.uniforms.uDissolve.value = dis;
       o.mat.uniforms.uTime.value = t;
       lightFor(o.mat, x, y, w);
-      placeShadow(o.shadow, x, y, z, w, w * 1.4, deg, 0, 20 * (w / 120), o.shadow.base * alpha);
+      placeShadow(o.shadow, x, y, z, w, w * 1.4, deg, 0, 20 * (w / 120), o.shadow.base * alpha * (1 - dis));
     });
 
     // Photos réelles
@@ -544,15 +579,17 @@ export async function createScene({ section, visual, deck, canvas, pointer, full
       const scale = 1 + 0.035 * o.lift.x;
       place(o.holder, x, y, z, p.w * scale, p.h * scale);
       o.holder.rotation.set(py * 0.1 * g + ex.rx * up, px * 0.14 * g + ex.ry * up, -deg * RAD);
-      const alpha = 1 - smooth(0.16, 0.44, e);
-      o.mat.uniforms.uOpacity.value = alpha;
+      // Les photos s'envolent et se dissolvent (la carte, devant, en dernier)
+      const dis = smooth(0.12 + 0.03 * o.order, 0.46, e);
+      o.mat.uniforms.uOpacity.value = 1 - 0.3 * dis;
+      o.mat.uniforms.uDissolve.value = dis;
       o.mat.uniforms.uTime.value = t;
       o.mat.uniforms.uStrength.value = o.foil + 0.12 * o.lift.x;
       lightFor(o.mat, x, y, p.w);
       const lifted = o.lift.x + Math.max(0, -o.jump.x / 60);
       placeShadow(o.shadow, x, y - o.jump.x, z, p.w * scale, p.h * scale, deg, 0, 28 + 18 * lifted + 60 * up,
-        o.shadow.base * alpha * (1 - 0.3 * Math.min(1, lifted)));
-      screen.set(o, { x, y, w: p.w * scale, h: p.h * scale, deg, alpha });
+        o.shadow.base * (1 - dis) * (1 - 0.3 * Math.min(1, lifted)));
+      screen.set(o, { x, y, w: p.w * scale, h: p.h * scale, deg, alpha: 1 - dis });
     });
 
     // Poussière
@@ -650,6 +687,14 @@ export async function createScene({ section, visual, deck, canvas, pointer, full
       removeEventListener('resize', onResize);
       section.classList.remove('is-gl', 'is-gl-done', 'is-gl-away', 'is-gl-full');
       scene.traverse((o) => { o.geometry?.dispose?.(); o.material?.dispose?.(); });
+      // Le canvas garde le MÊME contexte WebGL pour la scène suivante (changement de gabarit) :
+      // on remet l'état de dépaquetage par défaut, sinon Three.js crée ses textures 3D vides
+      // avec PREMULTIPLY_ALPHA encore actif → avertissements INVALID_OPERATION dans la console.
+      try {
+        const gl = renderer.getContext();
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      } catch { /* contexte perdu : rien à remettre */ }
       handle.dispose();
     },
   };

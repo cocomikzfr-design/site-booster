@@ -13,7 +13,7 @@
    ========================================================================== */
 
 import { prefs } from '../../core/motion.js';
-import { $, $$, on, onVisible, debounce } from '../../core/utils.js';
+import { $, $$, onVisible, debounce } from '../../core/utils.js';
 import { toast } from '../../core/ui.js';
 import { scrollTo } from '../../core/scroll.js';
 import { play, EASE_OUT } from './kit.js';
@@ -204,5 +204,4 @@ export function initFooter() {
   initWordmark();
   initToTop();
   initTrust();
-  on('app:ready', () => { /* rien d'obligatoire : tout est déjà branché */ });
 }

@@ -77,17 +77,23 @@ function initScrollStates(h) {
   let acc = 0;
   let raf = 0;
   let maxY = 1;
-  const measure = () => { maxY = Math.max(1, document.documentElement.scrollHeight - innerHeight); };
-  measure();
-  addEventListener('resize', measure, { passive: true });
-  addEventListener('load', measure);
+  // Hauteur de page : jamais lue dans un gestionnaire d'événement (ce qui forcerait un
+  // recalcul de style au démarrage) ; on marque « à remesurer » et la lecture se fait
+  // dans la frame de défilement suivante, quand la mise en page est déjà à jour.
+  let dirty = true;
+  const invalidate = () => { dirty = true; };
+  addEventListener('resize', () => { invalidate(); request(); }, { passive: true });
+  addEventListener('load', invalidate);
 
   const frame = () => {
     raf = 0;
     const y = Math.max(0, scrollY);
     const dy = y - lastY;
     lastY = y;
-    if (progress) progress.style.transform = `scaleX(${Math.min(1, y / maxY).toFixed(4)})`;
+    if (progress && (y > 0 || !dirty)) {
+      if (dirty) { maxY = Math.max(1, document.documentElement.scrollHeight - innerHeight); dirty = false; }
+      progress.style.transform = `scaleX(${Math.min(1, y / maxY).toFixed(4)})`;
+    }
     if (document.documentElement.classList.contains('is-locked')) return; // tiroir ouvert : on ne touche à rien
     const compact = y > COMPACT_AT;
     let hidden = state.hidden;
@@ -108,11 +114,11 @@ function initScrollStates(h) {
       applyState();
     }
   };
-  const request = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  function request() { if (!raf) raf = requestAnimationFrame(frame); }
   addEventListener('scroll', request, { passive: true });
   // Hauteur de page changeante (contenu rendu plus tard, épinglages) : on remesure de temps en temps
-  on('app:ready', () => { measure(); request(); });
-  setTimeout(measure, 3000);
+  on('app:ready', invalidate); // pas de lecture ici : la prochaine frame de défilement s'en charge
+  setTimeout(invalidate, 3000);
   frame();
 }
 
@@ -145,14 +151,22 @@ function initPresence(h) {
   h.addEventListener('focusin', () => {
     if (h.classList.contains('is-hidden')) revealNow(); else applyState();
   });
-  // Tabulation : le navigateur fait défiler AVANT l'événement focus. On devine donc la
-  // prochaine cible (ordre du DOM) et, si elle est dans le header caché, on le révèle d'abord.
+  // Tabulation vers le header : le header est collant (sticky) et, au focus, Chrome fait
+  // défiler la page de façon imprévisible (de 18 à 400 px selon la position). On devine donc
+  // la prochaine cible (ordre du DOM) ; si elle est dans le header, on révèle celui-ci au
+  // besoin et on y place le focus nous-mêmes, sans défilement. Ailleurs : comportement natif.
+  const tabbable = (el) => el.tabIndex >= 0 && !el.closest('[hidden], [inert]')
+    && (el.checkVisibility ? el.checkVisibility({ visibilityProperty: true }) : el.getClientRects().length > 0);
   document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Tab' || !h.classList.contains('is-hidden')) return;
-    const list = $$(FOCUSABLE).filter((el) => el.tabIndex >= 0 && !el.closest('[hidden], [inert]') && el.getClientRects().length > 0);
+    if (e.key !== 'Tab' || e.altKey || e.ctrlKey || e.metaKey || $('[data-overlay]:not([hidden])')) return; // tiroir ouvert : piège du socle
+    const list = $$(FOCUSABLE).filter(tabbable);
     const i = list.indexOf(document.activeElement);
-    const next = i < 0 ? (e.shiftKey ? list[list.length - 1] : list[0]) : list[i + (e.shiftKey ? -1 : 1)];
-    if (next && h.contains(next)) revealNow();
+    if (i < 0) return; // point de départ inconnu (clic, élément non tabulable) : on laisse faire
+    const next = list[i + (e.shiftKey ? -1 : 1)];
+    if (!next || !h.contains(next)) return;
+    if (h.classList.contains('is-hidden')) revealNow();
+    e.preventDefault();
+    next.focus({ preventScroll: true });
   }, true);
   h.addEventListener('focusout', () => requestAnimationFrame(applyState));
 

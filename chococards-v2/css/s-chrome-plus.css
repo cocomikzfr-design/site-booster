@@ -18,8 +18,9 @@
    Mouvement : transform + opacity uniquement (exception : tracé ponctuel des icônes).
    ========================================================================== */
 
-/* Arrivée de cette feuille : pas de transitions avant qu'elle soit appliquée (html.chrome-css, chrome.js) */
-html:not(.chrome-css) #confiance *, html:not(.chrome-css) .footer * { transition: none !important; }
+/* Arrivée de cette feuille : pas de transitions avant qu'elle soit appliquée (.chrome-css posée
+   par chrome.js sur #confiance et .footer seulement : la bascule ne recalcule que ces sous-arbres) */
+#confiance:not(.chrome-css) *, .footer:not(.chrome-css) * { transition: none !important; }
 
 /* 2. MÉGA-MENU (volets) --------------------------------------------------------- */
 /* Volet : toute la largeur du header, accroché sous la coquille */
@@ -99,7 +100,7 @@ html:not(.chrome-css) #confiance *, html:not(.chrome-css) .footer * { transition
 .header .mega__all:hover { background: var(--c-papier); color: var(--c-encre); border-color: var(--c-papier); }
 .header .mega__all:hover svg { transform: translateX(3px); }
 /* Colonnes alignées : intitulés sur une même rangée (sous-grille), listes alignées dessous */
-.header .mega__cols { display: grid; grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); grid-template-rows: auto 1fr; column-gap: clamp(18px, 2vw, 36px); align-content: start; padding-top: 4px; }
+.header .mega__cols { display: grid; grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); grid-template-rows: auto 1fr; column-gap: clamp(18px, 2vw, 36px); row-gap: 0; align-content: start; padding-top: 4px; }
 .header .mega__col { display: grid; grid-row: span 2; grid-template-rows: subgrid; align-content: start; }
 .header .mega__col .mega__heading { align-self: end; }
 .header .mega__cols[data-cols="1"] { --n: 1; }

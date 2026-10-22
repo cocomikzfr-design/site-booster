@@ -16,7 +16,7 @@ import { $, $$, esc, on } from '../../core/utils.js';
 import { cart } from '../../core/cart.js';
 import { formatPrix, getProduit, statutInfo } from '../../core/format.js';
 import { icon, mark } from '../../core/templates.js';
-import { toast, closeOverlay } from '../../core/ui.js';
+import { closeOverlay } from '../../core/ui.js';
 import { play, tweenNumber, EASE_OUT, EASE_SOFT } from './kit.js';
 
 const SUGGEST = ['pk-jp-30th', 'op-op17-booster', 'pk-me06-etb'];
@@ -187,10 +187,7 @@ export function initCartDrawer() {
       return;
     }
     if (e.target.closest('[data-cd-browse]')) closeOverlay('cart');
-    if (e.target.closest('[data-checkout]')) {
-      toast('Démonstration : le paiement sera branché sur la boutique en ligne.');
-      closeOverlay('cart');
-    }
+    // [data-checkout] : déjà géré par le socle (render.js, délégation globale) → pas de double toast
   });
 
   on('cart:change', (snap) => sync(snap));

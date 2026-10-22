@@ -97,6 +97,23 @@ function initRing(link) {
   });
 }
 
+/**
+ * WebGL accéléré par la carte graphique ? Un contexte « failIfMajorPerformanceCaveat » est
+ * refusé quand le navigateur retomberait sur un rendu logiciel (GPU sur liste noire, pilote
+ * absent) : la scène y serait saccadée, on garde alors l'affiche CSS.
+ */
+function fastWebGL() {
+  try {
+    const c = document.createElement('canvas');
+    const o = { failIfMajorPerformanceCaveat: true };
+    const gl = c.getContext('webgl2', o) || c.getContext('webgl', o);
+    gl?.getExtension('WEBGL_lose_context')?.loseContext();
+    return !!gl;
+  } catch {
+    return false;
+  }
+}
+
 const appReady = new Promise((r) => {
   if (window.__ready) r();
   else document.addEventListener('app:ready', () => r(), { once: true });
@@ -118,6 +135,7 @@ function scheduleScene(ctx, pointer, poster) {
     mode = full;
     if (full) section.classList.add('is-gl-full');
     try {
+      if (!fastWebGL()) throw new Error('WebGL logiciel ou indisponible');
       const { createScene } = await import('./hero/scene.js');
       const s = await createScene({ section, visual, deck, canvas, pointer, full, gsap: ctx.gsap });
       // On laisse l'entrée se terminer : la reprise se fait sur une affiche au repos

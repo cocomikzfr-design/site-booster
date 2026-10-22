@@ -47,7 +47,9 @@ export function splitWordmark(wm) {
     if (!W) return;
     box.style.setProperty('--wm-bg', `${((2 * W) / fs).toFixed(4)}em`);
     chars.forEach((c, i) => {
-      const left = c.offsetLeft - box.offsetLeft;
+      // .hero__chars est positionné (CSS) : c'est le parent de décalage des lettres.
+      // Repli si ce n'est pas le cas (CSS absente) : on retranche la position de la boîte.
+      const left = c.offsetParent === box ? c.offsetLeft : c.offsetLeft - box.offsetLeft;
       c.style.setProperty('--wm-x', `${(-left / fs).toFixed(4)}em`);
       rel[i] = left + c.offsetWidth / 2;
     });

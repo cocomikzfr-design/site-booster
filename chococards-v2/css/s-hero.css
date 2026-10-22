@@ -89,12 +89,25 @@ html.hero-mq-js .marquee__viewport {
 }
 
 @media (min-width: 1024px) {
-  /* Grands écrans : le bloc texte + visuel est centré dans la hauteur disponible */
-  .hero { align-items: center; }
+  /* Grands écrans : le bloc texte + visuel est centré dans la hauteur disponible.
+     Budget vertical (le mot-symbole entier reste au-dessus de la ligne de flottaison,
+     y compris sur les portables de 650 à 790 px de haut) :
+       --hero-content : hauteur estimée de la colonne de texte (plus petite en écran bas) ;
+       --hero-vis     : taille du visuel, qui suit la hauteur de la fenêtre ;
+       --hero-wm      : taille du mot-symbole = largeur du conteneur (comme le socle),
+                        sauf si la hauteur manque : il rétrécit alors (centré), plancher 92 px. */
+  .hero {
+    align-items: center;
+    --hero-wm-fit: calc(min(100vw - 2 * var(--gutter), var(--container)) / 7.75);
+    --hero-content: 410px;
+    --hero-vis: min(560px, max(320px, 100svh - 390px));
+    --hero-wm: max(92px, min(var(--hero-wm-fit), (100svh - var(--marquee-h) - var(--header-h) - 50px - max(var(--hero-content), var(--hero-vis))) / .9));
+    padding-bottom: calc(var(--hero-wm) * .9 + clamp(24px, 2.6vw, 44px));
+  }
+  .hero .hero__wordmark { --wm-size: var(--hero-wm); }
   .hero__inner { row-gap: 0; }
-  /* Le visuel ne pousse jamais le mot-symbole sous la ligne de flottaison */
   .hero__visual {
-    width: min(100%, 560px, max(400px, 100svh - 360px));
+    width: min(100%, var(--hero-vis));
     margin-top: -8px;
   }
   .hero__feature {
@@ -109,11 +122,27 @@ html.hero-mq-js .marquee__viewport {
   .hero__welcome { margin-bottom: 0; }
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
-  /* Colonne de texte étroite : les deux pastilles s'empilent (le statut tient sur une ligne) */
-  .hero__infos { grid-template-columns: minmax(0, 1fr); }
+  /* Petits desktops / tablettes en paysage : colonne de texte plus large, pastilles et
+     boutons côte à côte (sinon la colonne fait 600 px de haut et pousse le mot-symbole) */
+  .hero__inner { grid-template-columns: minmax(0, 1.28fr) minmax(0, .72fr); column-gap: 28px; }
+  .hero__infos { grid-template-columns: auto auto; gap: 8px; }
+  .hero__infos .info-pill { padding: 11px 13px; gap: 10px; }
+  .hero__ctas { gap: 10px; }
+  .hero__ctas > .btn--lg { min-height: 50px; padding-inline: 1.25em; font-size: var(--fs-sm); }
+  .hero__feature { white-space: nowrap; justify-self: end; }
+}
+/* Écrans bas (portables 1366 × 768, 1536 × 864, 1280 × 720…) : colonne de texte compacte */
+@media (min-width: 1024px) and (max-height: 860px) {
+  .hero { --hero-content: 345px; padding-top: 12px; }
+  .hero__content { gap: 14px; }
+  .hero__welcome { font-size: clamp(2.5rem, 6.4svh, 4.125rem); }
+  .hero__lead { font-size: var(--fs-base); line-height: 1.5; max-width: 38rem; }
+  .hero__infos .info-pill { padding-block: 10px; }
+  .hero .hero__live { margin-bottom: 3px; }
+  .hero__ctas > .btn--lg { min-height: 50px; }
 }
 @media (min-width: 1600px) {
-  .hero .hero__visual { width: min(100%, 640px, max(440px, 100svh - 360px)); }
+  .hero { --hero-vis: min(640px, max(320px, 100svh - 390px)); }
 }
 
 /* 3. PUCE, STATUT EN DIRECT, PASTILLES ------------------------------------------- */
@@ -201,6 +230,7 @@ html.hero-mq-js .marquee__viewport {
   background-clip: border-box;
 }
 .hero__chars {
+  position: relative; /* repère fixe pour mesurer les lettres (hero/wordmark.js), même sous transform GSAP */
   display: inline-block;
   white-space: nowrap;
 }
@@ -264,8 +294,10 @@ html.hero-mq-js .marquee__viewport {
 .hero .deck__photo--etb { --k: 22; }
 .hero .deck__photo--card { --k: 30; }
 
-/* Canvas : invisible tant que la scène n'a pas rendu sa première image */
-.hero .hero__canvas { opacity: 0; }
+/* Canvas : invisible tant que la scène n'a pas rendu sa première image.
+   max-width: none — la remise à zéro (max-width: 100 %) le rognait à la largeur du visuel,
+   alors qu'il déborde de 18 % de chaque côté pour l'éventail et la carte Pikachu-ex. */
+.hero .hero__canvas { opacity: 0; max-width: none; }
 .hero.is-gl .hero__canvas { opacity: 1; }
 /* Desktop : scène fixe plein écran SOUS tout le contenu (au-dessus de la scène des mondes) ;
    la feuille de la section suivante glisse par-dessus pendant la sortie. */
@@ -343,7 +375,7 @@ html.hero-mq-js .marquee__viewport {
     place-items: center;
     left: auto;
     right: max(var(--gutter), (100% - var(--container)) / 2);
-    bottom: calc(min(100vw - 2 * var(--gutter), var(--container)) / 7.75 * .9 + clamp(26px, 3vw, 52px));
+    bottom: calc(var(--hero-wm) * .9 + clamp(26px, 3vw, 52px));
     width: 92px;
     height: 92px;
     margin: 0;
