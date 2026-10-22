@@ -2,5 +2,415 @@
    s-hero.css — feuille du constructeur « hero » (voir DESIGN.md §10)
    Périmètre : SECTION:marquee + SECTION:hero
    Hors couche (@layer) : ces règles l'emportent toujours sur base.css et
-   sections.css. Préfixez chaque sélecteur par la classe ou l'id de vos sections.
+   sections.css. Chaque sélecteur est préfixé par .marquee, .hero ou une
+   classe hero-… (calque ajouté au préchargeur pendant la sortie).
+
+   Sommaire
+     1. Bandeau défilant : boucle pilotée par le défilement, bouton pause
+     2. Hero : mise en page (ordre de lecture mobile, colonnes desktop)
+     3. Puce « magasin ouvert », statut en direct, pastilles infos
+     4. Titre : « Bienvenue chez » + mot-symbole découpé (holo continu)
+     5. Boutons d'appel (reflet, flèche, magnétisme)
+     6. Affiche « Le Deck » (repli CSS, parallaxe) + canvas WebGL
+     7. Légende « En vitrine » et anneau « Défiler »
+     8. Sortie du préchargeur (calque de fond)
+     9. Mouvement réduit
    ========================================================================== */
+
+/* 1. BANDEAU DÉFILANT ------------------------------------------------------ */
+/* Boucle JS (souris) : translation et inclinaison écrites par hero/marquee.js */
+html.hero-mq-js .marquee__viewport {
+  animation: none;
+  will-change: transform;
+}
+.marquee__item svg { transform-origin: 50% 50%; }
+.marquee:hover .marquee__item svg { animation: hero-spin 1.6s linear infinite; }
+/* Pause demandée (bouton) : la boucle CSS se fige ; la boucle JS s'arrête */
+.marquee.is-paused .marquee__viewport { animation-play-state: paused; }
+.marquee.is-paused .marquee__item svg { animation: none; }
+
+.marquee__toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  padding: 0;
+  border: 0;
+  background: var(--c-citron);
+  color: var(--c-encre);
+  cursor: pointer;
+}
+/* Fondu : le texte glisse sous le bouton sans coupure nette */
+.marquee__toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 100%;
+  width: 32px;
+  background: linear-gradient(90deg, rgb(255 212 59 / 0), var(--c-citron));
+  pointer-events: none;
+}
+.marquee__toggle svg { width: 16px; height: 16px; transition: transform var(--d-short) var(--ease-out); }
+.marquee__toggle:hover svg { transform: scale(1.18); }
+.marquee__toggle:focus-visible { outline: 3px solid var(--c-encre); outline-offset: -6px; border-radius: 12px; }
+.marquee__icon-play { display: none; }
+.marquee.is-paused .marquee__icon-play { display: block; }
+.marquee.is-paused .marquee__icon-pause { display: none; }
+
+/* 2. HERO : MISE EN PAGE ------------------------------------------------------ */
+.hero__inner { row-gap: 22px; }
+/* Mobile / tablette : titre → visuel → légende → texte → infos → actions */
+.hero__status { order: 1; }
+.hero__title { order: 2; }
+.hero__visual { order: 3; }
+.hero__feature { order: 4; }
+.hero__lead { order: 5; }
+.hero__infos { order: 6; }
+.hero__ctas { order: 7; }
+
+@media (max-width: 1023px) {
+  .hero { padding-bottom: 72px; }
+  .hero__inner { row-gap: 20px; }
+  .hero__visual { width: min(94%, 470px); margin-top: -4px; margin-bottom: -7%; }
+  .hero__feature { justify-self: center; position: relative; z-index: 2; }
+}
+@media (max-width: 559px) {
+  .hero__ctas > .btn { flex: 1 1 100%; }
+  .hero__feature { white-space: nowrap; }
+}
+@media (max-width: 389px) {
+  /* Très petits écrans : la légende reste sur une ligne */
+  .hero__feature-kicker { display: none; }
+}
+
+@media (min-width: 1024px) {
+  /* Grands écrans : le bloc texte + visuel est centré dans la hauteur disponible */
+  .hero { align-items: center; }
+  .hero__inner { row-gap: 0; }
+  /* Le visuel ne pousse jamais le mot-symbole sous la ligne de flottaison */
+  .hero__visual {
+    width: min(100%, 560px, max(400px, 100svh - 360px));
+    margin-top: -8px;
+  }
+  .hero__feature {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+    justify-self: start;
+    position: relative;
+    z-index: 2;
+    margin-bottom: -6px;
+  }
+  .hero__welcome { margin-bottom: 0; }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  /* Colonne de texte étroite : les deux pastilles s'empilent (le statut tient sur une ligne) */
+  .hero__infos { grid-template-columns: minmax(0, 1fr); }
+}
+@media (min-width: 1600px) {
+  .hero .hero__visual { width: min(100%, 640px, max(440px, 100svh - 360px)); }
+}
+
+/* 3. PUCE, STATUT EN DIRECT, PASTILLES ------------------------------------------- */
+.hero__status { gap: .6em; padding-left: .7em; }
+.hero__status-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.hero__status-icon svg { width: 16px; height: 16px; color: var(--accent-text); }
+.hero__status-dot {
+  display: none;
+  position: relative;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c-menthe);
+  box-shadow: 0 0 12px rgb(92 242 181 / .7);
+}
+/* Ouvert en ce moment : point menthe qui « respire » (anneau en transform / opacité) */
+.hero__status.is-open-now .hero__status-dot { display: block; }
+.hero__status.is-open-now svg { display: none; }
+.hero__status-dot::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid var(--c-menthe);
+  opacity: 0;
+  animation: hero-ping 2.4s var(--ease-out) infinite;
+}
+
+.hero__hours { align-items: flex-start; }
+.hero__hours-text { display: grid; gap: 2px; }
+.hero__hours-row { display: block; }
+/* Pastille « Ouvert maintenant · jusqu'à 19h » / « Fermé · ouvre demain à 10h » */
+.hero .hero__live {
+  justify-self: start;
+  margin-bottom: 6px;
+  padding: 3px 10px 3px 9px;
+  border-radius: var(--r-pill);
+  background: rgb(255 93 177 / .12);
+  border: 1px solid rgb(255 93 177 / .34);
+  font-family: var(--f-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.hero .hero__live.is-open {
+  background: rgb(92 242 181 / .12);
+  border-color: rgb(92 242 181 / .4);
+}
+.hero .hero__live:not(.open-status)::before { display: none; }
+
+.hero__where { height: 100%; }
+.hero__where-text { display: grid; gap: 0; }
+.hero__where-go {
+  display: inline-flex;
+  align-items: center;
+  gap: .4em;
+  margin-top: 6px;
+  font-family: var(--f-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+.hero__where-go svg { width: 14px; height: 14px; margin: 0; color: currentColor; transition: transform var(--d-short) var(--ease-out); }
+.hero__where:hover .hero__where-go svg { transform: translateX(4px); }
+
+/* 4. TITRE ------------------------------------------------------------------------
+   Mot-symbole découpé : chaque lettre porte le même dégradé holo, décalé de sa
+   position (--wm-bg, --wm-x posés par hero/wordmark.js en em). */
+.hero__w { display: inline-block; }
+.hero__wordmark.is-split {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+}
+.hero__chars {
+  display: inline-block;
+  white-space: nowrap;
+}
+.hero__char {
+  display: inline-block;
+  background-image: var(--holo);
+  background-repeat: no-repeat;
+  background-size: var(--wm-bg, 200%) 100%;
+  background-position: var(--wm-x, 0) 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transform-origin: 50% 85%;
+}
+/* Pendant l'entrée : les lettres montent depuis un masque (marge haute pour les capitales) */
+.hero__chars.is-masked { clip-path: inset(-40% -12% 0 -12%); }
+
+/* 5. BOUTONS D'APPEL ---------------------------------------------------------- */
+.hero__cta {
+  isolation: isolate;
+  overflow: hidden;
+}
+.hero__cta-inner {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: .6em;
+}
+.hero__cta-inner svg { width: 1.15em; height: 1.15em; flex: none; transition: transform var(--d-short) var(--ease-out); }
+/* Reflet qui balaie le bouton holo au survol, SOUS le texte (contraste intact) */
+.hero__cta.btn--holo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / .55) 50%, transparent 70%);
+  transform: translate3d(-110%, 0, 0);
+  pointer-events: none;
+}
+.hero__cta.btn--holo:hover::after,
+.hero__cta.btn--holo:focus-visible::after {
+  transform: translate3d(110%, 0, 0);
+  transition: transform .9s var(--ease-out);
+}
+.hero__cta.btn--holo:hover .hero__cta-inner svg { transform: rotate(-10deg) scale(1.12); }
+.hero__cta--ghost:hover { background: rgb(251 247 238 / .08); border-color: var(--c-papier); }
+.hero__cta--ghost:hover .hero__cta-inner svg { transform: translateX(5px); }
+
+/* 6. AFFICHE « LE DECK » + CANVAS ------------------------------------------------ */
+/* Parallaxe de l'affiche au pointeur (souris, avant / sans WebGL) : --dx / --dy dans [-1, 1]
+   écrits par hero.js. Mêmes coefficients que la scène 3D (reprise sans saut). */
+.hero .deck { --dx: 0; --dy: 0; }
+.hero .deck__glow { translate: calc(var(--dx) * -10px) calc(var(--dy) * -7.5px); }
+.hero .deck__back { translate: calc(var(--dx) * 9px) calc(var(--dy) * 6.75px); }
+.hero .deck__photo {
+  --k: 16;
+  translate: calc(var(--dx) * var(--k) * 1px) calc(var(--dy) * var(--k) * .75px);
+}
+.hero .deck__photo--etb { --k: 22; }
+.hero .deck__photo--card { --k: 30; }
+
+/* Canvas : invisible tant que la scène n'a pas rendu sa première image */
+.hero .hero__canvas { opacity: 0; }
+.hero.is-gl .hero__canvas { opacity: 1; }
+/* Desktop : scène fixe plein écran SOUS tout le contenu (au-dessus de la scène des mondes) ;
+   la feuille de la section suivante glisse par-dessus pendant la sortie. */
+.hero.is-gl-full .hero__canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+/* La 3D reprend l'affiche à l'identique, puis l'affiche s'efface */
+.hero.is-gl .deck > * {
+  opacity: 0;
+  transition: opacity .6s var(--ease-soft);
+}
+.hero.is-gl-done .deck > * {
+  visibility: hidden;
+  animation-play-state: paused;
+}
+.hero.is-gl-away .hero__canvas { visibility: hidden; }
+/* Contexte WebGL perdu : l'affiche CSS revient */
+.hero.is-gl-lost .hero__canvas { visibility: hidden; }
+.hero.is-gl-lost .deck > * { opacity: 1; visibility: visible; transition: none; animation-play-state: running; }
+.hero__visual[data-cursor] { cursor: pointer; }
+
+/* 7. LÉGENDE « EN VITRINE » + ANNEAU « DÉFILER » ---------------------------------- */
+.hero__feature {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 6px 7px 6px 16px;
+  border-radius: var(--r-pill);
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-line);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: var(--fg);
+  text-decoration: none;
+  font-size: var(--fs-xs);
+  line-height: 1.25;
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / .6);
+  transition: border-color var(--d-short), transform var(--d-short) var(--ease-out);
+}
+.hero__feature-kicker {
+  font-family: var(--f-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+.hero__feature-title { font-weight: 650; }
+.hero__feature-go {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--c-papier);
+  color: var(--c-encre);
+  flex: none;
+}
+.hero__feature-go svg { width: 16px; height: 16px; transition: transform var(--d-short) var(--ease-out); }
+.hero__feature:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+.hero__feature:hover .hero__feature-go svg { transform: translateX(3px); }
+
+.hero__scroll-ring { display: none; }
+.hero__scroll-arrow { width: 20px; height: 20px; }
+@media (min-width: 1440px) {
+  /* Badge circulaire (seulement quand il y a la place à droite de l'ETB) :
+     le texte tourne avec le défilement (hero.js, aucune boucle autonome) */
+  .hero .hero__scroll {
+    display: grid;
+    place-items: center;
+    left: auto;
+    right: max(var(--gutter), (100% - var(--container)) / 2);
+    bottom: calc(min(100vw - 2 * var(--gutter), var(--container)) / 7.75 * .9 + clamp(26px, 3vw, 52px));
+    width: 92px;
+    height: 92px;
+    margin: 0;
+    border: 1px solid var(--glass-line);
+    border-radius: 50%;
+    background: rgb(14 10 36 / .4);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 2;
+    transition: border-color var(--d-short), background-color var(--d-short);
+  }
+  .hero .hero__scroll:hover { border-color: var(--line-strong); background: rgb(14 10 36 / .62); }
+  .hero__scroll-ring {
+    display: block;
+    position: absolute;
+    inset: 4px;
+    width: calc(100% - 8px);
+    height: calc(100% - 8px);
+  }
+  .hero__scroll-ring text {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    fill: var(--c-brume);
+  }
+  .hero__scroll-arrow { animation: cc-float 2.4s var(--ease-in-out) infinite; color: var(--accent-text); }
+}
+
+/* 8. SORTIE DU PRÉCHARGEUR -------------------------------------------------------
+   Le fond du rideau passe sur un calque à part (hero/intro.js) pour fondre
+   pendant que les cartes, elles, restent opaques et s'envolent vers le hero. */
+.preloader.hero-pl { background: none; }
+.hero-pl-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(80% 60% at 50% 45%, #231A5C 0%, var(--c-encre) 70%);
+}
+
+/* 9. MOUVEMENT RÉDUIT ---------------------------------------------------------- */
+/* Bandeau fixe : sur écran étroit, les 4 messages passent à la ligne au lieu d'être coupés */
+@media (prefers-reduced-motion: reduce) and (max-width: 1199px) {
+  .marquee { height: auto; min-height: var(--marquee-h); }
+  .marquee__viewport { height: auto; padding: 7px 10px; }
+  .marquee__track { flex: 1 1 auto; flex-wrap: wrap; justify-content: center; row-gap: 2px; }
+  .marquee__item { padding-inline: 10px; line-height: 1.7; }
+}
+@media (max-width: 1199px) {
+  html.reduced .marquee { height: auto; min-height: var(--marquee-h); }
+  html.reduced .marquee__viewport { height: auto; padding: 7px 10px; }
+  html.reduced .marquee__track { flex: 1 1 auto; flex-wrap: wrap; justify-content: center; row-gap: 2px; }
+  html.reduced .marquee__item { padding-inline: 10px; line-height: 1.7; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee__toggle { display: none; }
+  .hero .deck__glow, .hero .deck__back, .hero .deck__photo { translate: none; scale: none; }
+  .hero__status-dot::after { display: none; }
+}
+html.reduced .marquee__toggle { display: none; }
+html.reduced .hero .deck__glow,
+html.reduced .hero .deck__back,
+html.reduced .hero .deck__photo { translate: none; scale: none; }
+html.reduced .hero__status-dot::after { display: none; }
+
+/* IMAGES CLÉS (préfixe hero-) */
+@keyframes hero-spin { to { transform: rotate(360deg); } }
+@keyframes hero-ping {
+  0% { transform: scale(.4); opacity: .9; }
+  70%, 100% { transform: scale(1.7); opacity: 0; }
+}

@@ -145,9 +145,9 @@
   </svg>
 
   <!-- ===== SECTION:marquee START ===== -->
-  <div class="marquee" id="marquee" role="region" aria-label="Informations pratiques">
-    <div class="marquee__viewport">
-      <ul class="marquee__track">
+  <div class="marquee" id="marquee" role="region" aria-label="Informations pratiques" data-marquee>
+    <div class="marquee__viewport" data-marquee-viewport>
+      <ul class="marquee__track" data-marquee-track>
         <li class="marquee__item"><svg aria-hidden="true" focusable="false"><use href="#i-sparkle"/></svg>Expédition rapide en Belgique</li>
         <li class="marquee__item"><svg aria-hidden="true" focusable="false"><use href="#i-sparkle"/></svg>Retrait gratuit en boutique</li>
         <li class="marquee__item"><svg aria-hidden="true" focusable="false"><use href="#i-sparkle"/></svg>Paiement 100&nbsp;% sécurisé</li>
@@ -161,45 +161,54 @@
         <li class="marquee__item"><svg aria-hidden="true" focusable="false"><use href="#i-sparkle"/></svg>Service client réactif</li>
       </ul>
     </div>
+    <!-- Pause du défilement (WCAG 2.2.2) : masqué en mouvement réduit, où le bandeau est déjà fixe -->
+    <button class="marquee__toggle" type="button" aria-pressed="false" data-marquee-toggle>
+      <svg class="marquee__icon-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6.5" y="5" width="3.6" height="14" rx="1.2" fill="currentColor"/><rect x="13.9" y="5" width="3.6" height="14" rx="1.2" fill="currentColor"/></svg>
+      <svg class="marquee__icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6Z" fill="currentColor"/></svg>
+      <span class="sr-only">Mettre en pause le bandeau défilant</span>
+    </button>
   </div>
   <!-- ===== SECTION:marquee END ===== -->
 
   <!-- ===== SECTION:header START ===== -->
+  <!-- Comportements et décors (voile, panier satellite, onglet « Menu »…) : js/sections/chrome/ -->
   <header class="header" id="header" data-header>
     <div class="header__shell">
+      <span class="header__plate" aria-hidden="true"><span class="header__light" data-hdr-light></span></span>
       <div class="header__bar">
+        <span class="header__progress" aria-hidden="true"><span data-hdr-progress></span></span>
         <button class="icon-btn header__burger" type="button" data-overlay-open="menu" aria-controls="menu-mobile" aria-expanded="false" aria-label="Ouvrir le menu">
           <svg aria-hidden="true" focusable="false"><use href="#i-menu"/></svg>
         </button>
-        <a class="logo" href="#contenu" aria-label="ChocoCards, retour à l’accueil">
+        <a class="logo header__logo" href="#contenu" aria-label="ChocoCards, retour à l’accueil">
           <svg class="logo__mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#logo-mark"/></svg>
           <span class="logo__text" aria-hidden="true">Choco<span>Cards</span></span>
         </a>
-        <button class="header__search" type="button" data-overlay-open="search" aria-controls="recherche" aria-expanded="false" aria-keyshortcuts="/">
+        <button class="header__search" type="button" data-overlay-open="search" aria-controls="recherche" aria-expanded="false" aria-keyshortcuts="/ Control+K Meta+K">
           <svg aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
           <span class="header__search-label">Rechercher une carte, un booster, un display…</span>
           <kbd aria-hidden="true">/</kbd>
         </button>
         <div class="header__actions">
           <div class="locale" data-dropdown="pays">
-            <button class="locale__toggle" type="button" aria-expanded="false" aria-controls="locale-pays" aria-label="Pays : BE (Belgique)">
+            <button class="locale__toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="locale-pays" aria-label="Pays : BE (Belgique)">
               <svg aria-hidden="true" focusable="false"><use href="#i-globe"/></svg><span data-dropdown-value>BE</span><svg class="locale__chev" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg>
             </button>
-            <ul class="locale__menu" id="locale-pays" role="listbox" aria-label="Pays" hidden>
-              <li role="option" aria-selected="true" data-value="BE" tabindex="-1">Belgique <small>EUR €</small></li>
-              <li role="option" aria-selected="false" data-value="FR" tabindex="-1">France <small>EUR €</small></li>
+            <ul class="locale__menu" id="locale-pays" role="listbox" aria-label="Pays de livraison" hidden>
+              <li role="option" aria-selected="true" data-value="BE" data-label="Belgique" tabindex="-1">Belgique <small>EUR €</small></li>
+              <li role="option" aria-selected="false" data-value="FR" data-label="France" tabindex="-1">France <small>EUR €</small></li>
             </ul>
           </div>
           <div class="locale" data-dropdown="langue">
-            <button class="locale__toggle" type="button" aria-expanded="false" aria-controls="locale-langue" aria-label="Langue : FR (français)">
+            <button class="locale__toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="locale-langue" aria-label="Langue : FR (français)">
               <span data-dropdown-value>FR</span><svg class="locale__chev" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg>
             </button>
-            <ul class="locale__menu" id="locale-langue" role="listbox" aria-label="Langue" hidden>
-              <li role="option" aria-selected="true" data-value="FR" tabindex="-1" lang="fr">Français</li>
-              <li role="option" aria-selected="false" data-value="EN" tabindex="-1" lang="en">English</li>
+            <ul class="locale__menu" id="locale-langue" role="listbox" aria-label="Langue du site" hidden>
+              <li role="option" aria-selected="true" data-value="FR" data-label="français" tabindex="-1" lang="fr">Français</li>
+              <li role="option" aria-selected="false" data-value="EN" data-label="English" tabindex="-1" lang="en">English</li>
             </ul>
           </div>
-          <button class="icon-btn header__search-icon" type="button" data-overlay-open="search" aria-controls="recherche" aria-expanded="false" aria-label="Rechercher">
+          <button class="icon-btn header__search-icon" type="button" data-overlay-open="search" aria-controls="recherche" aria-expanded="false" aria-label="Rechercher" aria-keyshortcuts="/">
             <svg aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
           </button>
           <a class="icon-btn header__account" href="#compte" aria-label="Mon compte"><svg aria-hidden="true" focusable="false"><use href="#i-user"/></svg></a>
@@ -209,9 +218,9 @@
           </button>
         </div>
       </div>
-      <nav class="header__nav" aria-label="Menu principal">
-        <ul class="mega" data-render="mega">
-          <!-- Repli sans JavaScript : remplacé par le méga-menu (render.js) -->
+      <nav class="header__nav" id="menu-principal" aria-label="Menu principal">
+        <!-- Méga-menu rendu par js/sections/chrome/menus.js (data.menu) ; repli sans JavaScript : liens simples -->
+        <ul class="mega" data-render="mega" data-render-custom>
           <li class="mega__item"><a class="mega__link" href="#pokemon">Pokémon</a></li>
           <li class="mega__item"><a class="mega__link" href="#one-piece">One Piece</a></li>
           <li class="mega__item"><a class="mega__link" href="#explorer">Japonais</a></li>
@@ -228,17 +237,16 @@
     </div>
   </header>
 
-  <!-- Menu mobile (tiroir gauche) -->
-  <div class="drawer drawer--left" data-overlay="menu" id="menu-mobile" hidden>
+  <!-- Menu mobile (tiroir gauche) : rubriques rendues par menus.js -->
+  <div class="drawer drawer--left mdrawer" data-overlay="menu" id="menu-mobile" hidden>
     <div class="overlay__backdrop" data-overlay-close></div>
     <div class="overlay__panel drawer__panel" role="dialog" aria-modal="true" aria-labelledby="menu-mobile-title">
       <div class="drawer__head">
         <p class="drawer__title" id="menu-mobile-title">Menu</p>
-        <button class="icon-btn" type="button" data-overlay-close aria-label="Fermer le menu"><svg aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
+        <button class="icon-btn drawer__close" type="button" data-overlay-close aria-label="Fermer le menu"><svg aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
       </div>
-      <nav class="drawer__nav" aria-label="Menu mobile" data-render="mobile-nav"></nav>
+      <nav class="drawer__nav" aria-label="Menu mobile" data-render="mobile-nav" data-render-custom></nav>
       <div class="drawer__foot">
-        <a class="btn btn--ghost btn--sm" href="#compte"><svg aria-hidden="true" focusable="false"><use href="#i-user"/></svg><span>Mon compte</span></a>
         <div class="drawer__locale">
           <label>Pays <select class="field" data-locale="pays"><option value="BE">Belgique (EUR €)</option><option value="FR">France (EUR €)</option></select></label>
           <label>Langue <select class="field" data-locale="langue"><option value="FR">Français</option><option value="EN" lang="en">English</option></select></label>
@@ -247,29 +255,29 @@
     </div>
   </div>
 
-  <!-- Recherche instantanée -->
+  <!-- Recherche instantanée (palette clavier : search.js) -->
   <div class="search" data-overlay="search" id="recherche" hidden>
     <div class="overlay__backdrop" data-overlay-close></div>
     <div class="overlay__panel search__panel" role="dialog" aria-modal="true" aria-label="Rechercher un produit">
       <form class="search__form" role="search" action="#" data-search-form>
         <svg aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
-        <label class="sr-only" for="search-input">Rechercher un produit</label>
-        <input class="search__input" id="search-input" type="search" placeholder="Pokémon, One Piece, display, ETB…" autocomplete="off" data-search-input>
-        <button class="icon-btn" type="button" data-overlay-close aria-label="Fermer la recherche"><svg aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
+        <label class="sr-only" for="search-input">Rechercher un produit ou un rayon</label>
+        <input class="search__input" id="search-input" type="search" placeholder="Pokémon, One Piece, display, ETB…" autocomplete="off" spellcheck="false" enterkeyhint="search" data-search-input role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-listbox">
+        <button class="icon-btn search__close" type="button" data-overlay-close aria-label="Fermer la recherche"><svg aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
       </form>
-      <div class="search__results" data-render="search" aria-live="polite"></div>
+      <div class="search__results" data-render="search" data-render-custom></div>
     </div>
   </div>
 
-  <!-- Panier (tiroir droit) -->
-  <div class="drawer drawer--right" data-overlay="cart" id="panier" hidden>
+  <!-- Panier (tiroir droit : panier.js) -->
+  <div class="drawer drawer--right cdrawer" data-overlay="cart" id="panier" hidden>
     <div class="overlay__backdrop" data-overlay-close></div>
     <div class="overlay__panel drawer__panel" role="dialog" aria-modal="true" aria-labelledby="panier-title">
       <div class="drawer__head">
         <p class="drawer__title" id="panier-title">Votre panier</p>
-        <button class="icon-btn" type="button" data-overlay-close aria-label="Fermer le panier"><svg aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
+        <button class="icon-btn drawer__close" type="button" data-overlay-close aria-label="Fermer le panier"><svg aria-hidden="true" focusable="false"><use href="#i-close"/></svg></button>
       </div>
-      <div class="cart" data-render="cart"></div>
+      <div class="cart" data-render="cart" data-render-custom><p class="cdrawer__empty-title">Votre panier est vide.</p></div>
     </div>
   </div>
   <!-- ===== SECTION:header END ===== -->
@@ -277,37 +285,47 @@
   <main id="contenu" tabindex="-1">
 
     <!-- ===== SECTION:hero START ===== -->
-    <section class="hero" id="hero" data-world="nuit" aria-labelledby="hero-title">
+    <section class="hero" id="hero" data-world="nuit" aria-labelledby="hero-title" data-hero>
       <div class="hero__inner container">
         <div class="hero__content">
-          <p class="chip hero__status"><span class="chip__dot" aria-hidden="true"></span>Notre magasin est ouvert&nbsp;!</p>
+          <p class="chip hero__status" data-hero-status>
+            <span class="hero__status-icon" aria-hidden="true"><span class="hero__status-dot"></span><svg focusable="false"><use href="#i-store"/></svg></span>
+            <span>Notre magasin est ouvert&nbsp;!</span>
+          </p>
           <h1 class="hero__title" id="hero-title">
-            <span class="hero__welcome">Bienvenue chez</span>
-            <span class="hero__wordmark">ChocoCards</span>
+            <span class="hero__welcome" data-hero-welcome><span class="hero__w">Bienvenue</span> <span class="hero__w">chez</span></span>
+            <span class="hero__wordmark" data-hero-wordmark>ChocoCards</span>
           </h1>
-          <p class="hero__lead">Votre boutique de cartes à collectionner à Nivelles&nbsp;: Pokémon, One Piece, imports japonais, cartes à l’unité et gradées, goodies et accessoires. Passez nous voir, on adore parler cartes&nbsp;!</p>
-          <ul class="hero__infos">
-            <li class="info-pill">
+          <p class="hero__lead" data-hero-lead>Votre boutique de cartes à collectionner à Nivelles&nbsp;: Pokémon, One Piece, imports japonais, cartes à l’unité et gradées, goodies et accessoires. Passez nous voir, on adore parler cartes&nbsp;!</p>
+          <ul class="hero__infos" data-hero-infos>
+            <li class="info-pill hero__hours">
               <svg aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
-              <span><strong>Mardi – samedi</strong> 10h – 19h<br><strong>Dimanche</strong> 10h – 18h · lundi fermé<br><span data-render="open-status"></span></span>
+              <span class="hero__hours-text">
+                <span class="hero__live" data-render="open-status" data-render-custom data-hero-live>Horaires de la boutique</span>
+                <span class="hero__hours-row"><strong>Mardi – samedi</strong> 10h – 19h</span>
+                <span class="hero__hours-row"><strong>Dimanche</strong> 10h – 18h · lundi fermé</span>
+              </span>
             </li>
             <li>
-              <a class="info-pill" href="https://www.google.com/maps/dir/?api=1&amp;destination=Rue%20du%20G%C3%A9ant%2015%2C%201400%20Nivelles%2C%20Belgique" target="_blank" rel="noopener">
+              <a class="info-pill hero__where" href="https://www.google.com/maps/dir/?api=1&amp;destination=Rue%20du%20G%C3%A9ant%2015%2C%201400%20Nivelles%2C%20Belgique" target="_blank" rel="noopener">
                 <svg aria-hidden="true" focusable="false"><use href="#i-pin"/></svg>
-                <span><strong>Rue du Géant 15</strong><br>1400 Nivelles<span class="sr-only"> (itinéraire, nouvel onglet)</span></span>
+                <span class="hero__where-text"><strong>Rue du Géant 15</strong><span>1400 Nivelles</span><span class="hero__where-go" aria-hidden="true">Itinéraire<svg focusable="false"><use href="#i-arrow"/></svg></span><span class="sr-only"> (itinéraire, nouvel onglet)</span></span>
               </a>
             </li>
           </ul>
-          <div class="hero__ctas">
-            <a class="btn btn--holo btn--lg" href="https://www.instagram.com/chococards.be/" target="_blank" rel="noopener" data-magnetic>
-              <svg aria-hidden="true" focusable="false"><use href="#i-instagram"/></svg><span>Suivez-nous sur Instagram</span><span class="sr-only"> (@chococards.be, nouvel onglet)</span>
+          <div class="hero__ctas" data-hero-ctas>
+            <a class="btn btn--holo btn--lg hero__cta" href="https://www.instagram.com/chococards.be/" target="_blank" rel="noopener" data-magnetic>
+              <span class="hero__cta-inner" data-magnetic-inner><svg aria-hidden="true" focusable="false"><use href="#i-instagram"/></svg><span>Suivez-nous sur Instagram</span></span><span class="sr-only"> (@chococards.be, nouvel onglet)</span>
             </a>
-            <a class="btn btn--ghost btn--lg" href="#explorer" data-magnetic><span>Explorer la boutique</span><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn--ghost btn--lg hero__cta hero__cta--ghost" href="#explorer" data-magnetic>
+              <span class="hero__cta-inner" data-magnetic-inner><span>Explorer la boutique</span><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></span>
+            </a>
           </div>
         </div>
 
-        <!-- Visuel : composition CSS « Le Deck » (repli sans WebGL) + canvas 3D (section hero) -->
-        <div class="hero__visual" aria-hidden="true">
+        <!-- Visuel : composition CSS « Le Deck » (affiche de repli, visible sans JS ni WebGL)
+             + canvas 3D (js/sections/hero/scene.js) qui reprend exactement cette composition -->
+        <div class="hero__visual" aria-hidden="true" data-hero-visual>
           <div class="deck" data-hero-poster>
             <span class="deck__glow"></span>
             <span class="card-back deck__back deck__back--1"></span>
@@ -321,8 +339,22 @@
           </div>
           <canvas class="hero__canvas" data-hero-canvas></canvas>
         </div>
+
+        <!-- Légende du visuel : ce que l'on voit, et où le trouver -->
+        <a class="hero__feature" href="#anniversaire" data-hero-feature>
+          <span class="hero__feature-kicker">En vitrine</span>
+          <span class="hero__feature-title">Collection Pokémon 30&nbsp;ans</span>
+          <span class="hero__feature-go" aria-hidden="true"><svg focusable="false"><use href="#i-arrow"/></svg></span>
+        </a>
       </div>
-      <a class="hero__scroll" href="#anniversaire"><span class="sr-only">Découvrir la suite : Pokémon fête ses 30 ans</span><svg aria-hidden="true" focusable="false"><use href="#i-arrow-down"/></svg></a>
+      <a class="hero__scroll" href="#anniversaire" data-hero-scroll>
+        <span class="sr-only">Découvrir la suite : Pokémon fête ses 30 ans</span>
+        <svg class="hero__scroll-ring" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+          <defs><path id="hero-ring-path" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs>
+          <text><textPath href="#hero-ring-path" textLength="286">DÉFILER · DÉCOUVRIR · DÉFILER · DÉCOUVRIR ·</textPath></text>
+        </svg>
+        <svg class="hero__scroll-arrow" aria-hidden="true" focusable="false"><use href="#i-arrow-down"/></svg>
+      </a>
     </section>
     <!-- ===== SECTION:hero END ===== -->
 
@@ -640,35 +672,40 @@
     <!-- ===== SECTION:boutique END ===== -->
 
     <!-- ===== SECTION:confiance START ===== -->
+    <!-- Icônes du sprite ; footer.js les remplace par des tracés qui se dessinent à l'apparition -->
     <section class="section trust" id="confiance" data-world="nuit" aria-labelledby="trust-title">
       <div class="container">
-        <h2 class="sr-only" id="trust-title">Nos engagements</h2>
+        <div class="trust__head" data-reveal="fade">
+          <h2 class="trust__heading" id="trust-title">Nos engagements</h2>
+          <span class="trust__rule" aria-hidden="true"></span>
+          <p class="trust__where" aria-hidden="true">Nivelles · boutique &amp; en ligne</p>
+        </div>
         <ul class="trust__grid" data-reveal-stagger>
-          <li class="trust__item">
-            <span class="trust__icon" data-couleur="cyan"><svg aria-hidden="true" focusable="false"><use href="#i-truck"/></svg></span>
+          <li class="trust__item"><div class="trust__card" data-couleur="cyan">
+            <span class="trust__icon" data-ticon="truck"><svg aria-hidden="true" focusable="false"><use href="#i-truck"/></svg></span>
             <h3 class="trust__title">Expédition rapide</h3>
             <p>Vos commandes partent vite et bien protégées partout en Belgique.</p>
-          </li>
-          <li class="trust__item">
-            <span class="trust__icon" data-couleur="menthe"><svg aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span>
+          </div></li>
+          <li class="trust__item"><div class="trust__card" data-couleur="menthe">
+            <span class="trust__icon" data-ticon="shield"><svg aria-hidden="true" focusable="false"><use href="#i-shield"/></svg></span>
             <h3 class="trust__title">Produits authentiques</h3>
             <p>Uniquement des produits officiels, issus de distributeurs agréés.</p>
-          </li>
-          <li class="trust__item">
-            <span class="trust__icon" data-couleur="citron"><svg aria-hidden="true" focusable="false"><use href="#i-lock"/></svg></span>
+          </div></li>
+          <li class="trust__item"><div class="trust__card" data-couleur="citron">
+            <span class="trust__icon" data-ticon="lock"><svg aria-hidden="true" focusable="false"><use href="#i-lock"/></svg></span>
             <h3 class="trust__title">Paiement sécurisé</h3>
             <p>Bancontact, cartes, Apple Pay, Google Pay, Klarna… 100&nbsp;% sécurisé.</p>
-          </li>
-          <li class="trust__item">
-            <span class="trust__icon" data-couleur="rose"><svg aria-hidden="true" focusable="false"><use href="#i-shop"/></svg></span>
+          </div></li>
+          <li class="trust__item"><div class="trust__card" data-couleur="rose">
+            <span class="trust__icon" data-ticon="shop"><svg aria-hidden="true" focusable="false"><use href="#i-shop"/></svg></span>
             <h3 class="trust__title">Retrait en boutique</h3>
             <p>Gratuit, à Nivelles, dès que votre commande est prête.</p>
-          </li>
-          <li class="trust__item">
-            <span class="trust__icon" data-couleur="lilas"><svg aria-hidden="true" focusable="false"><use href="#i-chat"/></svg></span>
+          </div></li>
+          <li class="trust__item"><div class="trust__card" data-couleur="lilas">
+            <span class="trust__icon" data-ticon="chat"><svg aria-hidden="true" focusable="false"><use href="#i-chat"/></svg></span>
             <h3 class="trust__title">Service client</h3>
             <p>Une question&nbsp;? On vous répond vite, par mail, téléphone ou en boutique.</p>
-          </li>
+          </div></li>
         </ul>
       </div>
     </section>
@@ -685,8 +722,10 @@
             <span class="logo__text" aria-hidden="true">Choco<span>Cards</span></span>
           </a>
           <p class="footer__pitch">Boutique TCG physique et en ligne à Nivelles. Pokémon, One Piece, japonais, cartes à l’unité, goodies et accessoires.</p>
+          <p class="footer__status"><span data-render="open-status">Mardi – samedi 10h – 19h · Dimanche 10h – 18h</span></p>
           <ul class="footer__contact">
-            <li><svg aria-hidden="true" focusable="false"><use href="#i-pin"/></svg><span>Rue du Géant 15, 1400 Nivelles</span></li>
+            <li><svg aria-hidden="true" focusable="false"><use href="#i-pin"/></svg><a href="https://www.google.com/maps/dir/?api=1&amp;destination=Rue%20du%20G%C3%A9ant%2015%2C%201400%20Nivelles%2C%20Belgique" target="_blank" rel="noopener">Rue du Géant 15, 1400 Nivelles<span class="sr-only"> (itinéraire, nouvel onglet)</span></a></li>
+            <li><svg aria-hidden="true" focusable="false"><use href="#i-clock"/></svg><span>Mar – sam 10h – 19h · dim 10h – 18h · lundi fermé</span></li>
             <li><svg aria-hidden="true" focusable="false"><use href="#i-phone"/></svg><a href="tel:+32465168313">+32 465 16 83 13</a></li>
             <li><svg aria-hidden="true" focusable="false"><use href="#i-mail"/></svg><a href="mailto:contact@chococards.be">contact@chococards.be</a></li>
             <li><svg aria-hidden="true" focusable="false"><use href="#i-instagram"/></svg><a href="https://www.instagram.com/chococards.be/" target="_blank" rel="noopener">@chococards.be<span class="sr-only"> (nouvel onglet)</span></a></li>
@@ -710,22 +749,35 @@
         </nav>
 
         <div class="footer__newsletter">
-          <h2 class="footer__heading">Newsletter</h2>
-          <p>Sorties, précommandes et tournois&nbsp;: recevez les infos avant tout le monde.</p>
-          <form class="newsletter" data-newsletter action="#footer" novalidate>
-            <label class="sr-only" for="newsletter-email">Votre adresse e-mail</label>
-            <input class="field newsletter__input" id="newsletter-email" type="email" name="email" placeholder="votre@email.be" autocomplete="email" required>
-            <button class="btn btn--holo" type="submit" data-magnetic><span>S’inscrire</span></button>
-            <p class="newsletter__msg" role="status" aria-live="polite"></p>
-          </form>
-          <h2 class="footer__heading footer__heading--pay">Paiements acceptés</h2>
-          <ul class="payments" aria-label="Moyens de paiement acceptés">
-            <li>Bancontact</li><li>Visa</li><li>Mastercard</li><li>Maestro</li><li>Apple Pay</li><li>Google Pay</li><li>Klarna</li><li>PayPal</li>
+          <div class="footer__card">
+            <h2 class="footer__heading" id="footer-newsletter">Newsletter</h2>
+            <p class="footer__card-title">Ne ratez plus une <em class="accent">sortie</em>.</p>
+            <p class="footer__card-text">Sorties, précommandes et tournois&nbsp;: recevez les infos avant tout le monde.</p>
+            <form class="newsletter" data-newsletter data-render-custom action="#footer" novalidate aria-labelledby="footer-newsletter">
+              <label class="sr-only" for="newsletter-email">Votre adresse e-mail</label>
+              <div class="newsletter__field">
+                <svg class="newsletter__icon" aria-hidden="true" focusable="false"><use href="#i-mail"/></svg>
+                <input class="newsletter__input" id="newsletter-email" type="email" name="email" placeholder="votre@email.be" autocomplete="email" required aria-describedby="newsletter-msg">
+                <button class="btn btn--holo newsletter__btn" type="submit"><span class="newsletter__btn-label">S’inscrire</span><svg class="newsletter__btn-done" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></button>
+              </div>
+              <p class="newsletter__msg" id="newsletter-msg" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+          <h2 class="footer__heading footer__heading--pay" id="footer-pay">Paiements acceptés</h2>
+          <ul class="payments" aria-labelledby="footer-pay">
+            <li class="pay">Bancontact</li><li class="pay">Visa</li><li class="pay">Mastercard</li><li class="pay">Maestro</li>
+            <li class="pay">Apple Pay</li><li class="pay">Google Pay</li><li class="pay">Klarna</li><li class="pay">PayPal</li>
           </ul>
         </div>
       </div>
 
-      <p class="footer__giant" aria-hidden="true">ChocoCards</p>
+      <!-- Mot-symbole cinétique + retour en haut (anneau de texte décoratif ajouté par footer.js) -->
+      <div class="footer__mark" data-footer-mark>
+        <p class="footer__giant" aria-hidden="true" data-wordmark data-reveal="fade">ChocoCards</p>
+        <div class="footer__totop-wrap" data-totop-wrap>
+          <button class="footer__totop" type="button" data-totop aria-label="Retour en haut de page"><svg class="footer__totop-arrow" aria-hidden="true" focusable="false"><use href="#i-arrow-down"/></svg></button>
+        </div>
+      </div>
 
       <div class="footer__bottom">
         <p>© <span data-render="year">2026</span> ChocoCards — Nivelles, Belgique</p>
@@ -736,6 +788,9 @@
       </div>
     </div>
   </footer>
+  <!-- Styles chrome différés (non bloquants) : volets, tiroirs, recherche, panier, confiance, footer -->
+  <link rel="stylesheet" href="css/s-chrome-plus.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="css/s-chrome-plus.css"></noscript>
   <!-- ===== SECTION:footer END ===== -->
 
   <!-- Notification (ajout au panier, newsletter…) -->

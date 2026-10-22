@@ -1,6 +1,289 @@
 /* ==========================================================================
    s-chrome.css — feuille du constructeur « chrome » (voir DESIGN.md §10)
-   Périmètre : SECTION:header (+ méga-menu, tiroirs, recherche, panier), SECTION:confiance, SECTION:footer
+   PARTIE CRITIQUE (bloquante) : uniquement ce qui est visible au premier affichage —
+   header (barre, rangée du méga-menu, onglet, plaque de verre), panier satellite, voile.
+   Le reste (volets du méga-menu, sélecteurs, tiroirs, recherche, panier, confiance,
+   footer) est dans css/s-chrome-plus.css, chargé sans bloquer le rendu depuis
+   SECTION:footer (index.html) — repli <noscript> inclus.
    Hors couche (@layer) : ces règles l'emportent toujours sur base.css et
-   sections.css. Préfixez chaque sélecteur par la classe ou l'id de vos sections.
+   sections.css. Chaque sélecteur est préfixé par une classe des sections chrome.
+
+   Sommaire
+     0. Propriétés animables (teinte du monde)
+     1. Header : coquille, plaque de verre, barre, états (compact / déplié / caché)
+     2. Méga-menu : rangée de rubriques (les volets sont dans s-chrome-plus.css)
+     4. Panier satellite, voile
+    11. Sans JavaScript / mouvement réduit (header)
+   Mouvement : transform + opacity uniquement (exceptions ponctuelles et courtes :
+   clip-path du repli du header, teinte du verre).
    ========================================================================== */
+
+/* 0. PROPRIÉTÉS ANIMABLES ---------------------------------------------------- */
+@property --hdr-tint { syntax: '<color>'; inherits: true; initial-value: #8B6CFF; }
+@property --hdr-tint-2 { syntax: '<color>'; inherits: true; initial-value: #2EE6FF; }
+
+/* 1. HEADER ------------------------------------------------------------------ */
+.header {
+  --bar-h: 60px;
+  pointer-events: none;            /* seules la barre, la navigation et l'onglet captent le pointeur */
+  transition: transform .62s var(--ease-out);
+}
+.header.is-hidden {
+  transform: translate3d(0, calc(-100% - 16px), 0);
+  transition: transform .44s cubic-bezier(.55, 0, .35, 1);
+}
+.header.is-instant, .header.is-instant * { transition: none !important; }
+
+/* Teinte du verre : couleurs du monde de couleur actif (core/worlds.js) */
+.header                              { --hdr-tint: var(--c-violet); --hdr-tint-2: var(--c-cyan); }
+.header[data-hdr-world="gala"]       { --hdr-tint: var(--c-or);     --hdr-tint-2: var(--c-rose); }
+.header[data-hdr-world="prisme"]     { --hdr-tint: var(--c-rose);   --hdr-tint-2: var(--c-menthe); }
+.header[data-hdr-world="delta"]      { --hdr-tint: var(--c-menthe); --hdr-tint-2: var(--c-cyan); }
+.header[data-hdr-world="cobalt"]     { --hdr-tint: var(--c-cyan);   --hdr-tint-2: var(--c-violet); }
+.header[data-hdr-world="foudre"]     { --hdr-tint: var(--c-citron); --hdr-tint-2: var(--c-cyan); }
+.header[data-hdr-world="corsaire"]   { --hdr-tint: var(--c-corail); --hdr-tint-2: var(--c-citron); }
+.header[data-hdr-world="arcade"]     { --hdr-tint: var(--c-cyan);   --hdr-tint-2: var(--c-rose); }
+.header[data-hdr-world="lagon"]      { --hdr-tint: var(--c-cyan);   --hdr-tint-2: var(--c-menthe); }
+.header[data-hdr-world="rose"]       { --hdr-tint: var(--c-rose);   --hdr-tint-2: var(--c-violet); }
+.header[data-hdr-world="violet"]     { --hdr-tint: var(--c-violet); --hdr-tint-2: var(--c-citron); }
+.header[data-hdr-world="menthe"]     { --hdr-tint: var(--c-menthe); --hdr-tint-2: var(--c-citron); }
+
+.header .header__shell {
+  position: relative;
+  isolation: isolate;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* Plaque de verre (séparée du contenu pour pouvoir se replier par clip-path sans bouger la mise en page) */
+.header .header__plate {
+  position: absolute; inset: 0;
+  z-index: -1;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 160% at 0% 0%, color-mix(in srgb, var(--hdr-tint) 17%, transparent), transparent 62%),
+    radial-gradient(60% 150% at 100% 100%, color-mix(in srgb, var(--hdr-tint-2) 13%, transparent), transparent 64%),
+    rgb(16 12 42 / .84);
+  border: 1px solid rgb(251 247 238 / .14);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 0 1px 0 rgb(255 255 255 / .06) inset, 0 18px 40px -24px rgb(0 0 0 / .75);
+  clip-path: inset(0 0 0 0 round 24px);
+  transition: clip-path .5s var(--ease-out), --hdr-tint .9s var(--ease-soft), --hdr-tint-2 .9s var(--ease-soft);
+}
+/* Reflet qui suit la souris (header.js, transform seul) */
+.header .header__light {
+  position: absolute; left: 0; top: -40px;
+  width: 360px; height: calc(var(--bar-h) + 80px);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--hdr-tint-2) 22%, transparent), transparent);
+  opacity: 0;
+  transition: opacity .5s var(--ease-soft);
+  pointer-events: none;
+}
+.header .header__light.is-on { opacity: .9; }
+
+/* Focus clavier dans le header collant : sans cela, le scroll-padding-top du document
+   (hauteur du header) fait croire au navigateur que l'élément est masqué, et il recentre
+   la page pour rien. Une marge de défilement négative équivalente l'en dissuade. */
+.header :is(a, button, [tabindex]) { scroll-margin-top: calc(-1 * (var(--header-h) + 16px)); }
+
+.header .header__bar {
+  position: relative;
+  pointer-events: auto;
+  min-height: var(--bar-h);
+}
+/* Fil de progression de lecture : sépare la barre du menu, puis borde la barre compacte */
+.header .header__progress {
+  position: absolute; left: 18px; right: 18px; bottom: 0;
+  height: 1px;
+  background: rgb(251 247 238 / .13);
+  overflow: hidden;
+  pointer-events: none;
+}
+.header .header__progress > span {
+  display: block; height: 100%;
+  background: linear-gradient(90deg, var(--hdr-tint), var(--hdr-tint-2));
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+/* Logo : la carte du monogramme pivote au survol */
+.header .header__logo .logo__mark { transition: transform .6s var(--ease-back); }
+.header .header__logo:hover .logo__mark { transform: rotate(12deg) scale(1.06); }
+
+/* Champ de recherche (bouton) */
+.header .header__search { position: relative; }
+.header .header__search kbd { transition: transform var(--d-short) var(--ease-out), background-color var(--d-short); }
+.header .header__search:hover kbd { background: rgb(255 255 255 / .1); transform: translateY(-1px); }
+
+/* Pastille du panier : rebond à l'atterrissage d'une carte */
+.header .cart-btn__count, .cart-satellite .cart-btn__count { box-shadow: 0 0 0 2px rgb(16 12 42 / .9); }
+.cart-btn__count.is-pop, .cart-satellite .cart-btn__count.is-pop { animation: chrome-pop .62s var(--ease-back); }
+.cart-btn__count.is-pop::after {
+  content: ''; position: absolute; inset: -2px;
+  border-radius: inherit;
+  border: 2px solid var(--c-citron);
+  animation: chrome-ring .7s var(--ease-out) forwards;
+}
+
+/* Navigation (desktop) : repli en mode compact */
+.header .header__nav { border-top: 0; pointer-events: auto; }
+@media (min-width: 1024px) {
+  /* La rangée glisse sous la barre et disparaît dans la découpe de la navigation
+     (overflow : les volets, positionnés par rapport à la coquille, n'y sont pas soumis).
+     Repliée, elle reste atteignable au clavier : le focus déplie aussitôt le header. */
+  .header .header__nav { overflow: hidden; }
+  .header .mega { padding-block: 6px; transition: transform .5s var(--ease-out); }
+  .header.is-compact:not(.is-expanded) .header__nav { pointer-events: none; }
+  .header.is-compact:not(.is-expanded) .mega {
+    transform: translate3d(0, -100%, 0);
+    transition: transform .34s var(--ease-soft);
+  }
+  .header.is-compact:not(.is-expanded) .header__plate { clip-path: inset(0 0 calc(100% - var(--bar-h)) 0 round 24px); }
+}
+
+/* Onglet « Menu » (souris / tactile) suspendu sous la barre compacte, façon intercalaire de classeur */
+.header .header__tab { display: none; }
+@media (min-width: 1024px) {
+  .header .header__tab {
+    position: absolute; left: 50%; top: calc(var(--bar-h) - 1px);
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 32px; padding: 0 16px 2px;
+    border-radius: 0 0 14px 14px;
+    background: rgb(16 12 42 / .86);
+    border: 1px solid rgb(251 247 238 / .14);
+    border-top: 0;
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    color: var(--c-papier);
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    transform: translate3d(-50%, -10px, 0);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .2s var(--ease-soft), transform .35s var(--ease-out), visibility 0s linear .35s;
+  }
+  .header .header__tab svg { width: 14px; height: 14px; transition: transform .35s var(--ease-out); }
+  .header .header__tab:hover svg { transform: translateY(2px); }
+  .header.is-compact:not(.is-expanded):not(.is-hidden) .header__tab {
+    transform: translate3d(-50%, 0, 0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity .3s var(--ease-soft) .12s, transform .5s var(--ease-back) .12s, visibility 0s;
+  }
+}
+
+/* 2. MÉGA-MENU ----------------------------------------------------------------- */
+.header .mega { gap: 0; padding: 4px 12px; }
+.header .mega__item { position: static; }
+.header .mega__link {
+  position: relative;
+  padding: 0 11px;
+  transition: background-color var(--d-micro), color var(--d-micro);
+}
+.header .mega__link::after {
+  /* Soulignement holo qui naît du centre */
+  content: '';
+  position: absolute; left: 12px; right: 12px; bottom: 9px;
+  height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--hdr-tint), var(--hdr-tint-2));
+  transform: scaleX(0);
+  transition: transform .4s var(--ease-out);
+}
+.header .mega__link:hover { background: none; }
+.header .mega__link:hover::after,
+.header .mega__item.is-active > .mega__link::after { transform: scaleX(1); }
+.header .mega__item.has-panel > .mega__link { padding-right: 4px; }
+.header .mega__item.has-panel > .mega__link::after { right: 4px; }
+.header .mega__toggle {
+  width: 26px; height: 44px; margin: 0 4px 0 0;
+  border-radius: 8px;
+  color: var(--c-brume);
+  transition: color var(--d-micro);
+}
+.header .mega__toggle svg { transition: transform .4s var(--ease-out); }
+.header .mega__toggle:hover { color: var(--c-papier); }
+.header .mega__toggle[aria-expanded="true"] { color: var(--c-papier); }
+.header .mega__toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+/* Rubrique « Plus » : seulement quand la rangée manque de place (1024–1279 px) */
+.header .mega__item--more { display: none; }
+.header .mega__more { gap: 6px; cursor: pointer; }
+.header .mega__more svg { width: 14px; height: 14px; color: var(--c-brume); transition: transform .4s var(--ease-out); }
+.header .mega__more[aria-expanded="true"] svg { transform: rotate(180deg); }
+.header .mega__item--more > .mega__link::after { right: 30px; }
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .header .mega__item--simple { display: none; }
+  .header .mega__item--more { display: flex; }
+  .header .mega { justify-content: center; }
+}
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .header .mega { padding-inline: 8px; }
+  .header .mega__link { padding: 0 8px; }
+  .header .mega__item.has-panel > .mega__link { padding-right: 3px; }
+  .header .mega__toggle { width: 22px; margin-right: 2px; }
+  .header .mega__link::after { left: 8px; right: 8px; }
+  .header .mega__item.has-panel > .mega__link::after { right: 3px; }
+}
+
+/* 4. PANIER SATELLITE + VOILE ---------------------------------------------------- */
+.cart-satellite {
+  position: fixed;
+  top: 16px;
+  right: calc(max(max(10px, var(--gutter) - 14px), (100vw - var(--container) - 28px) / 2) + 6px);
+  z-index: calc(var(--z-header) + 1);
+  display: grid; place-items: center;
+  width: 48px; height: 48px;
+  border-radius: 16px;
+  background: rgb(16 12 42 / .88);
+  border: 1px solid rgb(251 247 238 / .16);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 14px 30px -14px rgb(0 0 0 / .8);
+  color: var(--c-papier);
+  opacity: 0;
+  transform: translate3d(0, -10px, 0) scale(.82);
+  pointer-events: none;
+  transition: opacity .25s var(--ease-soft), transform .5s var(--ease-back);
+}
+.cart-satellite svg { width: 22px; height: 22px; }
+.cart-satellite .cart-btn__count { top: -6px; right: -6px; }
+html.hdr-hidden.cart-filled .cart-satellite {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.cart-satellite:hover { background: rgb(30 24 70 / .95); }
+@media (max-width: 1023px) {
+  .cart-satellite { top: 14px; right: calc(max(10px, var(--gutter) - 14px) + 6px); }
+}
+
+.hdr-scrim {
+  position: fixed; inset: 0;
+  z-index: calc(var(--z-header) - 1);
+  background: radial-gradient(120% 80% at 50% 0%, rgb(6 4 20 / .35), rgb(6 4 20 / .62));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s var(--ease-soft);
+}
+.hdr-scrim.is-on { opacity: 1; pointer-events: auto; }
+@media (max-width: 1023px) { .hdr-scrim { display: none; } }
+
+/* 11. SANS JAVASCRIPT / MOUVEMENT RÉDUIT -------------------------------------------- */
+@media (max-width: 1023px) {
+  .no-js .header .header__nav { display: block; border-top: 1px solid var(--glass-line); }
+  .no-js .header .mega { justify-content: flex-start; }
+  .no-js .header .header__burger { display: none; }
+}
+.no-js .header .header__search, .no-js .header .header__search-icon { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .header, .header.is-hidden { transform: none; }
+}
+html.reduced .header, html.reduced .header.is-hidden { transform: none; }
+
+/* Images clés (préfixe chrome-) */
+@keyframes chrome-pop { 0% { transform: scale(1); } 35% { transform: scale(1.45); } 100% { transform: scale(1); } }
+@keyframes chrome-ring { from { transform: scale(1); opacity: .9; } to { transform: scale(2.3); opacity: 0; } }
