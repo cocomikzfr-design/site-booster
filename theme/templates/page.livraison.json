@@ -1,0 +1,80 @@
+{
+  "sections": {
+    "main": {
+      "type": "shipping-info",
+      "blocks": {
+        "t1": {
+          "type": "topic",
+          "settings": {
+            "icon": "truck",
+            "title": "Pays et délais",
+            "text": "<p>Nous livrons en [pays]. Compte [jours_min] à [jours_max] jours ouvrés entre ta commande et la livraison. Chaque fiche produit affiche une estimation de date.</p>"
+          }
+        },
+        "t2": {
+          "type": "topic",
+          "settings": {
+            "icon": "box",
+            "title": "Livraison offerte",
+            "text": "<p>La livraison est offerte dès [seuil] d'achat. En dessous, les frais s'affichent au moment du paiement, avant que tu valides la commande.</p>"
+          }
+        },
+        "t3": {
+          "type": "topic",
+          "settings": {
+            "icon": "check",
+            "title": "Suivi",
+            "text": "<p>Tu reçois un numéro de suivi par e-mail dès l'expédition de chaque colis. [À VÉRIFIER]</p>"
+          }
+        },
+        "t4": {
+          "type": "topic",
+          "settings": {
+            "icon": "box",
+            "title": "Plusieurs colis",
+            "text": "<p>Nos articles partent de différents entrepôts partenaires. Une commande de plusieurs articles peut donc arriver en plusieurs colis, à quelques jours d'intervalle.</p>"
+          }
+        },
+        "t5": {
+          "type": "topic",
+          "settings": {
+            "icon": "return",
+            "title": "Droit de rétractation (14 jours)",
+            "text": "<p>Tu disposes de 14 jours à compter de la réception pour te rétracter, sans avoir à te justifier. Préviens-nous à [email], puis renvoie le produit dans les 14 jours suivants.</p><p>Nous te remboursons dans les 14 jours suivant ta décision, frais de livraison initiaux compris (tarif standard). Le remboursement peut attendre la réception du retour ou la preuve de son expédition.</p><p>Adresse et frais de retour : [À VÉRIFIER]</p>"
+          }
+        },
+        "t6": {
+          "type": "topic",
+          "settings": {
+            "icon": "shield",
+            "title": "Garantie légale de conformité (2 ans)",
+            "text": "<p>Tous les produits bénéficient de la garantie légale de conformité de 2 ans à compter de la livraison. Si un produit présente un défaut, écris-nous à [email] : réparation, remplacement ou remboursement selon le cas.</p>"
+          }
+        },
+        "t7": {
+          "type": "topic",
+          "settings": {
+            "icon": "chat",
+            "title": "Produit abîmé à la réception",
+            "text": "<p>Un boîtier rayé ou fêlé ? Vérifie d'abord le film de protection, souvent présent sur les faces. Sinon, envoie-nous une photo du produit et du colis à [email] dans les jours qui suivent la réception : on te propose un renvoi ou un remboursement. Réponse [reponse].</p>"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7"
+      ],
+      "settings": {
+        "title": "Livraison et retours"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

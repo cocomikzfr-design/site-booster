@@ -1,0 +1,38 @@
+/* Trouve le bon boîtier */
+.sf__form { display: grid; gap: 36px; }
+.sf__legend { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding: 0; }
+.sf__fan { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; overflow: hidden; padding: 28px 16px 20px; margin-inline: -16px; }
+.sf__card {
+  position: relative; display: grid; gap: 8px; justify-items: center; text-align: center; padding: 20px 14px 18px;
+  border: 1px solid var(--rule); background: var(--paper); cursor: pointer;
+  transition: transform .6s var(--ease), border-color .3s var(--ease), background-color .3s var(--ease);
+}
+@media (min-width: 768px) {
+  /* Cartes en éventail */
+  .sf__card { transform: rotate(calc((var(--i) - (var(--n) - 1) / 2) * 1.6deg)); }
+}
+.sf__card:hover, .sf__card:has(.sf__radio:focus-visible) { transform: translateY(-6px); border-color: var(--ink); }
+.sf__card:has(.sf__radio:focus-visible) { outline: 2px solid var(--focus); outline-offset: 3px; }
+.sf__card:has(.sf__radio:checked) { background: var(--ink); color: var(--paper); }
+.sf__radio { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.sf__card .fmt { width: 100%; max-width: 120px; height: auto; color: var(--brass-deep); }
+.sf__card-label { font: 400 17px/1.2 var(--font-display); }
+.sf__card-dims { font-size: 11px; }
+.sf__summary { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.sf__change { min-height: 44px; }
+.sf__who .chip { height: 36px; padding: 0 16px; }
+.sf__result { margin-top: 40px; display: grid; gap: 48px; }
+.sf__res-title { margin-bottom: 18px; color: var(--brass-deep); }
+.sf__res-grid { display: grid; gap: 24px; align-items: start; }
+@media (min-width: 768px) { .sf__res-grid { grid-template-columns: 1fr 1fr 1fr; } }
+.sf__outline { display: grid; gap: 12px; justify-items: center; padding: 24px; border: 1px dashed var(--brass-deep); color: var(--brass-deep); }
+.fmt--big { width: 100%; max-width: 260px; height: auto; stroke-width: 1; }
+.sf__gift-note { font: 500 13px/1.45 var(--font-sans); margin-bottom: 12px; }
+/* Avec JS : une seule réponse visible, l'étape 2 attend l'étape 1 */
+.js .sf__step--2:not(.is-on) { display: none; }
+.js .sf__res:not(.is-on) { display: none; }
+.js .sf__result:not(.has-result) { display: none; }
+.js .sf__res:not(.is-gift) .sf__pick--gift { display: none; }
+.js .sf__res.is-gift .sf__pick--gift { order: -1; }
+.fmt--big [pathLength]:not([stroke-dasharray]) { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.2s var(--ease-io); }
+.sf__res.is-drawing .fmt--big [pathLength]:not([stroke-dasharray]) { stroke-dashoffset: 1; transition: none; }

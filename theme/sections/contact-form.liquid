@@ -1,0 +1,40 @@
+{%- comment -%} Formulaire de contact : e-mail et délai de réponse viennent des réglages du thème. {%- endcomment -%}
+{{ 'pages.css' | asset_url | stylesheet_tag }}
+<section class="section world-light contact">
+  <div class="wrap contact__grid">
+    <div class="contact__aside">
+      {%- if settings.contact_email != blank -%}
+        <p class="h-sub">{{ 'contact.write_us' | t: email: settings.contact_email | escape }}</p>
+      {%- endif -%}
+      {%- if settings.response_time != blank -%}<p class="box box--brass">{{ 'contact.response' | t: time: settings.response_time | escape }}</p>{%- endif -%}
+      {%- if section.settings.text != blank -%}<div class="prose dim">{{ section.settings.text }}</div>{%- endif -%}
+    </div>
+    {%- form 'contact', id: 'ContactForm', class: 'contact__form' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="h-sub contact__ok" role="status" data-reveal="lines"><span class="line"><span>{{ 'contact.success' | t: time: settings.response_time | escape }}</span></span></p>
+      {%- else -%}
+        {%- if form.errors -%}<div class="form-msg form-msg--error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <div class="contact__row">
+          <div class="field"><label for="ContactName">{{ 'contact.name' | t }}</label><input id="ContactName" class="input" type="text" name="contact[name]" autocomplete="name" value="{{ form.name | escape }}"></div>
+          <div class="field"><label for="ContactEmail">{{ 'contact.email' | t }} *</label><input id="ContactEmail" class="input" type="email" name="contact[email]" autocomplete="email" required aria-required="true" value="{{ form.email | escape }}"></div>
+        </div>
+        <div class="contact__row">
+          <div class="field"><label for="ContactPhone">{{ 'contact.phone' | t }}</label><input id="ContactPhone" class="input" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone | escape }}"></div>
+          <div class="field"><label for="ContactOrder">{{ 'contact.order' | t }}</label><input id="ContactOrder" class="input" type="text" name="contact[order]"></div>
+        </div>
+        <div class="field"><label for="ContactBody">{{ 'contact.message' | t }} *</label><textarea id="ContactBody" class="textarea" name="contact[body]" rows="6" required aria-required="true">{{ form.body | escape }}</textarea></div>
+        <button type="submit" class="btn">{%- assign label = 'contact.send' | t -%}{%- render 'btn-label', text: label -%}</button>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Formulaire de contact",
+  "settings": [
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Pour une question de taille, joins une photo de ton coffret à côté d'un mètre : c'est le plus rapide.</p>" }
+  ],
+  "presets": [{ "name": "Formulaire de contact" }]
+}
+{% endschema %}

@@ -1,0 +1,37 @@
+{%- comment -%} Newsletter (salle, poussière légère) : formulaire client avec le tag « newsletter ». {%- endcomment -%}
+{{ 'home.css' | asset_url | stylesheet_tag }}
+<section class="section world-dark newsletter" aria-labelledby="NlTitle-{{ section.id }}">
+  <canvas class="newsletter__dust" data-dust="{{ section.settings.dust | divided_by: 100.0 }}" aria-hidden="true"></canvas>
+  <div class="wrap newsletter__in">
+    <h2 class="h-sec" id="NlTitle-{{ section.id }}" data-reveal="lines"><span class="line"><span>{{ section.settings.title | escape }}</span></span></h2>
+    {%- if section.settings.text != blank -%}<p class="lede" data-reveal="clip-up" style="--d:200ms">{{ section.settings.text | escape }}</p>{%- endif -%}
+    {%- form 'customer', id: 'Newsletter', class: 'newsletter__form' -%}
+      <input type="hidden" name="contact[tags]" value="{{ section.settings.tag | default: 'newsletter' | escape }}">
+      {%- if form.posted_successfully? -%}
+        <p class="newsletter__ok h-sub" role="status" data-reveal="lines"><span class="line"><span>{{ 'newsletter.success' | t }}</span></span></p>
+      {%- else -%}
+        <div class="inline-form">
+          <label for="NlEmail-{{ section.id }}" class="visually-hidden">{{ 'newsletter.email' | t }}</label>
+          <input id="NlEmail-{{ section.id }}" type="email" name="contact[email]" class="input" autocomplete="email" required placeholder="{{ 'newsletter.email' | t }}"{% if form.errors %} aria-invalid="true" aria-describedby="NlError-{{ section.id }}"{% endif %}>
+          <button type="submit" class="btn"{% if settings.anim_magnetic %} data-magnetic{% endif %}>{%- assign label = 'newsletter.submit' | t -%}{%- render 'btn-label', text: label -%}</button>
+        </div>
+        {%- if form.errors -%}<p id="NlError-{{ section.id }}" class="form-msg form-msg--error" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>{%- endif -%}
+        <p class="newsletter__consent dim">{{ 'newsletter.consent_html' | t: url: shop.privacy_policy.url }}</p>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+<script type="module" src="{{ 'dust.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Rejoins la liste." },
+    { "type": "text", "id": "text", "label": "Texte", "default": "Nouveautés et conseils de conservation, au plus une fois par semaine." },
+    { "type": "text", "id": "tag", "label": "Tag client", "default": "newsletter" },
+    { "type": "range", "id": "dust", "label": "Densité de poussière", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 30 }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

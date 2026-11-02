@@ -1,0 +1,9 @@
+{%- comment -%} Page panier : même contenu que le tiroir, fonctionne sans JS (updates[] + bouton Mettre à jour). {%- endcomment -%}
+{{ 'cart.css' | asset_url | stylesheet_tag }}
+<section class="cart-page wrap world-light" aria-labelledby="CartTitle-page">
+  {%- render 'cart-contents', context: 'page', section_id: section.id -%}
+</section>
+
+{% schema %}
+{ "name": "Panier", "settings": [] }
+{% endschema %}

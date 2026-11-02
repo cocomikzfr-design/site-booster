@@ -1,0 +1,85 @@
+{%- layout none -%}
+{%- comment -%}
+  Carte cadeau : carte laiton qui suit la souris, montant, code à copier, QR code (vendor/qrcode.js de Shopify),
+  impression propre.
+{%- endcomment -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>{{ 'gift_card.title' | t }} – {% render 'brand-name' %}</title>
+    <style>
+      @font-face { font-family: "Fraunces"; src: url({{ 'fraunces-roman.woff2' | asset_url }}) format("woff2"); font-weight: 300 600; font-display: swap; }
+      @font-face { font-family: "Fraunces"; src: url({{ 'fraunces-italic.woff2' | asset_url }}) format("woff2"); font-weight: 300 500; font-style: italic; font-display: swap; }
+      @font-face { font-family: "Inter Tight"; src: url({{ 'inter-tight-600.woff2' | asset_url }}) format("woff2"); font-weight: 600; font-display: swap; }
+      @font-face { font-family: "JetBrains Mono"; src: url({{ 'jetbrains-mono-500.woff2' | asset_url }}) format("woff2"); font-weight: 500; font-display: swap; }
+      :root { --vault: {{ settings.color_vault }}; --vault-2: {{ settings.color_vault_2 }}; --glass: {{ settings.color_glass }}; --paper: {{ settings.color_paper }}; --ink: {{ settings.color_ink }}; --brass: {{ settings.color_brass }}; --brass-deep: {{ settings.color_brass_deep }}; --slate: {{ settings.color_slate }}; --signal: {{ settings.color_signal }}; }
+    </style>
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    {{ 'pages.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
+    {{ content_for_header }}
+  </head>
+  <body class="world-dark gc-page">
+    <main class="gc wrap">
+      {%- render 'logo' -%}
+      <h1 class="h-sec">{{ 'gift_card.title' | t }}</h1>
+      {%- assign initial = gift_card.initial_value | money -%}
+      <div class="gc__stage">
+        <div class="gc__card{% if gift_card.enabled == false or gift_card.expired %} is-off{% endif %}" data-gc>
+          <span class="gc__brand">{% render 'brand-name' %}</span>
+          <span class="gc__amount tnum">{{ gift_card.balance | money }}</span>
+          {%- if gift_card.balance != gift_card.initial_value -%}<span class="gc__initial lbl">{{ 'gift_card.value' | t: value: initial }}</span>{%- endif -%}
+          <svg class="gc__star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0z" fill="currentColor"/></svg>
+        </div>
+      </div>
+      {%- if gift_card.expired -%}<p class="form-msg form-msg--error">{{ 'gift_card.expired' | t }}</p>{%- endif -%}
+      {%- if gift_card.enabled == false -%}<p class="form-msg form-msg--error">{{ 'gift_card.disabled' | t }}</p>{%- endif -%}
+      {%- if gift_card.expires_on -%}{%- assign exp = gift_card.expires_on | date: '%d/%m/%Y' -%}<p class="dim">{{ 'gift_card.expires_on' | t: date: exp }}</p>{%- endif -%}
+      <div class="gc__code">
+        <label for="GcCode" class="lbl dim">{{ 'gift_card.code' | t }}</label>
+        <div class="inline-form">
+          <input id="GcCode" class="input mono" type="text" value="{{ gift_card.code | format_code }}" readonly>
+          <button type="button" class="btn" data-gc-copy data-done="{{ 'gift_card.copied' | t }}">{{ 'gift_card.copy' | t }}</button>
+        </div>
+      </div>
+      <div class="gc__qr" id="GcQr" data-identifier="{{ gift_card.qr_identifier }}" role="img" aria-label="{{ 'gift_card.qr' | t }}"></div>
+      <div class="gc__actions">
+        <a href="{{ shop.url }}" class="btn btn--ghost">{{ 'gift_card.use' | t }}</a>
+        <button type="button" class="btn btn--ghost" onclick="window.print()">{{ 'gift_card.print' | t }}</button>
+        {%- if gift_card.pass_url -%}<a href="{{ gift_card.pass_url }}" class="ul lbl">{{ 'gift_card.wallet' | t }}</a>{%- endif -%}
+      </div>
+    </main>
+    <script>
+      // QR code, copie du code, carte qui suit la souris
+      window.addEventListener('load', function () {
+        var qr = document.getElementById('GcQr');
+        if (window.QRCode && qr) new QRCode(qr, { text: qr.dataset.identifier, width: 120, height: 120 });
+      });
+      document.querySelector('[data-gc-copy]').addEventListener('click', function (e) {
+        var b = e.currentTarget, input = document.getElementById('GcCode');
+        (navigator.clipboard ? navigator.clipboard.writeText(input.value) : Promise.reject()).then(function () { b.textContent = b.dataset.done; }, function () { input.select(); });
+      });
+    </script>
+    <script type="module">
+      // La carte laiton suit la souris (boucle d'animation partagée du thème)
+      import { subscribe, damp, isReduced } from '{{ 'motion-core.js' | asset_url }}';
+      const card = document.querySelector('[data-gc]');
+      if (card && !isReduced() && matchMedia('(pointer: fine)').matches) {
+        let tx = 0, ty = 0, rx = 0, ry = 0, on = false;
+        const tick = (dt) => {
+          rx = damp(rx, tx, 6, dt); ry = damp(ry, ty, 6, dt);
+          card.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+          card.style.setProperty('--g', (ry / 15).toFixed(3));
+          if (Math.abs(rx - tx) + Math.abs(ry - ty) < 0.02) { on = false; return false; }
+        };
+        addEventListener('pointermove', (e) => {
+          ty = (e.clientX / innerWidth - 0.5) * 24; tx = -(e.clientY / innerHeight - 0.5) * 16;
+          if (!on) { on = true; subscribe(tick); }
+        });
+      }
+    </script>
+  </body>
+</html>

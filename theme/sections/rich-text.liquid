@@ -1,0 +1,31 @@
+{%- comment -%} Texte libre : sur-titre, titre en lignes masquées, texte, bouton. {%- endcomment -%}
+{{ 'home.css' | asset_url | stylesheet_tag }}
+{%- assign title_lines = section.settings.title | split: ' / ' -%}
+<section class="section {{ section.settings.world }} rich{% if section.settings.center %} rich--center{% endif %}">
+  <div class="wrap rich__in">
+    {%- if section.settings.kicker != blank -%}<p class="box box--brass sec-head__kicker">{{ section.settings.kicker | escape }}</p>{%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h2 class="h-sec" data-reveal="lines">{%- for l in title_lines -%}<span class="line" style="--i:{{ forloop.index0 }}"><span>{{ l | escape }}</span></span>{%- endfor -%}</h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}<div class="prose rich__text" data-reveal="clip-up" style="--d:200ms">{{ section.settings.text }}</div>{%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn">{%- render 'btn-label', text: section.settings.button_label -%}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Texte libre",
+  "settings": [
+    { "type": "select", "id": "world", "label": "Fond", "default": "world-light", "options": [ { "value": "world-light", "label": "Papier" }, { "value": "world-dark", "label": "Salle" } ] },
+    { "type": "checkbox", "id": "center", "label": "Centrer", "default": false },
+    { "type": "text", "id": "kicker", "label": "Sur-titre" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Pensé pour durer.", "info": "Sépare les lignes par « / »." },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Présente ici ta boutique, ta façon de choisir les produits ou un conseil de conservation.</p>" },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" }
+  ],
+  "presets": [{ "name": "Texte libre" }]
+}
+{% endschema %}

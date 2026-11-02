@@ -1,0 +1,95 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Comment savoir si le boîtier est à la bonne taille ?",
+            "answer": "<p>Chaque fiche indique les dimensions intérieures du boîtier et un schéma à l'échelle. Mesure ton coffret (longueur, largeur, hauteur) et compare. En cas de doute, écris-nous avec une photo de ton coffret à côté d'un mètre : on te répond [reponse].</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Vos produits sont-ils officiels ?",
+            "answer": "<p>Non. Nos accessoires sont génériques et sans licence : ils ne sont affiliés à aucun éditeur de jeu de cartes. Ils sont conçus pour des formats standards, dont les dimensions sont indiquées sur chaque fiche.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Quels délais de livraison ?",
+            "answer": "<p>Compte [jours_min] à [jours_max] jours ouvrés entre ta commande et la livraison, en [pays]. Le détail est sur la page Livraison et retours.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Pourquoi plusieurs colis ?",
+            "answer": "<p>Nos articles partent de différents entrepôts partenaires. Une commande de plusieurs articles peut donc arriver en plusieurs colis, à quelques jours d'intervalle. Chaque colis a son propre suivi. [À VÉRIFIER]</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Puis-je retourner un produit ?",
+            "answer": "<p>Oui. Tu disposes de 14 jours après réception pour exercer ton droit de rétractation, sans avoir à te justifier. Les conditions (adresse et frais de retour) sont sur la page Livraison et retours.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Mon boîtier est arrivé rayé, que faire ?",
+            "answer": "<p>Vérifie d'abord qu'il ne s'agit pas du film de protection, souvent présent sur les faces. Sinon, envoie-nous une photo à [email] : on te propose un renvoi ou un remboursement. Tu bénéficies aussi de la garantie légale de conformité de 2 ans.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "Le boîtier protège-t-il des UV ?",
+            "answer": "<p>Cela dépend du modèle. Quand le fabricant l'indique, la protection UV figure dans les caractéristiques de la fiche produit. Si rien n'est indiqué, considère que le boîtier ne filtre pas spécialement les UV et évite le soleil direct.</p>"
+          }
+        },
+        "q8": {
+          "type": "question",
+          "settings": {
+            "question": "Proposez-vous des cartes cadeaux ?",
+            "answer": "<p>Oui, de 20, 40 ou 60 €. Elles sont envoyées par e-mail et s'utilisent sur toute la boutique.</p>"
+          }
+        },
+        "q9": {
+          "type": "question",
+          "settings": {
+            "question": "Quels paiements acceptez-vous ?",
+            "answer": "<p>Le paiement est sécurisé par Shopify. Les moyens disponibles dans ton pays s'affichent au moment du paiement et en bas de chaque page.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7",
+        "q8",
+        "q9"
+      ],
+      "settings": {
+        "kicker": "",
+        "title": "Toutes les réponses"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq"
+  ]
+}

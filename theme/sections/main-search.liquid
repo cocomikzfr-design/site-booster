@@ -1,0 +1,80 @@
+{%- comment -%} Page de recherche : formulaire, grille de produits, autres résultats, filtres (facets). {%- endcomment -%}
+{{ 'collection.css' | asset_url | stylesheet_tag }}
+{%- paginate search.results by section.settings.per_page -%}
+  <section class="coll" data-facets-root data-section-id="{{ section.id }}">
+    <header class="coll__head world-dark bevel-bottom">
+      <canvas class="coll__dust" data-dust="0.3" aria-hidden="true"></canvas>
+      <div class="wrap coll__head-in">
+        <h1 class="h-hero" data-reveal="lines"><span class="line"><span>{% if search.performed %}{{ 'search.results_for' | t: terms: search.terms | escape }}{% else %}{{ 'search.title' | t }}{% endif %}</span></span></h1>
+        <form action="{{ routes.search_url }}" method="get" role="search" class="inline-form search-page__form">
+          <label for="SearchPage-{{ section.id }}" class="visually-hidden">{{ 'header.search' | t }}</label>
+          <input id="SearchPage-{{ section.id }}" type="search" name="q" class="input" value="{{ search.terms | escape }}" placeholder="{{ 'search.placeholder' | t }}">
+          <input type="hidden" name="options[prefix]" value="last">
+          <button type="submit" class="btn">{%- assign label = 'search.submit' | t -%}{%- render 'btn-label', text: label -%}</button>
+        </form>
+        {%- if search.performed -%}<p class="box box--brass"><span data-facets-count>{{ 'search.results_count' | t: count: search.results_count }}</span></p>{%- endif -%}
+      </div>
+    </header>
+
+    {%- if search.performed -%}
+      <div class="coll__bar">
+        <div class="wrap coll__bar-in">
+          {%- if search.filters.size > 0 -%}
+            <button type="button" class="box chip coll__filter-btn" data-filters-open aria-expanded="false">{% render 'icon', icon: 'filter' %}{{ 'collections.filters' | t }}</button>
+          {%- endif -%}
+          <span class="lbl dim coll__count" data-facets-count2>{{ 'search.results_count' | t: count: search.results_count }}</span>
+          <div class="coll__sort">
+            <label for="SortS-{{ section.id }}" class="lbl dim">{{ 'collections.sort_by' | t }}</label>
+            <select id="SortS-{{ section.id }}" name="sort_by" class="select" form="FacetsForm-{{ section.id }}" data-facets-sort>
+              {%- for option in search.sort_options -%}
+                <option value="{{ option.value | escape }}"{% if option.value == search.sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+              {%- endfor -%}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="wrap coll__body">
+        <div data-facets-active class="coll__active">
+          {%- for filter in search.filters -%}
+            {%- for value in filter.active_values -%}
+              <a href="{{ value.url_to_remove }}" class="box chip" data-facets-link aria-label="{{ 'collections.remove_filter' | t: filter: value.label | escape }}">{{ value.label | escape }} {% render 'icon', icon: 'close' %}</a>
+            {%- endfor -%}
+          {%- endfor -%}
+        </div>
+        <ul class="grid grid--3" role="list" data-facets-grid>
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              <li>{%- render 'product-card', product: item, index: forloop.index0, reveal: true, sizes: '(min-width: 768px) 30vw, 46vw' -%}</li>
+            {%- else -%}
+              <li class="search-item" data-reveal="clip-up">
+                <a href="{{ item.url }}" class="search-item__link">
+                  <span class="lbl dim">{% if item.object_type == 'article' %}{{ item.blog.title | escape }}{% else %}{{ 'search.pages' | t }}{% endif %}</span>
+                  <span class="h-sub">{{ item.title | escape }}</span>
+                  <span class="dim">{{ item.content | strip_html | truncatewords: 20 }}</span>
+                </a>
+              </li>
+            {%- endif -%}
+          {%- else -%}
+            <li class="coll__empty"><p class="h-sub">{{ 'search.no_results' | t: terms: search.terms | escape }}</p></li>
+          {%- endfor -%}
+        </ul>
+        <div class="coll__more" data-facets-more>
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}" class="btn btn--ghost" data-load-more>{%- assign label = 'collections.load_more' | t -%}{%- render 'btn-label', text: label -%}</a>{%- endif -%}
+        </div>
+        <noscript>{%- if paginate.pages > 1 -%}<nav class="pagination lbl" aria-label="{{ 'accessibility.pagination' | t }}">{{ paginate | default_pagination }}</nav>{%- endif -%}</noscript>
+      </div>
+      {%- assign fid = 'FacetsForm-' | append: section.id -%}
+      {%- render 'facets', results: search, url: routes.search_url, terms: search.terms, form_id: fid -%}
+    {%- endif -%}
+  </section>
+{%- endpaginate -%}
+<script type="module" src="{{ 'facets.js' | asset_url }}"></script>
+<script type="module" src="{{ 'dust.js' | asset_url }}"></script>
+<script type="module" src="{{ 'product-form.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Recherche",
+  "settings": [ { "type": "range", "id": "per_page", "label": "Résultats par page", "min": 6, "max": 24, "step": 3, "default": 12 } ]
+}
+{% endschema %}

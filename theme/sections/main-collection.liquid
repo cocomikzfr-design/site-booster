@@ -1,0 +1,87 @@
+{%- comment -%}
+  Collection : en-tête (salle, poussière légère, coupe en biseau), barre d'outils collante (filtres, tri, nombre),
+  grille de 3 colonnes (2 sur mobile), « Voir plus de produits » + pagination en <noscript>.
+{%- endcomment -%}
+{{ 'collection.css' | asset_url | stylesheet_tag }}
+{%- paginate collection.products by section.settings.per_page -%}
+  <section class="coll" data-facets-root data-section-id="{{ section.id }}">
+    <header class="coll__head world-dark bevel-bottom">
+      <canvas class="coll__dust" data-dust="0.35" aria-hidden="true"></canvas>
+      <div class="wrap coll__head-in">
+        <nav class="crumbs lbl" aria-label="{{ 'accessibility.breadcrumb' | t }}"><a href="{{ routes.root_url }}" class="ul ul--hover">{{ 'accessibility.home' | t }}</a><span aria-hidden="true">/</span><span aria-current="page">{{ collection.title | escape }}</span></nav>
+        <h1 class="h-hero coll__title" data-reveal="lines"><span class="line"><span>{{ collection.title | escape }}</span></span></h1>
+        <p class="box box--brass"><span data-facets-count>{{ 'collections.products_count' | t: count: collection.products_count }}</span></p>
+        {%- if collection.description != blank -%}<div class="lede coll__desc">{{ collection.description }}</div>{%- endif -%}
+      </div>
+    </header>
+
+    <div class="coll__bar">
+      <div class="wrap coll__bar-in">
+        {%- if collection.filters.size > 0 -%}
+          <button type="button" class="box chip coll__filter-btn" data-filters-open aria-controls="Filters-FacetsForm-{{ section.id }}" aria-expanded="false">{% render 'icon', icon: 'filter' %}{{ 'collections.filters' | t }}</button>
+        {%- endif -%}
+        <span class="lbl dim coll__count" aria-hidden="true" data-facets-count2>{{ 'collections.products_count' | t: count: collection.products_count }}</span>
+        <div class="coll__sort">
+          <label for="Sort-{{ section.id }}" class="lbl dim">{{ 'collections.sort_by' | t }}</label>
+          {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+          <select id="Sort-{{ section.id }}" name="sort_by" class="select" form="FacetsForm-{{ section.id }}" data-facets-sort>
+            {%- for option in collection.sort_options -%}
+              <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+            {%- endfor -%}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap coll__body">
+      <div data-facets-active class="coll__active">
+        {%- for filter in collection.filters -%}
+          {%- for value in filter.active_values -%}
+            <a href="{{ value.url_to_remove }}" class="box chip" data-facets-link aria-label="{{ 'collections.remove_filter' | t: filter: value.label | escape }}">{{ value.label | escape }} {% render 'icon', icon: 'close' %}</a>
+          {%- endfor -%}
+          {%- if filter.type == 'price_range' -%}
+            {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+              <a href="{{ filter.url_to_remove }}" class="box chip" data-facets-link>{{ filter.min_value.value | default: 0 | money }} – {{ filter.max_value.value | default: filter.range_max | money }} {% render 'icon', icon: 'close' %}</a>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <ul class="grid grid--3" role="list" data-facets-grid>
+        {%- for p in collection.products -%}
+          <li>{%- render 'product-card', product: p, index: forloop.index0, reveal: true, sizes: '(min-width: 768px) 30vw, 46vw' -%}</li>
+        {%- else -%}
+          <li class="coll__empty">
+            <p class="h-sub">{% if collection.filters.size > 0 and collection.all_products_count > 0 %}{{ 'collections.empty' | t }}{% else %}{{ 'collections.empty_collection' | t }}{% endif %}</p>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      <div class="coll__more" data-facets-more>
+        {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}" class="btn btn--ghost" data-load-more>{%- assign label = 'collections.load_more' | t -%}{%- render 'btn-label', text: label -%}</a>
+        {%- endif -%}
+      </div>
+      <noscript>
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination lbl" aria-label="{{ 'accessibility.pagination' | t }}">{{ paginate | default_pagination }}</nav>
+        {%- endif -%}
+      </noscript>
+    </div>
+
+    {%- assign fid = 'FacetsForm-' | append: section.id -%}
+    {%- render 'facets', results: collection, url: collection.url, form_id: fid -%}
+  </section>
+{%- endpaginate -%}
+<script type="module" src="{{ 'facets.js' | asset_url }}"></script>
+<script type="module" src="{{ 'dust.js' | asset_url }}"></script>
+<script type="module" src="{{ 'product-form.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Produits par page", "min": 6, "max": 24, "step": 3, "default": 12 }
+  ]
+}
+{% endschema %}

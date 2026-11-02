@@ -63,6 +63,8 @@
     "unavailable": "Indisponible",
     "sold_out": "Épuisé",
     "quantity": "Quantité",
+    "decrease": "Diminuer la quantité",
+    "increase": "Augmenter la quantité",
     "quick_add": "Ajout rapide",
     "quick_add_label": "Ajout rapide : {{ title }}",
     "choose": "Choisir",

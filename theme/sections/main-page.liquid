@@ -1,0 +1,14 @@
+{%- comment -%} Page de contenu : titre en lignes masquées, contenu limité à 68 caractères par ligne. {%- endcomment -%}
+{{ 'pages.css' | asset_url | stylesheet_tag }}
+<section class="section world-light page">
+  <div class="wrap">
+    <h1 class="h-hero page__title" data-reveal="lines"><span class="line"><span>{{ page.title | escape }}</span></span></h1>
+    {%- if page.content != blank -%}
+      <div class="prose page__content" data-reveal="clip-up" style="--d:200ms">{{ page.content }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Page", "settings": [] }
+{% endschema %}

@@ -1,0 +1,27 @@
+{%- comment -%}
+  Avis : uniquement l'emplacement d'une application d'avis installée (@app). Sans bloc, la section ne rend rien.
+  Aucun avis n'est écrit dans le thème.
+{%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+  {{ 'home.css' | asset_url | stylesheet_tag }}
+  <section class="section world-light reviews" aria-labelledby="ReviewsTitle-{{ section.id }}">
+    <div class="wrap">
+      <h2 class="h-sec reviews__title" id="ReviewsTitle-{{ section.id }}">{{ section.settings.title | escape }}</h2>
+      {%- for block in section.blocks -%}
+        {% render block %}
+      {%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Avis (application)",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Ils protègent leur collection" },
+    { "type": "paragraph", "content": "Ajoute le bloc de ton application d'avis. Sans application, rien ne s'affiche." }
+  ],
+  "blocks": [{ "type": "@app" }],
+  "presets": [{ "name": "Avis (application)" }]
+}
+{% endschema %}

@@ -1,0 +1,29 @@
+{%- comment -%} Liste des collections : cartes avec image (ou premier produit) et nombre de produits. {%- endcomment -%}
+{{ 'collection.css' | asset_url | stylesheet_tag }}
+<section class="section world-light">
+  <div class="wrap">
+    <h1 class="h-hero" data-reveal="lines" style="margin-bottom: 48px"><span class="line"><span>{{ section.settings.title | escape }}</span></span></h1>
+    <ul class="colls" role="list">
+      {%- for c in collections -%}
+        {%- if c.handle == 'frontpage' -%}{%- continue -%}{%- endif -%}
+        {%- assign cimg = c.featured_image | default: c.products.first.featured_media.preview_image -%}
+        <li data-reveal="clip-up" style="--i:{{ forloop.index0 | modulo: 4 }}">
+          <a href="{{ c.url }}" class="coll-card" data-cursor="view">
+            <span class="coll-card__media">
+              {%- if cimg -%}{%- render 'responsive-image', image: cimg, widths: '360,540,720', sizes: '(min-width: 768px) 30vw, 92vw', alt: '' -%}{%- else -%}<img src="{{ 'placeholder-case.svg' | asset_url }}" alt="" width="400" height="500" loading="lazy">{%- endif -%}
+            </span>
+            <span class="coll-card__title">{{ c.title | escape }}</span>
+            <span class="lbl dim">{{ 'collections.products_count' | t: count: c.all_products_count }}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Liste des collections",
+  "settings": [ { "type": "text", "id": "title", "label": "Titre", "default": "Toutes les collections" } ]
+}
+{% endschema %}

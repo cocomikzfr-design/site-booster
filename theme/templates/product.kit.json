@@ -1,0 +1,119 @@
+{
+  "sections": {
+    "kit": {
+      "type": "kit",
+      "blocks": {
+        "p1": {
+          "type": "piece",
+          "settings": {
+            "label": "Boîtier coffret",
+            "product": "boitier-acrylique-coffret-etb",
+            "x": 24,
+            "y": 34,
+            "rotation": -8
+          }
+        },
+        "p2": {
+          "type": "piece",
+          "settings": {
+            "label": "Classeur 360 cartes",
+            "product": "classeur-zippe-360-cartes",
+            "x": 74,
+            "y": 30,
+            "rotation": 6
+          }
+        },
+        "p3": {
+          "type": "piece",
+          "settings": {
+            "label": "100 toploaders + 100 sleeves",
+            "product": "kit-protections-100",
+            "x": 50,
+            "y": 74,
+            "rotation": 3
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "settings": {
+        "kicker": "N° 02 — Le kit",
+        "title": "Le Kit / du Collectionneur.",
+        "text": "L'essentiel pour protéger un coffret, ranger ses cartes et les manipuler sans risque. Facile à offrir, même sans connaître le jeu."
+      }
+    },
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "labels": {
+          "type": "labels"
+        },
+        "title": {
+          "type": "title"
+        },
+        "price": {
+          "type": "price"
+        },
+        "compat": {
+          "type": "compat"
+        },
+        "variants": {
+          "type": "variants"
+        },
+        "quantity": {
+          "type": "quantity"
+        },
+        "buy": {
+          "type": "buy",
+          "settings": {
+            "show_dynamic_checkout": true
+          }
+        },
+        "delivery": {
+          "type": "delivery"
+        },
+        "description": {
+          "type": "description"
+        },
+        "reassurance": {
+          "type": "reassurance"
+        },
+        "share": {
+          "type": "share"
+        }
+      },
+      "block_order": [
+        "labels",
+        "title",
+        "price",
+        "compat",
+        "variants",
+        "quantity",
+        "buy",
+        "delivery",
+        "description",
+        "reassurance",
+        "share"
+      ],
+      "settings": {
+        "hide_gallery": true,
+        "show_delivery": true
+      }
+    },
+    "related": {
+      "type": "related-products",
+      "settings": {
+        "title": "Complète ta protection",
+        "limit": 4
+      }
+    }
+  },
+  "order": [
+    "kit",
+    "main",
+    "related"
+  ]
+}

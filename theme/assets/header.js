@@ -132,7 +132,7 @@ if (giant && !isReduced()) {
   let active = false;
   const tick = () => {
     const r = giant.parentElement.getBoundingClientRect();
-    const p = Math.min(1, Math.max(0, (innerHeight - r.top) / (innerHeight * 0.6)));
+    const p = Math.min(1, Math.max(0, (innerHeight - r.top) / (r.height + 60)));
     giant.style.setProperty('--py', `${((1 - p) * 60).toFixed(1)}%`);
     return false;
   };

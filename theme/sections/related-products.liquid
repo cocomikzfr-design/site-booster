@@ -1,0 +1,28 @@
+{%- comment -%}
+  « Complète ta protection » : recommandations Shopify, d'abord complémentaires, puis similaires (product-form.js).
+  Le contenu est chargé quand la section approche de l'écran.
+{%- endcomment -%}
+<section class="section world-light related">
+  <div class="wrap">
+    <div data-recos data-url="{{ routes.product_recommendations_url }}?product_id={{ product.id }}&limit={{ section.settings.limit }}" data-section-id="{{ section.id }}">
+      {%- if recommendations.performed and recommendations.products_count > 0 -%}
+        <h2 class="h-sec related__title" data-reveal="lines"><span class="line"><span>{{ section.settings.title | escape }}</span></span></h2>
+        <ul class="grid grid--4" role="list">
+          {%- for p in recommendations.products -%}
+            <li>{%- render 'product-card', product: p, index: forloop.index0, reveal: true -%}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Complète ta protection",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Complète ta protection" },
+    { "type": "range", "id": "limit", "label": "Nombre de produits", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ]
+}
+{% endschema %}

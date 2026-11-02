@@ -1,0 +1,88 @@
+{%- comment -%}
+  La promesse : titre en lignes masquées, chapeau, et trois menaces (soleil, chocs et poussière, humidité),
+  chacune avec le produit qui y répond. Au survol, un cadre se dessine autour de l'icône, trait par trait.
+{%- endcomment -%}
+{{ 'home.css' | asset_url | stylesheet_tag }}
+{%- assign title_lines = section.settings.title | split: ' / ' -%}
+<section class="section world-light promise" aria-labelledby="PromiseTitle-{{ section.id }}">
+  <div class="wrap promise__grid">
+    <div class="promise__head">
+      {%- if section.settings.kicker != blank -%}<p class="box box--brass promise__kicker">{{ section.settings.kicker | escape }}</p>{%- endif -%}
+      <h2 class="h-sec" id="PromiseTitle-{{ section.id }}" data-reveal="lines">
+        {%- for l in title_lines -%}<span class="line" style="--i:{{ forloop.index0 }}"><span>{{ l | escape }}</span></span>{%- endfor -%}
+      </h2>
+      {%- if section.settings.text != blank -%}<div class="lede promise__lede" data-reveal="clip-up" style="--d:300ms">{{ section.settings.text }}</div>{%- endif -%}
+    </div>
+    <ul class="promise__list" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign p = block.settings.product -%}
+        <li class="threat" {{ block.shopify_attributes }}>
+          <span class="threat__rule" data-reveal="rule" style="--i:{{ forloop.index0 }}" aria-hidden="true"></span>
+          <div class="threat__in" data-reveal="clip-up" style="--i:{{ forloop.index0 }};--d:150ms">
+            <span class="threat__icon" aria-hidden="true">
+              {%- render 'icon', icon: block.settings.icon -%}
+              <svg class="threat__frame" viewBox="0 0 64 64" focusable="false">
+                <line x1="2" y1="2" x2="62" y2="2" pathLength="1"/>
+                <line x1="62" y1="2" x2="62" y2="62" pathLength="1"/>
+                <line x1="62" y1="62" x2="2" y2="62" pathLength="1"/>
+                <line x1="2" y1="62" x2="2" y2="2" pathLength="1"/>
+              </svg>
+            </span>
+            <div class="threat__body">
+              <h3 class="h-sub threat__title">{{ block.settings.title | escape }}</h3>
+              <p class="threat__text dim">{{ block.settings.text | escape }}</p>
+              {%- if p != blank -%}
+                <a href="{{ p.url }}" class="threat__product">
+                  {%- if p.featured_media -%}{%- render 'responsive-image', image: p.featured_media.preview_image, widths: '120,180', sizes: '56px', alt: '' -%}{%- endif -%}
+                  <span><span class="lbl dim">{{ 'sections.promise.answer' | t }}</span><span class="threat__pname ul">{{ p.title | escape }}</span></span>
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Promesse",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Sur-titre", "default": "N° 01 — La promesse" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Un coffret abîmé / perd sa valeur. / Pas le tien.", "info": "Sépare les lignes par « / »." },
+    { "type": "richtext", "id": "text", "label": "Chapeau", "default": "<p>Les cartes et les coffrets scellés prennent de la valeur. Un coin enfoncé, un film rayé ou des couleurs passées suffisent à la faire fondre. Nos accessoires gardent tout ça dehors.</p>" }
+  ],
+  "blocks": [
+    {
+      "type": "threat",
+      "name": "Menace",
+      "settings": [
+        {
+          "type": "select", "id": "icon", "label": "Icône", "default": "sun-off",
+          "options": [
+            { "value": "sun-off", "label": "Soleil" },
+            { "value": "box", "label": "Chocs et poussière" },
+            { "value": "drop", "label": "Humidité" },
+            { "value": "shield", "label": "Protection" }
+          ]
+        },
+        { "type": "text", "id": "title", "label": "Titre", "default": "Le soleil" },
+        { "type": "textarea", "id": "text", "label": "Texte", "default": "Les UV font pâlir les couleurs près d'une fenêtre." },
+        { "type": "product", "id": "product", "label": "Produit qui y répond" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promesse",
+      "blocks": [
+        { "type": "threat", "settings": { "icon": "sun-off", "title": "Le soleil", "text": "Les UV font pâlir les couleurs près d'une fenêtre." } },
+        { "type": "threat", "settings": { "icon": "box", "title": "Les chocs et la poussière", "text": "Un coin enfoncé ou un film rayé, et le coffret scellé perd une grande partie de sa valeur." } },
+        { "type": "threat", "settings": { "icon": "drop", "title": "L'humidité", "text": "Elle gondole le carton et marque les cartes rangées à l'air libre." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

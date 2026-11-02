@@ -1,0 +1,29 @@
+{%- comment -%}
+  Dessin au trait d'un format (mêmes proportions relatives entre formats, sans cote chiffrée).
+  Paramètres : drawing ('etb' | 'display' | 'upc' | 'single' | 'graded'), class.
+  Chaque trait a pathLength="1" pour pouvoir être dessiné (stroke-dashoffset).
+{%- endcomment -%}
+<svg class="fmt{% if class %} {{ class }}{% endif %}" viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  {%- case drawing -%}
+    {%- when 'etb' -%}
+      <path pathLength="1" d="M38 18h40l8 6v64H46l-8-6z"/>
+      <path pathLength="1" d="M38 18v64M78 18l8 6M78 18v0M46 24h40M46 24v64"/>
+      <path pathLength="1" d="M46 36h40" stroke-dasharray="2 3"/>
+    {%- when 'display' -%}
+      <path pathLength="1" d="M18 38h70l14 10v34H32l-14-10z"/>
+      <path pathLength="1" d="M18 38v34M32 48h70M32 48v34"/>
+      <path pathLength="1" d="M42 48l8-10M62 48l8-10"/>
+    {%- when 'upc' -%}
+      <path pathLength="1" d="M10 26h84l16 10v52H26l-16-10z"/>
+      <path pathLength="1" d="M10 26v52M26 36h84M26 36v52"/>
+      <path pathLength="1" d="M26 46h84" stroke-dasharray="2 3"/>
+    {%- when 'single' -%}
+      <rect pathLength="1" x="46" y="30" width="28" height="40" rx="2"/>
+      <rect pathLength="1" x="50" y="34" width="20" height="18" rx="1"/>
+      <path pathLength="1" d="M50 57h20M50 62h14"/>
+    {%- when 'graded' -%}
+      <rect pathLength="1" x="42" y="16" width="36" height="68" rx="3"/>
+      <rect pathLength="1" x="46" y="20" width="28" height="12" rx="1"/>
+      <rect pathLength="1" x="48" y="38" width="24" height="40" rx="1"/>
+  {%- endcase -%}
+</svg>

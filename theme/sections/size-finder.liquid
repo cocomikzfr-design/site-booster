@@ -1,0 +1,125 @@
+{%- comment -%}
+  Trouve le bon boîtier : formulaire en deux étapes (fieldset + radios), résultat dans une région aria-live.
+  Sans JS, tous les résultats (un par format) sont listés : rien n'est caché.
+  Blocs « format » : libellé, dessin, produit recommandé, kit recommandé.
+{%- endcomment -%}
+{{ 'size-finder.css' | asset_url | stylesheet_tag }}
+{%- assign title_lines = section.settings.title | split: ' / ' -%}
+<section class="section world-light sf" data-size-finder aria-labelledby="SfTitle-{{ section.id }}">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        {%- if section.settings.kicker != blank -%}<p class="box box--brass sec-head__kicker">{{ section.settings.kicker | escape }}</p>{%- endif -%}
+        <h2 class="h-sec" id="SfTitle-{{ section.id }}" data-reveal="lines">
+          {%- for l in title_lines -%}<span class="line" style="--i:{{ forloop.index0 }}"><span>{{ l | escape }}</span></span>{%- endfor -%}
+        </h2>
+      </div>
+      {%- if section.settings.text != blank -%}<p class="lede">{{ section.settings.text | escape }}</p>{%- endif -%}
+    </div>
+
+    <form class="sf__form" action="#" data-sf-form novalidate>
+      <fieldset class="sf__step" data-sf-step1>
+        <legend class="h-sub sf__legend"><span class="box box--num">1</span> {{ 'sections.size_finder.step1' | t }}</legend>
+        <div class="sf__fan" style="--n:{{ section.blocks.size }}">
+          {%- for block in section.blocks -%}
+            {%- assign dims = block.settings.product.metafields.custom.dimensions_interieures.value -%}
+            <label class="sf__card" style="--i:{{ forloop.index0 }}" data-sf-card {{ block.shopify_attributes }}>
+              <input type="radio" name="format-{{ section.id }}" value="{{ block.id }}" class="sf__radio">
+              {%- render 'format-drawing', drawing: block.settings.drawing -%}
+              <span class="sf__card-label">{{ block.settings.label | escape }}</span>
+              <span class="sf__card-dims mono dim">{% if dims != blank %}{{ dims | escape }}{% else %}{{ 'sections.size_finder.dims_unknown' | t }}{% endif %}</span>
+            </label>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+
+      <div class="sf__summary" data-sf-summary hidden>
+        <span class="box box--fill" data-sf-chosen></span>
+        <button type="button" class="ul lbl sf__change" data-sf-reset>{{ 'sections.size_finder.change' | t }}</button>
+      </div>
+
+      <fieldset class="sf__step sf__step--2" data-sf-step2>
+        <legend class="h-sub sf__legend"><span class="box box--num">2</span> {{ 'sections.size_finder.step2' | t }}</legend>
+        <div class="chips sf__who">
+          <label class="box chip"><input type="radio" name="who-{{ section.id }}" value="me">{{ 'sections.size_finder.for_me' | t }}</label>
+          <label class="box chip"><input type="radio" name="who-{{ section.id }}" value="gift">{{ 'sections.size_finder.gift' | t }}</label>
+        </div>
+      </fieldset>
+    </form>
+
+    <div class="sf__result" aria-live="polite" data-sf-result>
+      {%- for block in section.blocks -%}
+        {%- assign rp = block.settings.product -%}
+        {%- assign rk = block.settings.kit -%}
+        {%- assign dims = rp.metafields.custom.dimensions_interieures.value -%}
+        <div class="sf__res" data-format="{{ block.id }}">
+          <p class="lbl sf__res-title">{{ 'sections.size_finder.result' | t }} · {{ block.settings.label | escape }}</p>
+          <div class="sf__res-grid">
+            <div class="sf__outline">
+              {%- render 'format-drawing', drawing: block.settings.drawing, class: 'fmt--big' -%}
+              {%- if dims != blank -%}<p class="mono dim">{{ 'sections.size_finder.inner' | t }} : {{ dims | escape }}</p>{%- endif -%}
+            </div>
+            {%- if rp != blank -%}
+              <div class="sf__pick" data-sf-me>{%- render 'product-card', product: rp, index: 0 -%}</div>
+            {%- elsif request.design_mode -%}
+              <p class="dim">{{ 'sections.size_finder.no_product' | t }}</p>
+            {%- endif -%}
+            {%- if rk != blank and rk.id != rp.id -%}
+              <div class="sf__pick sf__pick--gift" data-sf-gift>
+                <p class="sf__gift-note dim">{{ 'sections.size_finder.gift_note' | t }}</p>
+                {%- render 'product-card', product: rk, index: 1 -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+<script type="module" src="{{ 'size-finder.js' | asset_url }}"></script>
+<script type="module" src="{{ 'product-form.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Guide des tailles",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Sur-titre", "default": "N° 03 — Le bon format" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Trouve le bon / boîtier.", "info": "Sépare les lignes par « / »." },
+    { "type": "text", "id": "text", "label": "Texte", "default": "Deux questions, et on te montre le boîtier à la bonne taille, avec ses dimensions intérieures." }
+  ],
+  "blocks": [
+    {
+      "type": "format",
+      "name": "Format",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Libellé", "default": "Coffret standard (format ETB)" },
+        {
+          "type": "select", "id": "drawing", "label": "Dessin", "default": "etb",
+          "options": [
+            { "value": "etb", "label": "Coffret standard" },
+            { "value": "display", "label": "Display 36 boosters" },
+            { "value": "upc", "label": "Grand coffret premium" },
+            { "value": "single", "label": "Carte à l'unité" },
+            { "value": "graded", "label": "Carte gradée" }
+          ]
+        },
+        { "type": "product", "id": "product", "label": "Produit recommandé" },
+        { "type": "product", "id": "kit", "label": "Kit recommandé (pour offrir)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Guide des tailles",
+      "blocks": [
+        { "type": "format", "settings": { "label": "Coffret standard (format ETB)", "drawing": "etb" } },
+        { "type": "format", "settings": { "label": "Boîte de 36 boosters (display)", "drawing": "display" } },
+        { "type": "format", "settings": { "label": "Grand coffret premium (format UPC)", "drawing": "upc" } },
+        { "type": "format", "settings": { "label": "Cartes à l'unité", "drawing": "single" } },
+        { "type": "format", "settings": { "label": "Cartes gradées", "drawing": "graded" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

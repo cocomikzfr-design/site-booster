@@ -1,0 +1,33 @@
+{%- comment -%} 404 : salle, poussière, « 404 » géant qui se penche vers la souris. {%- endcomment -%}
+{{ 'pages.css' | asset_url | stylesheet_tag }}
+<section class="nf world-dark" data-nf>
+  <canvas class="nf__dust" data-dust="0.6" aria-hidden="true"></canvas>
+  <div class="nf__giant" aria-hidden="true" data-nf-giant>404</div>
+  <div class="wrap nf__in">
+    <h1 class="h-sec" data-reveal="lines"><span class="line"><span>{{ 'not_found.title' | t }}</span></span></h1>
+    <p class="lede">{{ 'not_found.text' | t }}</p>
+    <a href="{{ routes.root_url }}" class="btn"{% if settings.anim_magnetic %} data-magnetic{% endif %}>{%- assign label = 'not_found.button' | t -%}{%- render 'btn-label', text: label -%}</a>
+  </div>
+</section>
+<script type="module" src="{{ 'dust.js' | asset_url }}"></script>
+<script type="module">
+  // Le « 404 » se penche vers la souris
+  import { subscribe, damp, isReduced } from 'motion-core';
+  const el = document.querySelector('[data-nf-giant]');
+  if (el && !isReduced() && matchMedia('(pointer: fine)').matches) {
+    let tx = 0, ty = 0, rx = 0, ry = 0, on = false;
+    const tick = (dt) => {
+      rx = damp(rx, tx, 5, dt); ry = damp(ry, ty, 5, dt);
+      el.style.transform = `translate(-50%, -50%) perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+      if (Math.abs(rx - tx) < 0.01 && Math.abs(ry - ty) < 0.01) { on = false; return false; }
+    };
+    addEventListener('pointermove', (e) => {
+      ty = (e.clientX / innerWidth - 0.5) * 24; tx = -(e.clientY / innerHeight - 0.5) * 16;
+      if (!on) { on = true; subscribe(tick); }
+    }, { passive: true });
+  }
+</script>
+
+{% schema %}
+{ "name": "Page 404", "settings": [] }
+{% endschema %}

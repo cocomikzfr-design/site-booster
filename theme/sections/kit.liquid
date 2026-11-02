@@ -1,0 +1,142 @@
+{%- comment -%}
+  Le Kit du Collectionneur en vue éclatée. Section de 260vh dont le contenu est collant (bureau, hors mouvement réduit) :
+  le titre monte, les éléments s'écartent du disque de feutrine, des traits relient chaque élément à son étiquette,
+  puis le bloc d'achat apparaît. « Au lieu de X € si acheté séparément » est calculé en Liquid à partir des vrais prix.
+  Sur la fiche d'un kit (product.kit), le produit vide = le produit de la page.
+{%- endcomment -%}
+{{ 'kit.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign kit = section.settings.product
+  if kit == blank and product
+    assign kit = product
+  endif
+  assign separate = 0
+  for block in section.blocks
+    if block.settings.product != blank
+      assign separate = separate | plus: block.settings.product.price
+    endif
+  endfor
+  assign title_lines = section.settings.title | split: ' / '
+  if kit
+    assign kit_variant = kit.selected_or_first_available_variant
+  endif
+-%}
+<section class="kit world-light" data-kit aria-labelledby="KitTitle-{{ section.id }}" style="--n:{{ section.blocks.size }}">
+  <div class="kit__sticky">
+    <div class="wrap kit__layout">
+      <div class="kit__head" data-kit-head>
+        {%- if section.settings.kicker != blank -%}<p class="box box--brass">{{ section.settings.kicker | escape }}</p>{%- endif -%}
+        <h2 class="h-sec kit__title" id="KitTitle-{{ section.id }}">
+          {%- for l in title_lines -%}<span class="line" style="--i:{{ forloop.index0 }}"><span>{{ l | escape }}</span></span>{%- endfor -%}
+        </h2>
+        {%- if section.settings.text != blank -%}<p class="lede kit__text">{{ section.settings.text | escape }}</p>{%- endif -%}
+      </div>
+
+      <div class="kit__stage" data-kit-stage>
+        <div class="kit__felt" aria-hidden="true"></div>
+        <ul class="kit__pieces" role="list">
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign bp = block.settings.product
+              assign bimg = block.settings.image
+              if bimg == blank and bp != blank
+                assign bimg = bp.featured_media.preview_image
+              endif
+              assign side = 'r'
+              if block.settings.x < 50
+                assign side = 'l'
+              endif
+            -%}
+            <li class="kit__piece kit__piece--{{ side }}" data-kit-piece style="--x:{{ block.settings.x }};--y:{{ block.settings.y }};--r:{{ block.settings.rotation }};--i:{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+              <div class="kit__img">
+                {%- if bimg -%}
+                  {%- render 'responsive-image', image: bimg, widths: '240,360,480', sizes: '(min-width: 768px) 18vw, 40vw', alt: block.settings.label -%}
+                {%- else -%}
+                  <img src="{{ 'placeholder-case.svg' | asset_url }}" alt="" width="400" height="500" loading="lazy">
+                {%- endif -%}
+              </div>
+              <span class="kit__tag">
+                <span class="kit__line" aria-hidden="true"></span>
+                {%- if bp != blank -%}
+                  <a href="{{ bp.url }}" class="box kit__label">{{ block.settings.label | escape }}</a>
+                {%- else -%}
+                  <span class="box kit__label">{{ block.settings.label | escape }}</span>
+                {%- endif -%}
+              </span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      {%- if kit -%}
+        <div class="kit__buy" data-kit-buy data-product-root>
+          <p class="lbl dim">{{ 'products.kit_contents' | t }} · {{ section.blocks.size }}</p>
+          <h3 class="h-sub"><a href="{{ kit.url }}" class="ul ul--hover">{{ kit.title | escape }}</a></h3>
+          {%- render 'price', product: kit -%}
+          {%- if separate > kit.price -%}
+            {%- assign separate_money = separate | money -%}
+            <p class="kit__separately dim">{{ 'products.kit_separately' | t: amount: separate_money }}</p>
+          {%- endif -%}
+          {%- form 'product', kit, class: 'kit__form', data-product-form: '' -%}
+            {%- if kit.has_only_default_variant -%}
+              <input type="hidden" name="id" value="{{ kit_variant.id }}">
+            {%- else -%}
+              <label for="KitVariant-{{ section.id }}" class="lbl dim">{{ kit.options.first | escape }}</label>
+              <select id="KitVariant-{{ section.id }}" name="id" class="select">
+                {%- for v in kit.variants -%}
+                  <option value="{{ v.id }}"{% if v.id == kit_variant.id %} selected{% endif %}{% unless v.available %} disabled{% endunless %}>{{ v.title | escape }}{% unless v.available %} · {{ 'general.sold_out' | t }}{% endunless %}</option>
+                {%- endfor -%}
+              </select>
+            {%- endif -%}
+            <button type="submit" class="btn btn--block" {% unless kit.available %}aria-disabled="true" disabled{% endunless %}{% if settings.anim_magnetic %} data-magnetic{% endif %}>
+              {%- if kit.available -%}{%- assign label = 'sections.kit.buy' | t -%}{%- else -%}{%- assign label = 'general.sold_out' | t -%}{%- endif -%}
+              {%- render 'btn-label', text: label -%}
+            </button>
+            <p class="form-msg form-msg--error" data-form-error role="alert" hidden></p>
+          {%- endform -%}
+        </div>
+      {%- elsif request.design_mode -%}
+        <p class="kit__buy dim">{{ 'sections.size_finder.no_product' | t }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+<script type="module" src="{{ 'kit.js' | asset_url }}"></script>
+<script type="module" src="{{ 'product-form.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Kit (vue éclatée)",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "product", "id": "product", "label": "Produit kit", "info": "Sur la fiche d'un kit, laisse vide pour utiliser le produit de la page." },
+    { "type": "text", "id": "kicker", "label": "Sur-titre", "default": "N° 02 — Le kit" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Le Kit / du Collectionneur.", "info": "Sépare les lignes par « / »." },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "L'essentiel pour protéger un coffret, ranger ses cartes et les manipuler sans risque. Facile à offrir, même sans connaître le jeu." }
+  ],
+  "blocks": [
+    {
+      "type": "piece",
+      "name": "Élément",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Étiquette", "default": "Boîtier coffret" },
+        { "type": "product", "id": "product", "label": "Produit lié", "info": "Son prix compte dans « si acheté séparément »." },
+        { "type": "image_picker", "id": "image", "label": "Image (sinon celle du produit lié)" },
+        { "type": "range", "id": "x", "label": "Position horizontale", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 25 },
+        { "type": "range", "id": "y", "label": "Position verticale", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 35 },
+        { "type": "range", "id": "rotation", "label": "Rotation", "min": -30, "max": 30, "step": 1, "unit": "°", "default": -6 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kit (vue éclatée)",
+      "blocks": [
+        { "type": "piece", "settings": { "label": "Boîtier coffret", "x": 24, "y": 34, "rotation": -8 } },
+        { "type": "piece", "settings": { "label": "Classeur 360 cartes", "x": 74, "y": 30, "rotation": 6 } },
+        { "type": "piece", "settings": { "label": "100 toploaders + 100 sleeves", "x": 50, "y": 74, "rotation": 3 } }
+      ]
+    }
+  ]
+}
+{% endschema %}

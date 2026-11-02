@@ -1,0 +1,81 @@
+{%- comment -%}
+  FAQ : <details> natifs (hauteur animée en WAAPI par faq.js), une question ouverte à la fois, JSON-LD FAQPage.
+  Les réponses acceptent des repères remplacés par les réglages : [jours_min] [jours_max] [seuil] [reponse] [email] [pays].
+{%- endcomment -%}
+{{ 'home.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign threshold_money = settings.free_shipping_threshold | times: 100 | money
+-%}
+<section class="section world-light faq" aria-labelledby="FaqTitle-{{ section.id }}" data-faq>
+  <div class="wrap faq__grid">
+    <div>
+      {%- if section.settings.kicker != blank -%}<p class="box box--brass sec-head__kicker">{{ section.settings.kicker | escape }}</p>{%- endif -%}
+      <h2 class="h-sec" id="FaqTitle-{{ section.id }}" data-reveal="lines"><span class="line"><span>{{ section.settings.title | escape }}</span></span></h2>
+    </div>
+    <div class="faq__list">
+      {%- for block in section.blocks -%}
+        {%- capture answer -%}{{ block.settings.answer | replace: '[jours_min]', settings.shipping_min_days | replace: '[jours_max]', settings.shipping_max_days | replace: '[seuil]', threshold_money | replace: '[reponse]', settings.response_time | replace: '[email]', settings.contact_email | replace: '[pays]', settings.shipping_countries_text }}{%- endcapture -%}
+        <details class="faq__item" {{ block.shopify_attributes }}>
+          <summary class="faq__q">
+            <span>{{ block.settings.question | escape }}</span>
+            <span class="faq__icon" aria-hidden="true">{% render 'icon', icon: 'plus' %}</span>
+          </summary>
+          <div class="faq__a prose">{{ answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- for block in section.blocks -%}
+          {%- capture answer -%}{{ block.settings.answer | replace: '[jours_min]', settings.shipping_min_days | replace: '[jours_max]', settings.shipping_max_days | replace: '[seuil]', threshold_money | replace: '[reponse]', settings.response_time | replace: '[email]', settings.contact_email | replace: '[pays]', settings.shipping_countries_text }}{%- endcapture -%}
+          {
+            "@type": "Question",
+            "name": {{ block.settings.question | json }},
+            "acceptedAnswer": { "@type": "Answer", "text": {{ answer | strip_html | strip | json }} }
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+</section>
+<script type="module" src="{{ 'faq.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Sur-titre", "default": "N° 05 — Questions" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Questions fréquentes" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Comment savoir si le boîtier est à la bonne taille ?" },
+        { "type": "richtext", "id": "answer", "label": "Réponse", "default": "<p>Chaque fiche indique les dimensions intérieures du boîtier. Mesure ton coffret et compare.</p>", "info": "Repères possibles : [jours_min], [jours_max], [seuil], [reponse], [email], [pays]." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "question", "settings": { "question": "Comment savoir si le boîtier est à la bonne taille ?", "answer": "<p>Chaque fiche indique les dimensions intérieures du boîtier et un schéma à l'échelle. Mesure ton coffret (longueur, largeur, hauteur) et compare. En cas de doute, écris-nous avec une photo de ton coffret à côté d'un mètre : on te répond [reponse].</p>" } },
+        { "type": "question", "settings": { "question": "Vos produits sont-ils officiels ?", "answer": "<p>Non. Nos accessoires sont génériques et sans licence : ils ne sont affiliés à aucun éditeur de jeu de cartes. Ils sont conçus pour des formats standards, dont les dimensions sont indiquées sur chaque fiche.</p>" } },
+        { "type": "question", "settings": { "question": "Quels délais de livraison ?", "answer": "<p>Compte [jours_min] à [jours_max] jours ouvrés entre ta commande et la livraison, en [pays]. Le détail est sur la page Livraison et retours.</p>" } },
+        { "type": "question", "settings": { "question": "Pourquoi plusieurs colis ?", "answer": "<p>Nos articles partent de différents entrepôts partenaires. Une commande de plusieurs articles peut donc arriver en plusieurs colis, à quelques jours d'intervalle. Chaque colis a son propre suivi. [À VÉRIFIER]</p>" } },
+        { "type": "question", "settings": { "question": "Puis-je retourner un produit ?", "answer": "<p>Oui. Tu disposes de 14 jours après réception pour exercer ton droit de rétractation, sans avoir à te justifier. Les conditions (adresse et frais de retour) sont sur la page Livraison et retours.</p>" } },
+        { "type": "question", "settings": { "question": "Mon boîtier est arrivé rayé, que faire ?", "answer": "<p>Vérifie d'abord qu'il ne s'agit pas du film de protection, souvent présent sur les faces. Sinon, envoie-nous une photo à [email] : on te propose un renvoi ou un remboursement. Tu bénéficies aussi de la garantie légale de conformité de 2 ans.</p>" } },
+        { "type": "question", "settings": { "question": "Le boîtier protège-t-il des UV ?", "answer": "<p>Cela dépend du modèle. Quand le fabricant l'indique, la protection UV figure dans les caractéristiques de la fiche produit. Si rien n'est indiqué, considère que le boîtier ne filtre pas spécialement les UV et évite le soleil direct.</p>" } },
+        { "type": "question", "settings": { "question": "Proposez-vous des cartes cadeaux ?", "answer": "<p>Oui, de 20, 40 ou 60 €. Elles sont envoyées par e-mail et s'utilisent sur toute la boutique.</p>" } },
+        { "type": "question", "settings": { "question": "Quels paiements acceptez-vous ?", "answer": "<p>Le paiement est sécurisé par Shopify. Les moyens disponibles dans ton pays s'affichent au moment du paiement et en bas de chaque page.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

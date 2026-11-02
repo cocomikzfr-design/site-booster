@@ -3,13 +3,49 @@
     "vitrine": {
       "type": "vitrine",
       "blocks": {
-        "cat-1": { "type": "category", "settings": { "label": "Coffrets", "product_type": "Boîtier coffret" } },
-        "cat-2": { "type": "category", "settings": { "label": "Displays", "product_type": "Boîtier display" } },
-        "cat-3": { "type": "category", "settings": { "label": "Classeurs", "product_type": "Classeur" } },
-        "cat-4": { "type": "category", "settings": { "label": "Gradées", "product_type": "Cartes gradées" } },
-        "cat-5": { "type": "category", "settings": { "label": "Kits", "product_type": "Kit" } }
+        "cat-1": {
+          "type": "category",
+          "settings": {
+            "label": "Coffrets",
+            "product_type": "Boîtier coffret"
+          }
+        },
+        "cat-2": {
+          "type": "category",
+          "settings": {
+            "label": "Displays",
+            "product_type": "Boîtier display"
+          }
+        },
+        "cat-3": {
+          "type": "category",
+          "settings": {
+            "label": "Classeurs",
+            "product_type": "Classeur"
+          }
+        },
+        "cat-4": {
+          "type": "category",
+          "settings": {
+            "label": "Gradées",
+            "product_type": "Cartes gradées"
+          }
+        },
+        "cat-5": {
+          "type": "category",
+          "settings": {
+            "label": "Kits",
+            "product_type": "Kit"
+          }
+        }
       },
-      "block_order": ["cat-1", "cat-2", "cat-3", "cat-4", "cat-5"],
+      "block_order": [
+        "cat-1",
+        "cat-2",
+        "cat-3",
+        "cat-4",
+        "cat-5"
+      ],
       "settings": {
         "max_products": 10,
         "kicker": "Accessoires de protection pour cartes à collectionner",
@@ -21,7 +57,275 @@
         "autoplay": 6,
         "dust": 70
       }
+    },
+    "promise": {
+      "type": "promise",
+      "blocks": {
+        "t1": {
+          "type": "threat",
+          "settings": {
+            "icon": "sun-off",
+            "title": "Le soleil",
+            "text": "Les UV font pâlir les couleurs près d'une fenêtre.",
+            "product": "boitier-acrylique-coffret-etb"
+          }
+        },
+        "t2": {
+          "type": "threat",
+          "settings": {
+            "icon": "box",
+            "title": "Les chocs et la poussière",
+            "text": "Un coin enfoncé ou un film rayé, et le coffret scellé perd une grande partie de sa valeur.",
+            "product": "boitier-acrylique-display-36"
+          }
+        },
+        "t3": {
+          "type": "threat",
+          "settings": {
+            "icon": "drop",
+            "title": "L'humidité",
+            "text": "Elle gondole le carton et marque les cartes rangées à l'air libre.",
+            "product": "classeur-zippe-360-cartes"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "settings": {
+        "kicker": "N° 01 — La promesse",
+        "title": "Un coffret abîmé / perd sa valeur. / Pas le tien.",
+        "text": "<p>Les cartes et les coffrets scellés prennent de la valeur. Un coin enfoncé, un film rayé ou des couleurs passées suffisent à la faire fondre. Nos accessoires gardent tout ça dehors.</p>"
+      }
+    },
+    "kit": {
+      "type": "kit",
+      "blocks": {
+        "p1": {
+          "type": "piece",
+          "settings": {
+            "label": "Boîtier coffret",
+            "product": "boitier-acrylique-coffret-etb",
+            "x": 24,
+            "y": 34,
+            "rotation": -8
+          }
+        },
+        "p2": {
+          "type": "piece",
+          "settings": {
+            "label": "Classeur 360 cartes",
+            "product": "classeur-zippe-360-cartes",
+            "x": 74,
+            "y": 30,
+            "rotation": 6
+          }
+        },
+        "p3": {
+          "type": "piece",
+          "settings": {
+            "label": "100 toploaders + 100 sleeves",
+            "product": "kit-protections-100",
+            "x": 50,
+            "y": 74,
+            "rotation": 3
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "settings": {
+        "product": "kit-du-collectionneur",
+        "kicker": "N° 02 — Le kit",
+        "title": "Le Kit / du Collectionneur.",
+        "text": "L'essentiel pour protéger un coffret, ranger ses cartes et les manipuler sans risque. Facile à offrir, même sans connaître le jeu."
+      }
+    },
+    "size-finder": {
+      "type": "size-finder",
+      "blocks": {
+        "f1": {
+          "type": "format",
+          "settings": {
+            "label": "Coffret standard (format ETB)",
+            "drawing": "etb",
+            "product": "boitier-acrylique-coffret-etb",
+            "kit": "kit-du-collectionneur"
+          }
+        },
+        "f2": {
+          "type": "format",
+          "settings": {
+            "label": "Boîte de 36 boosters (display)",
+            "drawing": "display",
+            "product": "boitier-acrylique-display-36",
+            "kit": "kit-du-collectionneur"
+          }
+        },
+        "f3": {
+          "type": "format",
+          "settings": {
+            "label": "Grand coffret premium (format UPC)",
+            "drawing": "upc",
+            "product": "boitier-acrylique-grand-coffret",
+            "kit": "kit-du-collectionneur"
+          }
+        },
+        "f4": {
+          "type": "format",
+          "settings": {
+            "label": "Cartes à l'unité",
+            "drawing": "single",
+            "product": "classeur-zippe-360-cartes",
+            "kit": "kit-du-collectionneur"
+          }
+        },
+        "f5": {
+          "type": "format",
+          "settings": {
+            "label": "Cartes gradées",
+            "drawing": "graded",
+            "product": "presentoir-cartes-gradees-3",
+            "kit": "kit-du-collectionneur"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5"
+      ],
+      "settings": {
+        "kicker": "N° 03 — Le bon format",
+        "title": "Trouve le bon / boîtier.",
+        "text": "Deux questions, et on te montre le boîtier à la bonne taille, avec ses dimensions intérieures."
+      }
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "kicker": "N° 04 — La collection",
+        "title": "Les pièces de la galerie",
+        "limit": 8,
+        "button_label": "Tout voir"
+      }
+    },
+    "reviews": {
+      "type": "reviews",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "title": "Ils protègent leur collection"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Comment savoir si le boîtier est à la bonne taille ?",
+            "answer": "<p>Chaque fiche indique les dimensions intérieures du boîtier et un schéma à l'échelle. Mesure ton coffret (longueur, largeur, hauteur) et compare. En cas de doute, écris-nous avec une photo de ton coffret à côté d'un mètre : on te répond [reponse].</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Vos produits sont-ils officiels ?",
+            "answer": "<p>Non. Nos accessoires sont génériques et sans licence : ils ne sont affiliés à aucun éditeur de jeu de cartes. Ils sont conçus pour des formats standards, dont les dimensions sont indiquées sur chaque fiche.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Quels délais de livraison ?",
+            "answer": "<p>Compte [jours_min] à [jours_max] jours ouvrés entre ta commande et la livraison, en [pays]. Le détail est sur la page Livraison et retours.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Pourquoi plusieurs colis ?",
+            "answer": "<p>Nos articles partent de différents entrepôts partenaires. Une commande de plusieurs articles peut donc arriver en plusieurs colis, à quelques jours d'intervalle. Chaque colis a son propre suivi. [À VÉRIFIER]</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Puis-je retourner un produit ?",
+            "answer": "<p>Oui. Tu disposes de 14 jours après réception pour exercer ton droit de rétractation, sans avoir à te justifier. Les conditions (adresse et frais de retour) sont sur la page Livraison et retours.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Mon boîtier est arrivé rayé, que faire ?",
+            "answer": "<p>Vérifie d'abord qu'il ne s'agit pas du film de protection, souvent présent sur les faces. Sinon, envoie-nous une photo à [email] : on te propose un renvoi ou un remboursement. Tu bénéficies aussi de la garantie légale de conformité de 2 ans.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "Le boîtier protège-t-il des UV ?",
+            "answer": "<p>Cela dépend du modèle. Quand le fabricant l'indique, la protection UV figure dans les caractéristiques de la fiche produit. Si rien n'est indiqué, considère que le boîtier ne filtre pas spécialement les UV et évite le soleil direct.</p>"
+          }
+        },
+        "q8": {
+          "type": "question",
+          "settings": {
+            "question": "Proposez-vous des cartes cadeaux ?",
+            "answer": "<p>Oui, de 20, 40 ou 60 €. Elles sont envoyées par e-mail et s'utilisent sur toute la boutique.</p>"
+          }
+        },
+        "q9": {
+          "type": "question",
+          "settings": {
+            "question": "Quels paiements acceptez-vous ?",
+            "answer": "<p>Le paiement est sécurisé par Shopify. Les moyens disponibles dans ton pays s'affichent au moment du paiement et en bas de chaque page.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7",
+        "q8",
+        "q9"
+      ],
+      "settings": {
+        "kicker": "N° 05 — Questions",
+        "title": "Questions fréquentes"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "title": "Rejoins la liste.",
+        "text": "Nouveautés et conseils de conservation, au plus une fois par semaine.",
+        "tag": "newsletter",
+        "dust": 30
+      }
     }
   },
-  "order": ["vitrine"]
+  "order": [
+    "vitrine",
+    "promise",
+    "kit",
+    "size-finder",
+    "featured",
+    "reviews",
+    "faq",
+    "newsletter"
+  ]
 }

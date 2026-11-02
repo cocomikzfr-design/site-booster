@@ -1,0 +1,56 @@
+{%- comment -%}
+  Filtres et tri (Search & Discovery). Paramètres : results (collection ou search), url (action du formulaire),
+  terms (recherche), form_id. Fonctionne sans JS (bouton Appliquer) ; facets.js met à jour la grille sans rechargement.
+{%- endcomment -%}
+<div class="filters world-dark" id="Filters-{{ form_id }}" data-filters role="dialog" aria-modal="true" aria-labelledby="FiltersTitle-{{ form_id }}">
+  <div class="filters__head">
+    <h2 class="lbl" id="FiltersTitle-{{ form_id }}">{{ 'collections.filters' | t }}</h2>
+    <button type="button" class="btn--icon" data-filters-close aria-label="{{ 'general.close' | t }}">{% render 'icon', icon: 'close' %}</button>
+  </div>
+  <form id="{{ form_id }}" class="filters__form" action="{{ url }}" method="get" data-facets-form>
+    {%- if terms != blank -%}
+      <input type="hidden" name="q" value="{{ terms | escape }}">
+      <input type="hidden" name="options[prefix]" value="last">
+    {%- endif -%}
+    {%- for filter in results.filters -%}
+      <details class="filter" open>
+        <summary class="filter__title lbl">{{ filter.label | escape }}{% if filter.active_values.size > 0 %} <span class="box box--num">{{ filter.active_values.size }}</span>{% endif %}</summary>
+        {%- case filter.type -%}
+          {%- when 'list', 'boolean' -%}
+            <ul class="filter__list" role="list">
+              {%- for value in filter.values -%}
+                <li>
+                  <label class="check{% if value.count == 0 and value.active == false %} is-empty{% endif %}">
+                    <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}"{% if value.active %} checked{% endif %}{% if value.count == 0 and value.active == false %} disabled{% endif %}>
+                    <span>{{ value.label | escape }}</span><span class="dim filter__count">{{ value.count }}</span>
+                  </label>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- when 'price_range' -%}
+            {%- liquid
+              assign pmax = filter.range_max | divided_by: 100.0 | ceil
+              assign pmin_val = filter.min_value.value | divided_by: 100.0 | floor
+              assign pmax_val = filter.max_value.value | divided_by: 100.0 | ceil
+            -%}
+            <div class="range" data-range style="--max:{{ pmax }}">
+              <div class="range__track">
+                <input type="range" min="0" max="{{ pmax }}" step="1" value="{% if filter.min_value.value %}{{ pmin_val }}{% else %}0{% endif %}" aria-label="{{ 'collections.price_from' | t }}" data-range-min>
+                <input type="range" min="0" max="{{ pmax }}" step="1" value="{% if filter.max_value.value %}{{ pmax_val }}{% else %}{{ pmax }}{% endif %}" aria-label="{{ 'collections.price_to' | t }}" data-range-max>
+              </div>
+              <div class="range__fields">
+                <label class="field"><span class="lbl">{{ 'collections.price_from' | t }} ({{ cart.currency.symbol }})</span>
+                  <input class="input" type="number" inputmode="numeric" min="0" max="{{ pmax }}" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value %}{{ pmin_val }}{% endif %}" placeholder="0" data-num-min></label>
+                <label class="field"><span class="lbl">{{ 'collections.price_to' | t }} ({{ cart.currency.symbol }})</span>
+                  <input class="input" type="number" inputmode="numeric" min="0" max="{{ pmax }}" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value %}{{ pmax_val }}{% endif %}" placeholder="{{ pmax }}" data-num-max></label>
+              </div>
+            </div>
+        {%- endcase -%}
+      </details>
+    {%- endfor -%}
+    <div class="filters__foot">
+      <a href="{{ url }}{% if terms != blank %}?q={{ terms | url_encode }}{% endif %}" class="ul lbl" data-facets-clear>{{ 'collections.clear_all' | t }}</a>
+      <button type="submit" class="btn" data-filters-apply>{%- assign label = 'collections.see_results' | t -%}{%- render 'btn-label', text: label -%}</button>
+    </div>
+  </form>
+</div>

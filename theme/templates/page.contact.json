@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "main": { "type": "main-page", "settings": {} },
+    "form": { "type": "contact-form", "settings": { "text": "<p>Pour une question de taille, joins une photo de ton coffret à côté d'un mètre : c'est le plus rapide.</p>" } }
+  },
+  "order": ["main", "form"]
+}
