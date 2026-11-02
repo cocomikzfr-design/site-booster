@@ -80,6 +80,7 @@ Coche les cases au fur et à mesure.
 
 ### 3.3 Politiques et informations légales
 - [ ] Coller les textes de `content/legal/` dans les politiques de la boutique (Paramètres > Politiques) : remboursement, confidentialité, conditions d'utilisation, expédition, coordonnées, mentions légales.
+  Astuce : ouvrez chaque fichier sur GitHub (affichage mis en forme) et copiez le texte affiché, pas le code avec les « # ».
 - [ ] Remplacer tous les [À COMPLÉTER].
 - [ ] Faire relire ces textes avant l'ouverture (guichet d'entreprises, juriste ou comptable).
 
