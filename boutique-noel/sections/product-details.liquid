@@ -1,0 +1,168 @@
+{%- liquid
+  assign use_tabs = false
+  if section.settings.layout == 'tabs' and section.blocks.size > 1
+    assign use_tabs = true
+  endif
+-%}
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+{%- if section.blocks.size > 0 -%}
+  <div class="section product-details section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+    <div class="page-width page-width--narrow">
+      <product-tabs class="product-tabs">
+        {%- if use_tabs -%}
+          <div class="product-tabs__list" role="tablist" aria-label="{{ product.title | escape }}" hidden>
+            {%- for block in section.blocks -%}
+              <button
+                type="button"
+                role="tab"
+                class="product-tabs__tab"
+                id="Tab-{{ block.id }}"
+                aria-controls="TabPanel-{{ block.id }}"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+              >
+                {%- render 'icon', icon: block.settings.icon, size: 20 -%}
+                <span>{{ block.settings.title | escape }}</span>
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- for block in section.blocks -%}
+          <details
+            class="accordion product-tabs__item"
+            data-tab-item
+            {% if forloop.first %}
+              open
+            {% endif %}
+            {{ block.shopify_attributes }}
+          >
+            <summary class="accordion__summary">
+              {%- render 'icon', icon: block.settings.icon, size: 22 -%}
+              <span class="accordion__title">{{ block.settings.title | escape }}</span>
+              {%- render 'icon', icon: 'plus', size: 20, class: 'accordion__icon' -%}
+            </summary>
+            <div class="accordion__content rte product-tabs__panel" id="TabPanel-{{ block.id }}" data-tab-panel>
+              {%- if block.settings.use_description -%}
+                {{ product.description }}
+              {%- else -%}
+                {{ block.settings.content }}
+              {%- endif -%}
+            </div>
+          </details>
+        {%- endfor -%}
+      </product-tabs>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Informations produit",
+  "class": "section-product-details",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Présentation",
+      "options": [
+        { "value": "tabs", "label": "Onglets sur ordinateur, accordéon sur mobile" },
+        { "value": "accordion", "label": "Accordéon partout" }
+      ],
+      "default": "tabs"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "cream"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Onglet",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Description"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "none", "label": "Aucune" },
+            { "value": "bulb", "label": "Ampoule" },
+            { "value": "gift", "label": "Cadeau" },
+            { "value": "ruler", "label": "Règle" },
+            { "value": "warning", "label": "Attention" },
+            { "value": "plug", "label": "Prise" },
+            { "value": "child", "label": "Enfant" },
+            { "value": "truck", "label": "Camion" }
+          ],
+          "default": "bulb"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_description",
+          "label": "Afficher la description du produit",
+          "info": "Le contenu ci-dessous est alors ignoré.",
+          "default": false
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Contenu"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Informations produit",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": { "title": "Description", "icon": "bulb", "use_description": true }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

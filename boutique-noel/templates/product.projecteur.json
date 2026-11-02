@@ -1,0 +1,306 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "subtitle": {
+          "type": "subtitle",
+          "settings": {
+            "text": "16 motifs de Noël projetés sur votre mur, en un seul branchement."
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "highlights": {
+          "type": "highlights",
+          "settings": {
+            "highlight_1": "16 motifs interchangeables : flocons, sapins, Père Noël, étoiles [À VÉRIFIER : liste exacte des motifs]",
+            "highlight_2": "Projection de 1 à 5 mètres du mur",
+            "highlight_3": "Éclairage LED, faible consommation",
+            "highlight_4": "Utilisation intérieure, et extérieure abritée [À VÉRIFIER : indice IP]"
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false
+          }
+        },
+        "delivery": {
+          "type": "delivery",
+          "settings": {}
+        },
+        "countdown": {
+          "type": "countdown",
+          "settings": {}
+        },
+        "pack_cta": {
+          "type": "pack_cta",
+          "settings": {
+            "pack_product": "pack-facade-de-noel",
+            "text": "Ajoutez la guirlande neige : découvrez le pack Façade de Noël."
+          }
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {}
+        },
+        "shipping": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Livraison et retours",
+            "icon": "truck",
+            "content": "<p>Livraison offerte en France et en Belgique.</p><p>Délai : 7 à 12 jours après la commande. Numéro de suivi envoyé par e-mail.</p><p>Pour recevoir avant Noël, commandez au plus tard le 8 décembre.</p><p>14 jours pour changer d'avis après réception, selon notre politique de remboursement.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "subtitle",
+        "price",
+        "highlights",
+        "variant_picker",
+        "buy_buttons",
+        "delivery",
+        "countdown",
+        "pack_cta",
+        "trust",
+        "shipping"
+      ],
+      "settings": {
+        "gallery_layout": "thumbnails",
+        "enable_zoom": true,
+        "enable_video_looping": true,
+        "show_breadcrumbs": true,
+        "color_scheme": "white",
+        "padding_top": 24,
+        "padding_bottom": 48
+      }
+    },
+    "details": {
+      "type": "product-details",
+      "blocks": {
+        "description": {
+          "type": "tab",
+          "settings": {
+            "title": "Description",
+            "icon": "bulb",
+            "use_description": true
+          }
+        },
+        "contents": {
+          "type": "tab",
+          "settings": {
+            "title": "Contenu du colis",
+            "icon": "gift",
+            "use_description": false,
+            "content": "<ul><li>1 projecteur LED</li><li>1 alimentation [À VÉRIFIER : adaptateur avec prise européenne inclus]</li><li>Disques ou lentilles de motifs, selon le modèle [À VÉRIFIER]</li><li>1 piquet de sol [À VÉRIFIER : inclus ou non]</li></ul>"
+          }
+        },
+        "specs": {
+          "type": "tab",
+          "settings": {
+            "title": "Caractéristiques",
+            "icon": "ruler",
+            "use_description": false,
+            "content": "<ul><li>Source lumineuse : LED</li><li>Nombre de motifs : 16</li><li>Distance de projection : 1 à 5 m</li><li>Alimentation : secteur via adaptateur [À VÉRIFIER : tension d'entrée et de sortie]</li><li>Matériau du boîtier : plastique</li><li>Indice de protection : [À VÉRIFIER]</li><li>Longueur du câble : [À VÉRIFIER]</li><li>Dimensions et poids : [À VÉRIFIER]</li></ul>"
+          }
+        },
+        "safety": {
+          "type": "tab",
+          "settings": {
+            "title": "Sécurité et utilisation",
+            "icon": "warning",
+            "use_description": false,
+            "content": "<ul><li>Ne fixez pas directement la source lumineuse.</li><li>N'utilisez que l'alimentation fournie.</li><li>Dehors, branchez-le uniquement sur une prise extérieure protégée, avec une rallonge prévue pour l'extérieur.</li><li>Ne le couvrez pas pendant le fonctionnement. Débranchez-le en cas d'orage et pendant le rangement.</li><li>Ceci n'est pas un jouet : tenez-le hors de portée des jeunes enfants.</li><li>Marquage CE : [À VÉRIFIER sur le produit et l'emballage]</li><li>Fabricant : [À COMPLÉTER : nom, adresse postale et e-mail]</li><li>Personne responsable dans l'UE : [À COMPLÉTER]</li><li>Référence du modèle : [À COMPLÉTER]</li><li>Fin de vie : ne jetez pas cet appareil avec les ordures ménagères ; déposez-le dans un point de collecte des équipements électriques.</li></ul>"
+          }
+        }
+      },
+      "block_order": [
+        "description",
+        "contents",
+        "specs",
+        "safety"
+      ],
+      "settings": {
+        "layout": "tabs",
+        "color_scheme": "cream",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "steps": {
+      "type": "how-it-works",
+      "blocks": {
+        "step-1": {
+          "type": "step",
+          "settings": {
+            "icon": "plug",
+            "title": "Branchez",
+            "text": "Une prise suffit. Pas d'outil, pas d'installation électrique."
+          }
+        },
+        "step-2": {
+          "type": "step",
+          "settings": {
+            "icon": "ruler",
+            "title": "Orientez",
+            "text": "Posez le projecteur face à la façade, à quelques mètres du mur."
+          }
+        },
+        "step-3": {
+          "type": "step",
+          "settings": {
+            "icon": "bulb",
+            "title": "Allumez",
+            "text": "La façade s'illumine dès la tombée de la nuit."
+          }
+        }
+      },
+      "block_order": [
+        "step-1",
+        "step-2",
+        "step-3"
+      ],
+      "settings": {
+        "heading": "Installé en 3 étapes",
+        "color_scheme": "night",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Le projecteur fonctionne-t-il dehors ?",
+            "answer": "<p>Oui, à condition qu'il soit protégé de la pluie directe et branché sur une prise extérieure protégée. [À VÉRIFIER : indice IP]</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Quelle taille fait la projection ?",
+            "answer": "<p>Elle dépend de la distance au mur. À environ 5 mètres, les motifs couvrent une large surface ; plus près, ils sont plus petits et plus lumineux.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Y a-t-il une minuterie ?",
+            "answer": "<p>[À VÉRIFIER : minuterie ou non]. Sinon, une prise programmable fait très bien l'affaire.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Faut-il des piles ?",
+            "answer": "<p>Non, il fonctionne sur secteur.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Quand vais-je le recevoir ?",
+            "answer": "<p>En 7 à 12 jours. Commandez au plus tard le 8 décembre pour le recevoir avant Noël.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "heading": "Questions fréquentes",
+        "open_first": false,
+        "color_scheme": "white",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "trust": {
+      "type": "trust-badges",
+      "blocks": {
+        "shipping": {
+          "type": "badge",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "En France et en Belgique"
+          }
+        },
+        "payment": {
+          "type": "badge",
+          "settings": {
+            "icon": "shield",
+            "title": "Paiement sécurisé",
+            "text": "Carte, Bancontact, Apple Pay"
+          }
+        },
+        "returns": {
+          "type": "badge",
+          "settings": {
+            "icon": "return",
+            "title": "14 jours pour changer d'avis",
+            "text": "Rétractation selon nos conditions"
+          }
+        },
+        "support": {
+          "type": "badge",
+          "settings": {
+            "icon": "mail",
+            "title": "Service client",
+            "text": "Réponse sous 24 h ouvrées"
+          }
+        }
+      },
+      "block_order": [
+        "shipping",
+        "payment",
+        "returns",
+        "support"
+      ],
+      "settings": {
+        "color_scheme": "cream",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "upsell": {
+      "type": "product-upsell",
+      "settings": {
+        "heading": "Complétez votre décoration",
+        "products": [
+          "guirlande-neige-qui-tombe",
+          "couronne-de-noel-lumineuse"
+        ],
+        "color_scheme": "white",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "details",
+    "steps",
+    "faq",
+    "trust",
+    "upsell"
+  ]
+}

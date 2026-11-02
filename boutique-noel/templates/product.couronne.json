@@ -1,0 +1,263 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "subtitle": {
+          "type": "subtitle",
+          "settings": {
+            "text": "Une porte d'entrée qui souhaite la bienvenue à vos invités, jour et nuit."
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "highlights": {
+          "type": "highlights",
+          "settings": {
+            "highlight_1": "Diamètre 40 cm, bien visible sur une porte",
+            "highlight_2": "Lumières LED intégrées",
+            "highlight_3": "Baies rouges et feuillage vert réalistes",
+            "highlight_4": "Réutilisable d'année en année"
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false
+          }
+        },
+        "delivery": {
+          "type": "delivery",
+          "settings": {}
+        },
+        "countdown": {
+          "type": "countdown",
+          "settings": {}
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {}
+        },
+        "shipping": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Livraison et retours",
+            "icon": "truck",
+            "content": "<p>Livraison offerte en France et en Belgique.</p><p>Délai : 7 à 12 jours après la commande. Numéro de suivi envoyé par e-mail.</p><p>Pour recevoir avant Noël, commandez au plus tard le 8 décembre.</p><p>14 jours pour changer d'avis après réception, selon notre politique de remboursement.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "subtitle",
+        "price",
+        "highlights",
+        "variant_picker",
+        "buy_buttons",
+        "delivery",
+        "countdown",
+        "trust",
+        "shipping"
+      ],
+      "settings": {
+        "gallery_layout": "thumbnails",
+        "enable_zoom": true,
+        "enable_video_looping": true,
+        "show_breadcrumbs": true,
+        "color_scheme": "white",
+        "padding_top": 24,
+        "padding_bottom": 48
+      }
+    },
+    "details": {
+      "type": "product-details",
+      "blocks": {
+        "description": {
+          "type": "tab",
+          "settings": {
+            "title": "Description",
+            "icon": "bulb",
+            "use_description": true
+          }
+        },
+        "contents": {
+          "type": "tab",
+          "settings": {
+            "title": "Contenu du colis",
+            "icon": "gift",
+            "use_description": false,
+            "content": "<ul><li>1 couronne de 40 cm avec lumières intégrées</li><li>Boîtier de piles ou alimentation [À VÉRIFIER : piles ou secteur, piles incluses ou non]</li><li>Crochet de fixation [À VÉRIFIER : inclus ou non]</li></ul>"
+          }
+        },
+        "specs": {
+          "type": "tab",
+          "settings": {
+            "title": "Caractéristiques",
+            "icon": "ruler",
+            "use_description": false,
+            "content": "<ul><li>Diamètre : 40 cm</li><li>Matériaux : feuillage en PVC, baies décoratives [À VÉRIFIER : matériau des baies]</li><li>Éclairage : LED [À VÉRIFIER : nombre de LED et couleur]</li><li>Alimentation : [À VÉRIFIER]</li><li>Usage : intérieur [À VÉRIFIER : extérieur abrité possible ou non]</li><li>Minuterie : [À VÉRIFIER]</li></ul>"
+          }
+        },
+        "safety": {
+          "type": "tab",
+          "settings": {
+            "title": "Sécurité et utilisation",
+            "icon": "warning",
+            "use_description": false,
+            "content": "<ul><li>Ne pas placer près d'une flamme ou d'une source de chaleur.</li><li>Si la couronne fonctionne avec des piles : tenez les piles hors de portée des enfants et retirez-les pendant le rangement.</li><li>Ceci n'est pas un jouet.</li><li>Marquage CE : [À VÉRIFIER]</li><li>Fabricant : [À COMPLÉTER]</li><li>Personne responsable dans l'UE : [À COMPLÉTER]</li><li>Fin de vie : déposez l'appareil et ses piles dans un point de collecte adapté.</li></ul>"
+          }
+        }
+      },
+      "block_order": [
+        "description",
+        "contents",
+        "specs",
+        "safety"
+      ],
+      "settings": {
+        "layout": "tabs",
+        "color_scheme": "cream",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "door": {
+      "type": "image-with-text",
+      "settings": {
+        "eyebrow": "Idée déco",
+        "heading": "Sur la porte d'entrée",
+        "text": "<p>Accrochez la couronne sur la porte d'entrée, au-dessus d'une cheminée ou sur un mur : elle accueille vos invités de jour comme de nuit.</p>",
+        "button_label": "",
+        "layout": "image_left",
+        "color_scheme": "night",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Peut-on l'accrocher dehors ?",
+            "answer": "<p>[À VÉRIFIER : usage extérieur]. En cas de doute, réservez-la à l'intérieur ou à une porte abritée.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Les piles sont-elles fournies ?",
+            "answer": "<p>[À VÉRIFIER]</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Comment l'accrocher ?",
+            "answer": "<p>Avec un crochet de porte ou un ruban passé derrière la couronne.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Quand vais-je la recevoir ?",
+            "answer": "<p>En 7 à 12 jours. Commandez au plus tard le 8 décembre pour la recevoir avant Noël.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ],
+      "settings": {
+        "heading": "Questions fréquentes",
+        "open_first": false,
+        "color_scheme": "white",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "trust": {
+      "type": "trust-badges",
+      "blocks": {
+        "shipping": {
+          "type": "badge",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "En France et en Belgique"
+          }
+        },
+        "payment": {
+          "type": "badge",
+          "settings": {
+            "icon": "shield",
+            "title": "Paiement sécurisé",
+            "text": "Carte, Bancontact, Apple Pay"
+          }
+        },
+        "returns": {
+          "type": "badge",
+          "settings": {
+            "icon": "return",
+            "title": "14 jours pour changer d'avis",
+            "text": "Rétractation selon nos conditions"
+          }
+        },
+        "support": {
+          "type": "badge",
+          "settings": {
+            "icon": "mail",
+            "title": "Service client",
+            "text": "Réponse sous 24 h ouvrées"
+          }
+        }
+      },
+      "block_order": [
+        "shipping",
+        "payment",
+        "returns",
+        "support"
+      ],
+      "settings": {
+        "color_scheme": "cream",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "upsell": {
+      "type": "product-upsell",
+      "settings": {
+        "heading": "Complétez votre décoration",
+        "products": [
+          "pack-facade-de-noel",
+          "projecteur-de-noel-led"
+        ],
+        "color_scheme": "white",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "details",
+    "door",
+    "faq",
+    "trust",
+    "upsell"
+  ]
+}

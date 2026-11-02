@@ -1,0 +1,315 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "badge": {
+          "type": "badge",
+          "settings": {
+            "text": "Le plus choisi",
+            "style": "gold"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "subtitle": {
+          "type": "subtitle",
+          "settings": {
+            "text": "Le projecteur de motifs et la guirlande neige qui tombe, réunis dans un seul colis."
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "highlights": {
+          "type": "highlights",
+          "settings": {
+            "highlight_1": "Deux effets lumineux complémentaires pour toute la façade",
+            "highlight_2": "Prêts à brancher, sans outil",
+            "highlight_3": "Un seul colis, une seule livraison offerte",
+            "highlight_4": "14 jours pour changer d'avis"
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false
+          }
+        },
+        "delivery": {
+          "type": "delivery",
+          "settings": {}
+        },
+        "countdown": {
+          "type": "countdown",
+          "settings": {}
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {}
+        },
+        "included": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Ce qui est inclus",
+            "icon": "gift",
+            "content": "<ul><li>1 projecteur de Noël LED 16 motifs et son alimentation [À VÉRIFIER : type d'alimentation et prise européenne]</li><li>1 guirlande « neige qui tombe » de 8 tubes avec prise européenne [À VÉRIFIER]</li><li>Notice du fabricant [À VÉRIFIER : langue de la notice]</li></ul>"
+          }
+        },
+        "shipping": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Livraison et retours",
+            "icon": "truck",
+            "content": "<p>Livraison offerte en France et en Belgique.</p><p>Délai : 7 à 12 jours après la commande. Numéro de suivi envoyé par e-mail.</p><p>Pour recevoir avant Noël, commandez au plus tard le 8 décembre.</p><p>14 jours pour changer d'avis après réception, selon notre politique de remboursement.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "badge",
+        "title",
+        "subtitle",
+        "price",
+        "highlights",
+        "variant_picker",
+        "buy_buttons",
+        "delivery",
+        "countdown",
+        "trust",
+        "included",
+        "shipping"
+      ],
+      "settings": {
+        "gallery_layout": "thumbnails",
+        "enable_zoom": true,
+        "enable_video_looping": true,
+        "show_breadcrumbs": true,
+        "color_scheme": "white",
+        "padding_top": 24,
+        "padding_bottom": 48
+      }
+    },
+    "details": {
+      "type": "product-details",
+      "blocks": {
+        "description": {
+          "type": "tab",
+          "settings": {
+            "title": "Description",
+            "icon": "bulb",
+            "use_description": true
+          }
+        },
+        "contents": {
+          "type": "tab",
+          "settings": {
+            "title": "Contenu du colis",
+            "icon": "gift",
+            "use_description": false,
+            "content": "<ul><li>1 projecteur de Noël LED 16 motifs et son alimentation [À VÉRIFIER : type d'alimentation et prise européenne]</li><li>1 guirlande « neige qui tombe » de 8 tubes avec prise européenne [À VÉRIFIER]</li><li>Notice du fabricant [À VÉRIFIER : langue de la notice]</li></ul>"
+          }
+        },
+        "specs": {
+          "type": "tab",
+          "settings": {
+            "title": "Caractéristiques",
+            "icon": "ruler",
+            "use_description": false,
+            "content": "<p><strong>Projecteur de Noël LED 16 motifs</strong></p><ul><li>Source lumineuse : LED</li><li>Nombre de motifs : 16</li><li>Distance de projection : 1 à 5 m</li><li>Alimentation : secteur via adaptateur [À VÉRIFIER : tension d'entrée et de sortie]</li><li>Matériau du boîtier : plastique</li><li>Indice de protection : [À VÉRIFIER]</li><li>Longueur du câble : [À VÉRIFIER]</li><li>Dimensions et poids : [À VÉRIFIER]</li></ul><p><strong>Guirlande « neige qui tombe » 8 tubes</strong></p><ul><li>Nombre de tubes : 8</li><li>Longueur d'un tube : 30 cm</li><li>Nombre de LED : 192</li><li>Alimentation : secteur 220–240 V [À VÉRIFIER : prise européenne]</li><li>Couleur de la lumière : [À VÉRIFIER : blanc froid, blanc chaud ou multicolore selon la variante]</li><li>Indice de protection : [À VÉRIFIER]</li><li>Longueur totale et espacement des tubes : [À VÉRIFIER]</li></ul>"
+          }
+        },
+        "safety": {
+          "type": "tab",
+          "settings": {
+            "title": "Sécurité et utilisation",
+            "icon": "warning",
+            "use_description": false,
+            "content": "<p><strong>Projecteur</strong></p><ul><li>Ne fixez pas directement la source lumineuse.</li><li>N'utilisez que l'alimentation fournie.</li><li>Dehors, branchez-le uniquement sur une prise extérieure protégée, avec une rallonge prévue pour l'extérieur.</li><li>Ne le couvrez pas pendant le fonctionnement. Débranchez-le en cas d'orage et pendant le rangement.</li><li>Ceci n'est pas un jouet : tenez-le hors de portée des jeunes enfants.</li><li>Marquage CE : [À VÉRIFIER sur le produit et l'emballage]</li><li>Fabricant : [À COMPLÉTER : nom, adresse postale et e-mail]</li><li>Personne responsable dans l'UE : [À COMPLÉTER]</li><li>Référence du modèle : [À COMPLÉTER]</li><li>Fin de vie : ne jetez pas cet appareil avec les ordures ménagères ; déposez-le dans un point de collecte des équipements électriques.</li></ul><p><strong>Guirlande</strong></p><ul><li>Branchez la guirlande uniquement après l'avoir entièrement déroulée et installée.</li><li>Dehors, utilisez une prise extérieure protégée et une rallonge prévue pour l'extérieur.</li><li>N'utilisez pas une guirlande dont un tube ou le câble est abîmé.</li><li>Débranchez-la en cas d'orage et pendant le rangement.</li><li>Ceci n'est pas un jouet.</li><li>Marquage CE : [À VÉRIFIER]</li><li>Fabricant : [À COMPLÉTER]</li><li>Personne responsable dans l'UE : [À COMPLÉTER]</li><li>Fin de vie : point de collecte des équipements électriques.</li></ul>"
+          }
+        }
+      },
+      "block_order": [
+        "description",
+        "contents",
+        "specs",
+        "safety"
+      ],
+      "settings": {
+        "layout": "tabs",
+        "color_scheme": "cream",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "steps": {
+      "type": "how-it-works",
+      "blocks": {
+        "step-1": {
+          "type": "step",
+          "settings": {
+            "icon": "plug",
+            "title": "Branchez",
+            "text": "Une prise suffit. Pas d'outil, pas d'installation électrique."
+          }
+        },
+        "step-2": {
+          "type": "step",
+          "settings": {
+            "icon": "ruler",
+            "title": "Orientez",
+            "text": "Posez le projecteur face à la façade, à quelques mètres du mur."
+          }
+        },
+        "step-3": {
+          "type": "step",
+          "settings": {
+            "icon": "bulb",
+            "title": "Allumez",
+            "text": "La façade s'illumine dès la tombée de la nuit."
+          }
+        }
+      },
+      "block_order": [
+        "step-1",
+        "step-2",
+        "step-3"
+      ],
+      "settings": {
+        "heading": "Installé en 3 étapes",
+        "color_scheme": "night",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Le pack arrive-t-il en un seul colis ?",
+            "answer": "<p>Nous faisons notre maximum pour que les deux produits voyagent ensemble. Selon le fournisseur, ils peuvent arriver en deux colis à quelques jours d'intervalle ; vous recevez alors un numéro de suivi pour chacun.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Peut-on utiliser les deux produits séparément ?",
+            "answer": "<p>Oui, chaque produit a sa propre alimentation et fonctionne seul. [À VÉRIFIER]</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Faut-il une prise extérieure ?",
+            "answer": "<p>Il faut une prise électrique à portée de câble. Pour un usage dehors, utilisez une prise extérieure protégée et une rallonge prévue pour l'extérieur.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Quand vais-je recevoir le pack ?",
+            "answer": "<p>En 7 à 12 jours après votre commande. Commandez au plus tard le 8 décembre pour le recevoir avant Noël.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Puis-je retourner le pack ?",
+            "answer": "<p>Oui, vous disposez de 14 jours après réception pour changer d'avis, selon notre politique de remboursement.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "heading": "Questions fréquentes",
+        "open_first": false,
+        "color_scheme": "white",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "trust": {
+      "type": "trust-badges",
+      "blocks": {
+        "shipping": {
+          "type": "badge",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "En France et en Belgique"
+          }
+        },
+        "payment": {
+          "type": "badge",
+          "settings": {
+            "icon": "shield",
+            "title": "Paiement sécurisé",
+            "text": "Carte, Bancontact, Apple Pay"
+          }
+        },
+        "returns": {
+          "type": "badge",
+          "settings": {
+            "icon": "return",
+            "title": "14 jours pour changer d'avis",
+            "text": "Rétractation selon nos conditions"
+          }
+        },
+        "support": {
+          "type": "badge",
+          "settings": {
+            "icon": "mail",
+            "title": "Service client",
+            "text": "Réponse sous 24 h ouvrées"
+          }
+        }
+      },
+      "block_order": [
+        "shipping",
+        "payment",
+        "returns",
+        "support"
+      ],
+      "settings": {
+        "color_scheme": "cream",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "upsell": {
+      "type": "product-upsell",
+      "settings": {
+        "heading": "Complétez votre décoration",
+        "products": [
+          "couronne-de-noel-lumineuse",
+          "sapin-feutrine-enfant"
+        ],
+        "color_scheme": "white",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "details",
+    "steps",
+    "faq",
+    "trust",
+    "upsell"
+  ]
+}

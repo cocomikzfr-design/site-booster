@@ -1,0 +1,607 @@
+{{ 'section-product.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured_media = current_variant.featured_media | default: product.featured_media
+  assign form_id = 'ProductForm-' | append: section.id
+  assign gallery_layout = section.settings.gallery_layout
+  assign enable_zoom = section.settings.enable_zoom
+  assign media_sizes = '(min-width: 990px) calc(min(100vw, 1280px) * 0.55 - 40px), 100vw'
+  assign sticky_price = current_variant.price | money
+
+  comment
+    Médias dans l'ordre d'affichage : celui de la variante sélectionnée d'abord, puis les autres.
+  endcomment
+  assign ordered_media = product.media | where: 'id', featured_media.id
+  for media in product.media
+    if media.id != featured_media.id
+      assign single_media = product.media | where: 'id', media.id
+      assign ordered_media = ordered_media | concat: single_media
+    endif
+  endfor
+  assign media_count = ordered_media.size
+-%}
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div class="section main-product section-{{ section.id }} scheme-{{ section.settings.color_scheme }}" id="MainProduct-{{ section.id }}">
+  <div class="page-width">
+    {%- if section.settings.show_breadcrumbs -%}
+      {% render 'breadcrumbs' %}
+    {%- endif -%}
+
+    <div class="product product--{{ gallery_layout }}">
+      <product-gallery class="product__gallery" data-section="{{ section.id }}">
+        <ul
+          class="product__media-list"
+          role="list"
+          aria-label="{{ 'products.gallery' | t }}"
+          data-media-list
+          {% unless enable_zoom %}
+            tabindex="0"
+          {% endunless %}
+        >
+          {%- for media in ordered_media -%}
+            {%- liquid
+              assign media_loading = 'lazy'
+              assign media_priority = ''
+              if forloop.first
+                assign media_loading = 'eager'
+                assign media_priority = 'high'
+              endif
+            -%}
+            <li
+              class="product__media-item{% if forloop.first %} is-active{% endif %}"
+              id="Media-{{ section.id }}-{{ media.id }}"
+              data-media-item
+              data-media-id="{{ media.id }}"
+            >
+              {%- case media.media_type -%}
+                {%- when 'image' -%}
+                  {%- capture media_image -%}
+                    {% render 'responsive-image',
+                      image: media,
+                      sizes: media_sizes,
+                      loading: media_loading,
+                      fetchpriority: media_priority,
+                      class: 'product__media-image'
+                    %}
+                  {%- endcapture -%}
+                  {%- if enable_zoom -%}
+                    <button
+                      type="button"
+                      class="product__media-zoom"
+                      data-zoom-open
+                      data-zoom-src="{{ media | image_url: width: 2048 }}"
+                      data-zoom-alt="{{ media.alt | escape }}"
+                      aria-haspopup="dialog"
+                      aria-label="{{ 'products.open_media' | t: index: forloop.index }}"
+                    >
+                      {{ media_image }}
+                      <span class="product__zoom-icon" aria-hidden="true">
+                        {%- render 'icon', icon: 'zoom', size: 20 -%}
+                      </span>
+                    </button>
+                  {%- else -%}
+                    {{ media_image }}
+                  {%- endif -%}
+                {%- when 'video' -%}
+                  {{ media | video_tag: controls: true, playsinline: true, loop: section.settings.enable_video_looping, preload: 'none', image_size: '1100x', class: 'product__media-video' }}
+                {%- when 'external_video' -%}
+                  {{ media | external_video_url: rel: 0 | external_video_tag: class: 'product__media-external', loading: 'lazy' }}
+                {%- else -%}
+                  {{ media | media_tag: image_size: '1100x' }}
+              {%- endcase -%}
+            </li>
+          {%- else -%}
+            <li class="product__media-item is-active">
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        {%- if media_count > 1 -%}
+          <div class="product__gallery-nav hidden-desktop">
+            <div class="product__dots">
+              {%- for media in ordered_media -%}
+                <button
+                  type="button"
+                  class="product__dot"
+                  data-gallery-goto="{{ forloop.index0 }}"
+                  aria-label="{{ 'accessibility.go_to_image' | t: index: forloop.index }}"
+                  {% if forloop.first %}
+                    aria-current="true"
+                  {% endif %}
+                ></button>
+              {%- endfor -%}
+            </div>
+            <p class="product__counter" data-gallery-counter>{{ 'accessibility.image_of' | t: index: 1, count: media_count }}</p>
+          </div>
+
+          {%- if gallery_layout == 'thumbnails' -%}
+            <ul class="product__thumbnails hidden-mobile" role="list" aria-label="{{ 'accessibility.thumbnails' | t }}">
+              {%- for media in ordered_media -%}
+                <li>
+                  <button
+                    type="button"
+                    class="product__thumbnail"
+                    data-gallery-goto="{{ forloop.index0 }}"
+                    aria-label="{{ 'accessibility.go_to_image' | t: index: forloop.index }}"
+                    {% if forloop.first %}
+                      aria-current="true"
+                    {% endif %}
+                  >
+                    {{ media.preview_image | image_url: width: 192 | image_tag: widths: '96, 192', sizes: '96px', loading: 'lazy', alt: '', class: 'product__thumbnail-image' }}
+                    {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+                      <span class="product__thumbnail-badge">{% render 'icon', icon: 'play', size: 16 %}</span>
+                    {%- endif -%}
+                  </button>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- if enable_zoom -%}
+          <dialog class="product__zoom" data-zoom-dialog aria-label="{{ 'accessibility.zoom_dialog' | t }}">
+            <button type="button" class="icon-button product__zoom-close" data-zoom-close>
+              {%- render 'icon', icon: 'close' -%}
+              <span class="visually-hidden">{{ 'general.close' | t }}</span>
+            </button>
+            <div class="product__zoom-body" data-zoom-target></div>
+          </dialog>
+        {%- endif -%}
+      </product-gallery>
+
+      <div class="product__info">
+        <div class="product__info-inner stack">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when '@app' -%}
+                {% render block %}
+
+              {%- when 'badge' -%}
+                {%- if block.settings.text != blank -%}
+                  <div {{ block.shopify_attributes }}>
+                    <span class="badge badge--{{ block.settings.style }}">{{ block.settings.text | escape }}</span>
+                  </div>
+                {%- endif -%}
+
+              {%- when 'title' -%}
+                <h1 class="product__title" {{ block.shopify_attributes }}>{{ product.title | escape }}</h1>
+
+              {%- when 'subtitle' -%}
+                {%- if block.settings.text != blank -%}
+                  <p class="product__subtitle" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+                {%- endif -%}
+
+              {%- when 'price' -%}
+                <div class="product__price" {{ block.shopify_attributes }}>
+                  {% render 'price', variant: current_variant, show_badge: true, show_taxes: true, class: 'price--large' %}
+                </div>
+
+              {%- when 'highlights' -%}
+                <ul class="product__highlights" role="list" {{ block.shopify_attributes }}>
+                  {%- for i in (1..4) -%}
+                    {%- assign highlight_key = 'highlight_' | append: i -%}
+                    {%- assign highlight = block.settings[highlight_key] -%}
+                    {%- if highlight != blank -%}
+                      <li>
+                        {%- render 'icon', icon: 'check', size: 20 -%}
+                        <span>{{ highlight | escape }}</span>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+
+              {%- when 'variant_picker' -%}
+                <div {{ block.shopify_attributes }}>
+                  {% render 'variant-picker', product: product, section_id: section.id %}
+                </div>
+
+              {%- when 'quantity' -%}
+                {%- assign quantity_id = 'Quantity-' | append: section.id -%}
+                <div class="product__quantity field" {{ block.shopify_attributes }}>
+                  <label for="{{ quantity_id }}" class="field__label">{{ 'products.quantity' | t }}</label>
+                  {% render 'quantity-input', id: quantity_id, form_id: form_id, product_title: product.title %}
+                </div>
+
+              {%- when 'buy_buttons' -%}
+                {% render 'buy-buttons', product: product, section_id: section.id, block: block, show_trust: false %}
+
+              {%- when 'delivery' -%}
+                {%- if settings.show_delivery_estimate -%}
+                  <div {{ block.shopify_attributes }}>
+                    {% render 'delivery-estimate', style: 'full' %}
+                  </div>
+                {%- endif -%}
+
+              {%- when 'countdown' -%}
+                {%- capture product_countdown -%}{% render 'deadline-countdown', style: 'inline' %}{%- endcapture -%}
+                {%- if product_countdown != blank -%}
+                  <div class="product__countdown" {{ block.shopify_attributes }}>{{ product_countdown }}</div>
+                {%- endif -%}
+
+              {%- when 'pack_cta' -%}
+                {%- assign pack = block.settings.pack_product | default: settings.pack_product -%}
+                {%- if pack != blank and pack.id != product.id -%}
+                  <div class="pack-cta" {{ block.shopify_attributes }}>
+                    <div class="pack-cta__media">
+                      {%- if pack.featured_media -%}
+                        {{ pack.featured_media.preview_image | image_url: width: 160 | image_tag: widths: '80, 160', sizes: '80px', loading: 'lazy', alt: '', class: 'pack-cta__image' }}
+                      {%- endif -%}
+                    </div>
+                    <div class="pack-cta__body">
+                      <p class="pack-cta__title">{{ 'products.pack_cta_title' | t }}</p>
+                      {%- if block.settings.text != blank -%}
+                        <p class="pack-cta__text">{{ block.settings.text | escape }}</p>
+                      {%- endif -%}
+                      <p class="pack-cta__footer">
+                        <span class="pack-cta__price">{{ pack.price | money }}</span>
+                        <a href="{{ pack.url }}" class="pack-cta__link">
+                          {{- 'products.see_pack' | t -}}
+                          {%- render 'icon', icon: 'chevron-right', size: 18 -%}
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                {%- endif -%}
+
+              {%- when 'text' -%}
+                {%- if block.settings.text != blank -%}
+                  <div class="rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+                {%- endif -%}
+
+              {%- when 'collapsible' -%}
+                <details class="accordion product__collapsible" {{ block.shopify_attributes }}>
+                  <summary class="accordion__summary">
+                    {%- render 'icon', icon: block.settings.icon, size: 22 -%}
+                    <span class="accordion__title">{{ block.settings.heading | escape }}</span>
+                    {%- render 'icon', icon: 'plus', size: 20, class: 'accordion__icon' -%}
+                  </summary>
+                  <div class="accordion__content rte">
+                    {%- if block.settings.page != blank -%}
+                      {{ block.settings.page.content }}
+                    {%- else -%}
+                      {{ block.settings.content }}
+                    {%- endif -%}
+                  </div>
+                </details>
+
+              {%- when 'trust' -%}
+                <div {{ block.shopify_attributes }}>
+                  {% render 'trust-row', layout: 'stack' %}
+                </div>
+
+              {%- when 'share' -%}
+                <div {{ block.shopify_attributes }}>
+                  <button
+                    type="button"
+                    class="button button--ghost product__share"
+                    data-share
+                    data-share-url="{{ request.origin }}{{ product.url }}"
+                    data-share-title="{{ product.title | escape }}"
+                    data-copied-label="{{ 'general.link_copied' | t }}"
+                  >
+                    {%- render 'icon', icon: 'share', size: 20 -%}
+                    <span>{{ 'general.share' | t }}</span>
+                  </button>
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- if settings.show_sticky_atc -%}
+    <sticky-atc class="sticky-atc hidden-desktop" data-form-id="{{ form_id }}" data-section="{{ section.id }}">
+      {%- if product.featured_media -%}
+        <div class="sticky-atc__media">
+          {{ product.featured_media.preview_image | image_url: width: 112 | image_tag: widths: '56, 112', sizes: '48px', loading: 'lazy', alt: '', class: 'sticky-atc__image' }}
+        </div>
+      {%- endif -%}
+      <p class="sticky-atc__title">{{ product.title | escape }}</p>
+      <button
+        type="submit"
+        name="add"
+        form="{{ form_id }}"
+        class="button button--primary sticky-atc__button"
+        data-sticky-button
+        {% unless current_variant.available %}
+          disabled
+        {% endunless %}
+      >
+        <span data-sticky-label>
+          {%- if current_variant.available -%}
+            {{ 'products.sticky_add' | t: price: sticky_price }}
+          {%- else -%}
+            {{ 'products.sold_out' | t }}
+          {%- endif -%}
+        </span>
+      </button>
+    </sticky-atc>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Fiche produit",
+  "class": "section-main-product",
+  "settings": [
+    {
+      "type": "select",
+      "id": "gallery_layout",
+      "label": "Galerie sur ordinateur",
+      "options": [
+        { "value": "thumbnails", "label": "Image principale et miniatures" },
+        { "value": "stacked", "label": "Images empilées" }
+      ],
+      "default": "thumbnails"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Agrandir les images au clic",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_looping",
+      "label": "Lire les vidéos en boucle",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Afficher le fil d'Ariane",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "Les photos et vidéos doivent montrer le vrai produit. Barre d'achat collante : Paramètres du thème > Produits."
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "badge",
+      "name": "Étiquette",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte",
+          "default": "Le plus choisi"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Couleur",
+          "options": [
+            { "value": "gold", "label": "Doré" },
+            { "value": "green", "label": "Vert" }
+          ],
+          "default": "gold"
+        }
+      ]
+    },
+    {
+      "type": "title",
+      "name": "Titre",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "subtitle",
+      "name": "Sous-titre",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Promesse en une ligne"
+        }
+      ]
+    },
+    {
+      "type": "price",
+      "name": "Prix",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "highlights",
+      "name": "Points forts",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "N'indiquez que des caractéristiques vérifiées auprès du fournisseur."
+        },
+        {
+          "type": "text",
+          "id": "highlight_1",
+          "label": "Point fort 1"
+        },
+        {
+          "type": "text",
+          "id": "highlight_2",
+          "label": "Point fort 2"
+        },
+        {
+          "type": "text",
+          "id": "highlight_3",
+          "label": "Point fort 3"
+        },
+        {
+          "type": "text",
+          "id": "highlight_4",
+          "label": "Point fort 4"
+        }
+      ]
+    },
+    {
+      "type": "variant_picker",
+      "name": "Choix des variantes",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "quantity",
+      "name": "Quantité",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Bouton d'achat",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "label": "Bouton de paiement accéléré",
+          "info": "Déconseillé : il contourne le panier et la suggestion de produit.",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "delivery",
+      "name": "Livraison estimée",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "countdown",
+      "name": "Compte à rebours de Noël",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "pack_cta",
+      "name": "Encore mieux en pack",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "product",
+          "id": "pack_product",
+          "label": "Pack",
+          "info": "Laissez vide pour utiliser le produit pack des Paramètres du thème. Ne s'affiche pas sur la fiche du pack."
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte",
+          "default": "Ajoutez la guirlande neige et économisez un colis : découvrez le pack."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Texte",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Texte"
+        }
+      ]
+    },
+    {
+      "type": "collapsible",
+      "name": "Bloc dépliable",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Titre",
+          "default": "Livraison et retours"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "none", "label": "Aucune" },
+            { "value": "truck", "label": "Camion" },
+            { "value": "gift", "label": "Cadeau" },
+            { "value": "shield", "label": "Bouclier" },
+            { "value": "return", "label": "Retour" },
+            { "value": "ruler", "label": "Règle" },
+            { "value": "bulb", "label": "Ampoule" },
+            { "value": "plug", "label": "Prise" },
+            { "value": "child", "label": "Enfant" },
+            { "value": "warning", "label": "Attention" },
+            { "value": "mail", "label": "E-mail" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Contenu"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "Page à afficher à la place du contenu",
+          "info": "Facultatif."
+        }
+      ]
+    },
+    {
+      "type": "trust",
+      "name": "Garanties",
+      "settings": []
+    },
+    {
+      "type": "share",
+      "name": "Partager",
+      "limit": 1,
+      "settings": []
+    }
+  ]
+}
+{% endschema %}

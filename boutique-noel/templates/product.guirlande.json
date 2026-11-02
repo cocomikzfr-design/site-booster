@@ -1,0 +1,298 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "subtitle": {
+          "type": "subtitle",
+          "settings": {
+            "text": "Une pluie de lumière qui glisse le long des tubes, comme de la neige qui tombe."
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "highlights": {
+          "type": "highlights",
+          "settings": {
+            "highlight_1": "8 tubes de 30 cm, 192 LED au total",
+            "highlight_2": "Effet lumineux de chute de neige",
+            "highlight_3": "À suspendre à un arbre, une gouttière ou une rambarde",
+            "highlight_4": "Prise européenne [À VÉRIFIER]"
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false
+          }
+        },
+        "delivery": {
+          "type": "delivery",
+          "settings": {}
+        },
+        "countdown": {
+          "type": "countdown",
+          "settings": {}
+        },
+        "pack_cta": {
+          "type": "pack_cta",
+          "settings": {
+            "pack_product": "pack-facade-de-noel",
+            "text": "Avec le projecteur, elle est encore plus belle : découvrez le pack."
+          }
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {}
+        },
+        "shipping": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Livraison et retours",
+            "icon": "truck",
+            "content": "<p>Livraison offerte en France et en Belgique.</p><p>Délai : 7 à 12 jours après la commande. Numéro de suivi envoyé par e-mail.</p><p>Pour recevoir avant Noël, commandez au plus tard le 8 décembre.</p><p>14 jours pour changer d'avis après réception, selon notre politique de remboursement.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "subtitle",
+        "price",
+        "highlights",
+        "variant_picker",
+        "buy_buttons",
+        "delivery",
+        "countdown",
+        "pack_cta",
+        "trust",
+        "shipping"
+      ],
+      "settings": {
+        "gallery_layout": "thumbnails",
+        "enable_zoom": true,
+        "enable_video_looping": true,
+        "show_breadcrumbs": true,
+        "color_scheme": "white",
+        "padding_top": 24,
+        "padding_bottom": 48
+      }
+    },
+    "details": {
+      "type": "product-details",
+      "blocks": {
+        "description": {
+          "type": "tab",
+          "settings": {
+            "title": "Description",
+            "icon": "bulb",
+            "use_description": true
+          }
+        },
+        "contents": {
+          "type": "tab",
+          "settings": {
+            "title": "Contenu du colis",
+            "icon": "gift",
+            "use_description": false,
+            "content": "<ul><li>8 tubes LED de 30 cm reliés entre eux</li><li>1 câble d'alimentation avec prise européenne [À VÉRIFIER]</li><li>Attaches [À VÉRIFIER : incluses ou non]</li></ul>"
+          }
+        },
+        "specs": {
+          "type": "tab",
+          "settings": {
+            "title": "Caractéristiques",
+            "icon": "ruler",
+            "use_description": false,
+            "content": "<ul><li>Nombre de tubes : 8</li><li>Longueur d'un tube : 30 cm</li><li>Nombre de LED : 192</li><li>Alimentation : secteur 220–240 V [À VÉRIFIER : prise européenne]</li><li>Couleur de la lumière : [À VÉRIFIER : blanc froid, blanc chaud ou multicolore selon la variante]</li><li>Indice de protection : [À VÉRIFIER]</li><li>Longueur totale et espacement des tubes : [À VÉRIFIER]</li></ul>"
+          }
+        },
+        "safety": {
+          "type": "tab",
+          "settings": {
+            "title": "Sécurité et utilisation",
+            "icon": "warning",
+            "use_description": false,
+            "content": "<ul><li>Branchez la guirlande uniquement après l'avoir entièrement déroulée et installée.</li><li>Dehors, utilisez une prise extérieure protégée et une rallonge prévue pour l'extérieur.</li><li>N'utilisez pas une guirlande dont un tube ou le câble est abîmé.</li><li>Débranchez-la en cas d'orage et pendant le rangement.</li><li>Ceci n'est pas un jouet.</li><li>Marquage CE : [À VÉRIFIER]</li><li>Fabricant : [À COMPLÉTER]</li><li>Personne responsable dans l'UE : [À COMPLÉTER]</li><li>Fin de vie : point de collecte des équipements électriques.</li></ul>"
+          }
+        }
+      },
+      "block_order": [
+        "description",
+        "contents",
+        "specs",
+        "safety"
+      ],
+      "settings": {
+        "layout": "tabs",
+        "color_scheme": "cream",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "steps": {
+      "type": "how-it-works",
+      "blocks": {
+        "step-1": {
+          "type": "step",
+          "settings": {
+            "icon": "snowflake",
+            "title": "Accrochez",
+            "text": "Suspendez les tubes à une branche, sous une gouttière ou le long d'une rambarde."
+          }
+        },
+        "step-2": {
+          "type": "step",
+          "settings": {
+            "icon": "plug",
+            "title": "Branchez",
+            "text": "Déroulez entièrement la guirlande, puis branchez-la sur une prise protégée."
+          }
+        },
+        "step-3": {
+          "type": "step",
+          "settings": {
+            "icon": "bulb",
+            "title": "Admirez",
+            "text": "La neige lumineuse glisse le long des tubes dès la tombée de la nuit."
+          }
+        }
+      },
+      "block_order": [
+        "step-1",
+        "step-2",
+        "step-3"
+      ],
+      "settings": {
+        "heading": "Installée en 3 étapes",
+        "color_scheme": "night",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "La guirlande résiste-t-elle à la pluie ?",
+            "answer": "<p>[À VÉRIFIER : indice IP]. Utilisez-la de préférence à un endroit abrité et branchez-la sur une prise extérieure protégée.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Peut-on relier plusieurs guirlandes ?",
+            "answer": "<p>[À VÉRIFIER : connecteur de raccordement ou non]</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Quelle couleur choisir ?",
+            "answer": "<p>Le blanc froid rappelle la neige, le blanc chaud donne une ambiance plus douce. [À VÉRIFIER : variantes disponibles]</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Quand vais-je la recevoir ?",
+            "answer": "<p>En 7 à 12 jours. Commandez au plus tard le 8 décembre pour la recevoir avant Noël.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ],
+      "settings": {
+        "heading": "Questions fréquentes",
+        "open_first": false,
+        "color_scheme": "white",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "trust": {
+      "type": "trust-badges",
+      "blocks": {
+        "shipping": {
+          "type": "badge",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "En France et en Belgique"
+          }
+        },
+        "payment": {
+          "type": "badge",
+          "settings": {
+            "icon": "shield",
+            "title": "Paiement sécurisé",
+            "text": "Carte, Bancontact, Apple Pay"
+          }
+        },
+        "returns": {
+          "type": "badge",
+          "settings": {
+            "icon": "return",
+            "title": "14 jours pour changer d'avis",
+            "text": "Rétractation selon nos conditions"
+          }
+        },
+        "support": {
+          "type": "badge",
+          "settings": {
+            "icon": "mail",
+            "title": "Service client",
+            "text": "Réponse sous 24 h ouvrées"
+          }
+        }
+      },
+      "block_order": [
+        "shipping",
+        "payment",
+        "returns",
+        "support"
+      ],
+      "settings": {
+        "color_scheme": "cream",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "upsell": {
+      "type": "product-upsell",
+      "settings": {
+        "heading": "Complétez votre décoration",
+        "products": [
+          "projecteur-de-noel-led",
+          "couronne-de-noel-lumineuse"
+        ],
+        "color_scheme": "white",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "details",
+    "steps",
+    "faq",
+    "trust",
+    "upsell"
+  ]
+}
