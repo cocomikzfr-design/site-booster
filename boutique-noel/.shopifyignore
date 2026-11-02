@@ -1,0 +1,4 @@
+content/**
+README.md
+PROMPT.md
+.gitignore
