@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "settings": {
+        "color_scheme": "white",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    },
+    "deadline": {
+      "type": "delivery-deadline",
+      "settings": {
+        "heading": "Recevez votre commande avant Noël",
+        "use_auto_text": true,
+        "color_scheme": "night-soft",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    }
+  },
+  "order": [
+    "main",
+    "deadline"
+  ]
+}

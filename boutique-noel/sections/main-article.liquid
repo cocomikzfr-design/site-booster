@@ -1,0 +1,105 @@
+{{ 'section-collection.css' | asset_url | stylesheet_tag }}
+
+{%- capture published_date -%}{% render 'format-date', value: article.published_at, show_year: true %}{%- endcapture -%}
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<article class="section main-article section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width page-width--narrow">
+    <header class="main-article__header stack">
+      <p>
+        <a href="{{ blog.url }}" class="main-article__back">
+          {%- render 'icon', icon: 'chevron-left', size: 18 -%}
+          {{ 'blog.back_to_blog' | t }}
+        </a>
+      </p>
+      <h1>{{ article.title | escape }}</h1>
+      <p class="text-muted">
+        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ 'blog.published_on' | t: date: published_date }}</time>
+      </p>
+    </header>
+
+    {%- if article.image -%}
+      <div class="main-article__image">
+        {% render 'responsive-image',
+          image: article.image,
+          sizes: '(min-width: 800px) 760px, 100vw',
+          widths: '540, 720, 900, 1080, 1520',
+          loading: 'eager',
+          fetchpriority: 'high'
+        %}
+      </div>
+    {%- endif -%}
+
+    <div class="rte main-article__content">{{ article.content }}</div>
+
+    {%- if section.settings.products.size > 0 -%}
+      <div class="main-article__products">
+        <h2 class="h3">{{ 'blog.related_products' | t }}</h2>
+        <ul class="grid" role="list" style="--grid-cols-mobile: 2; --grid-cols-tablet: 2; --grid-cols-desktop: 2;">
+          {%- for related_product in section.settings.products -%}
+            <li>
+              {% render 'product-card', product: related_product, section_id: section.id, image_sizes: '(min-width: 800px) 380px, 50vw' %}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
+</article>
+
+{% schema %}
+{
+  "name": "Article",
+  "class": "section-main-article",
+  "settings": [
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Produits liés",
+      "info": "Facultatif : produits présentés en fin d'article.",
+      "limit": 4
+    },
+    {
+      "type": "paragraph",
+      "content": "Les commentaires sont désactivés."
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "cream"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ]
+}
+{% endschema %}

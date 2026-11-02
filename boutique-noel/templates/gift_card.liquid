@@ -1,0 +1,76 @@
+{% layout none %}
+{%- liquid
+  assign balance = gift_card.balance | money
+  assign initial_value = gift_card.initial_value | money
+-%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="{{ settings.color_night }}">
+    <title>{{ 'gift_card.title' | t }} – {{ shop.name }}</title>
+
+    {{ content_for_header }}
+
+    {% render 'css-variables' %}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'components.css' | asset_url | stylesheet_tag }}
+
+    <script>document.documentElement.classList.replace('no-js', 'js');</script>
+    <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  </head>
+
+  <body class="template-gift-card scheme-night">
+    <main id="MainContent" class="gift-card page-width page-width--narrow">
+      <div class="gift-card__card stack">
+        <p class="gift-card__shop">
+          {%- render 'icon', icon: 'gift', size: 28 -%}
+          <span>{{ shop.name | escape }}</span>
+        </p>
+        <h1>{{ 'gift_card.title' | t }}</h1>
+
+        {%- if gift_card.expired -%}
+          <p class="form-message form-message--error">{{ 'gift_card.expired' | t }}</p>
+        {%- elsif gift_card.enabled == false -%}
+          <p class="form-message form-message--error">{{ 'gift_card.disabled' | t }}</p>
+        {%- endif -%}
+
+        <p class="gift-card__balance">{{ 'gift_card.balance' | t: value: balance }}</p>
+        {%- if gift_card.balance != gift_card.initial_value -%}
+          <p class="text-muted">{{ 'gift_card.initial_value' | t: value: initial_value }}</p>
+        {%- endif -%}
+        {%- if gift_card.expires_on -%}
+          {%- capture expiry_date -%}{% render 'format-date', value: gift_card.expires_on, show_year: true %}{%- endcapture -%}
+          <p class="text-muted">{{ 'gift_card.expires_on' | t: date: expiry_date }}</p>
+        {%- endif -%}
+
+        <div class="field">
+          <label for="GiftCardCode" class="field__label">{{ 'gift_card.code' | t }}</label>
+          <div class="gift-card__code-row">
+            <input type="text" id="GiftCardCode" class="field__input gift-card__code" value="{{ gift_card.code | format_code }}" readonly>
+            <button type="button" class="button button--secondary" data-copy-text="{{ gift_card.code | escape }}" data-copied-label="{{ 'gift_card.copied' | t }}">
+              {{- 'gift_card.copy' | t -}}
+            </button>
+          </div>
+        </div>
+
+        {%- if gift_card.qr_identifier != blank -%}
+          <div class="gift-card__qr" data-qr-identifier="{{ gift_card.qr_identifier | escape }}" role="img" aria-label="{{ 'gift_card.qr_label' | t }}"></div>
+        {%- endif -%}
+
+        <div class="gift-card__actions">
+          <a href="{{ routes.root_url }}" class="button button--primary">{{ 'gift_card.use_online' | t }}</a>
+          <button type="button" class="button button--secondary" data-print>{{ 'gift_card.print' | t }}</button>
+          {%- if gift_card.pass_url -%}
+            <a href="{{ gift_card.pass_url }}" class="button button--ghost">{{ 'gift_card.apple_wallet' | t }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    </main>
+
+    <div class="toast" role="status" aria-live="polite" hidden></div>
+  </body>
+</html>

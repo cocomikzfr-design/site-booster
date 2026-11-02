@@ -1,0 +1,74 @@
+{%- assign suggestions = collections['noel'] -%}
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div class="section section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <div class="not-found stack">
+      {%- render 'icon', icon: 'snowflake', size: 48 -%}
+      <h1>{{ 'not_found.title' | t }}</h1>
+      <p class="text-muted">{{ 'not_found.text' | t }}</p>
+      <p><a href="{{ routes.root_url }}" class="button button--primary">{{ 'general.back_to_home' | t }}</a></p>
+    </div>
+
+    {%- if suggestions.products_count > 0 -%}
+      <div class="not-found__products">
+        <div class="section__header section__header--center">
+          <h2>{{ 'not_found.products_heading' | t }}</h2>
+        </div>
+        <ul class="grid" role="list" style="--grid-cols-mobile: 2; --grid-cols-tablet: 3; --grid-cols-desktop: 3;">
+          {%- for product in suggestions.products limit: 3 -%}
+            <li>
+              {% render 'product-card', product: product, section_id: section.id, image_sizes: '(min-width: 750px) 33vw, 50vw' %}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page introuvable",
+  "class": "section-main-404",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "cream"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 96
+    }
+  ]
+}
+{% endschema %}

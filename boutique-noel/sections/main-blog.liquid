@@ -1,0 +1,89 @@
+{{ 'section-collection.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+{%- paginate blog.articles by 6 -%}
+  <div class="section main-blog section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+    <div class="page-width">
+      <div class="section__header section__header--center">
+        <h1>{{ blog.title | escape }}</h1>
+      </div>
+
+      {%- if blog.articles.size > 0 -%}
+        <ul class="grid" role="list" style="--grid-cols-mobile: 1; --grid-cols-tablet: 2; --grid-cols-desktop: 3;">
+          {%- for article in blog.articles -%}
+            {%- capture published_date -%}{% render 'format-date', value: article.published_at, show_year: true %}{%- endcapture -%}
+            <li class="reveal">
+              <article class="card article-card">
+                {%- if article.image -%}
+                  <a href="{{ article.url }}" class="card__media card__media--landscape" tabindex="-1" aria-hidden="true">
+                    {% render 'responsive-image', image: article.image, sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw', widths: '360, 540, 720, 900', decorative: true %}
+                  </a>
+                {%- endif -%}
+                <div class="card__body">
+                  <h2 class="card__title h4"><a href="{{ article.url }}" class="card__link">{{ article.title | escape }}</a></h2>
+                  <p class="article-card__date text-muted">
+                    <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ 'blog.published_on' | t: date: published_date }}</time>
+                  </p>
+                  <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+                  <p class="card__cta">
+                    <a href="{{ article.url }}" class="article-card__more" tabindex="-1" aria-hidden="true">{{ 'blog.read_more' | t }}</a>
+                  </p>
+                </div>
+              </article>
+            </li>
+          {%- endfor -%}
+        </ul>
+        {% render 'pagination', paginate: paginate %}
+      {%- else -%}
+        <p class="text-center text-muted">{{ 'blog.empty' | t }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Blog",
+  "class": "section-main-blog",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "cream"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ]
+}
+{% endschema %}

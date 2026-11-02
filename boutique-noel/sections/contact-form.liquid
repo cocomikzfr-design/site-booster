@@ -1,0 +1,178 @@
+{%- liquid
+  assign required_text = 'general.required' | t
+-%}
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div class="section contact section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width contact__grid">
+    <div class="contact__intro stack">
+      {%- if section.settings.heading != blank -%}
+        <h2>{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+      <ul class="contact__details" role="list">
+        <li class="contact__detail">
+          {%- render 'icon', icon: 'mail', size: 20 -%}
+          {%- if settings.support_email != blank -%}
+            <a href="mailto:{{ settings.support_email | escape }}">{{ settings.support_email | escape }}</a>
+          {%- else -%}
+            <span>{{ 'contact.email_missing' | t }}</span>
+          {%- endif -%}
+        </li>
+        {%- if settings.support_hours != blank -%}
+          <li class="contact__detail">
+            {%- render 'icon', icon: 'clock', size: 20 -%}
+            <span>{{ settings.support_hours | escape }}</span>
+          </li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+    {%- form 'contact', id: 'ContactForm', class: 'contact__form stack' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-message form-message--success" role="status">
+          {%- render 'icon', icon: 'check', size: 20 -%}
+          {{ 'contact.success' | t }}
+        </p>
+      {%- elsif form.errors -%}
+        <p class="form-message form-message--error" role="alert">{{ 'contact.error' | t }}</p>
+      {%- endif -%}
+
+      <div class="field">
+        <label for="ContactName" class="field__label">{{ 'contact.name' | t }}</label>
+        <input type="text" id="ContactName" name="contact[name]" class="field__input" autocomplete="name" value="{{ form.name | escape }}">
+      </div>
+
+      <div class="field{% if form.errors contains 'email' %} field--error{% endif %}">
+        <label for="ContactEmail" class="field__label">
+          {{- 'contact.email' | t }} <span class="field__required">({{ required_text }})</span>
+        </label>
+        <input
+          type="email"
+          id="ContactEmail"
+          name="contact[email]"
+          class="field__input"
+          autocomplete="email"
+          value="{{ form.email | escape }}"
+          required
+          aria-required="true"
+          {% if form.errors contains 'email' %}
+            aria-invalid="true" aria-describedby="ContactEmailError"
+          {% endif %}
+        >
+        {%- if form.errors contains 'email' -%}
+          <p id="ContactEmailError" class="field__error">
+            {{- form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email -}}
+          </p>
+        {%- endif -%}
+      </div>
+
+      <div class="field">
+        <label for="ContactPhone" class="field__label">{{ 'contact.phone' | t }}</label>
+        <input type="tel" id="ContactPhone" name="contact[phone]" class="field__input" autocomplete="tel" value="{{ form.phone | escape }}">
+      </div>
+
+      <div class="field">
+        <label for="ContactOrder" class="field__label">{{ 'contact.order_number' | t }}</label>
+        <input type="text" id="ContactOrder" name="contact[order]" class="field__input" autocomplete="off">
+      </div>
+
+      <div class="field{% if form.errors contains 'body' %} field--error{% endif %}">
+        <label for="ContactBody" class="field__label">
+          {{- 'contact.message' | t }} <span class="field__required">({{ required_text }})</span>
+        </label>
+        <textarea
+          id="ContactBody"
+          name="contact[body]"
+          class="field__textarea"
+          rows="6"
+          required
+          aria-required="true"
+          {% if form.errors contains 'body' %}
+            aria-invalid="true" aria-describedby="ContactBodyError"
+          {% endif %}
+        >
+          {{- form.body -}}
+        </textarea>
+        {%- if form.errors contains 'body' -%}
+          <p id="ContactBodyError" class="field__error">
+            {{- form.errors.translated_fields.body | capitalize }} {{ form.errors.messages.body -}}
+          </p>
+        {%- endif -%}
+      </div>
+
+      <p>
+        <button type="submit" class="button button--primary">{{ 'contact.send' | t }}</button>
+      </p>
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Formulaire de contact",
+  "class": "section-contact-form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Écrivez-nous"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texte",
+      "default": "<p>Une question sur une commande ou un produit ? Écrivez-nous, nous répondons sous 24 h ouvrées.</p>"
+    },
+    {
+      "type": "paragraph",
+      "content": "L'e-mail et le délai de réponse affichés se règlent dans Paramètres du thème > Service client. Les messages arrivent sur l'e-mail de la boutique."
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "Formulaire de contact"
+    }
+  ]
+}
+{% endschema %}

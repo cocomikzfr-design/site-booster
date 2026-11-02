@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-article",
+      "settings": {
+        "color_scheme": "cream",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    },
+    "products": {
+      "type": "product-grid",
+      "settings": {
+        "heading": "Nos décorations lumineuses",
+        "collection": "noel",
+        "products_to_show": 3,
+        "columns_desktop": 3,
+        "columns_mobile": "2",
+        "show_view_all": true,
+        "highlight_product": "pack-facade-de-noel",
+        "color_scheme": "white",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "products"
+  ]
+}

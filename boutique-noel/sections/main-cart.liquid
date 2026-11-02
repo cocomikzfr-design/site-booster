@@ -1,0 +1,111 @@
+{{ 'section-cart.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign shop_collection = collections['noel']
+  assign shop_url = routes.all_products_collection_url
+  if shop_collection.products_count > 0
+    assign shop_url = shop_collection.url
+  endif
+-%}
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div class="section main-cart section-{{ section.id }} scheme-{{ section.settings.color_scheme }}" data-main-cart data-section-id="{{ section.id }}">
+  <div class="page-width" data-cart-inner>
+    <h1 class="main-cart__title">
+      {{ 'cart.title' | t }}
+      {%- if cart.item_count > 0 %}
+        <span class="drawer__count">({{ 'cart.items' | t: count: cart.item_count }})</span>
+      {%- endif -%}
+    </h1>
+
+    {%- if cart.item_count > 0 -%}
+      <div class="main-cart__grid">
+        <div class="main-cart__items">
+          <form action="{{ routes.cart_url }}" method="post" id="CartForm" novalidate>
+            <ul class="cart-items" role="list" data-cart-items>
+              {%- for item in cart.items -%}
+                {% render 'cart-item', item: item, index: forloop.index, context: 'page' %}
+              {%- endfor -%}
+            </ul>
+            <noscript>
+              <button type="submit" name="update" class="button button--secondary main-cart__update">{{ 'cart.update' | t }}</button>
+            </noscript>
+          </form>
+          {% render 'cart-upsell', context: 'page' %}
+        </div>
+
+        <aside class="main-cart__summary">
+          {% render 'cart-summary', context: 'page', form_id: 'CartForm' %}
+        </aside>
+      </div>
+    {%- else -%}
+      <div class="main-cart__empty">
+        <p class="h4">{{ 'cart.empty' | t }}</p>
+        <a href="{{ shop_url }}" class="button button--primary">{{ 'cart.empty_cta' | t }}</a>
+
+        {%- if shop_collection.products_count > 0 -%}
+          <div class="main-cart__empty-grid stack">
+            <h2 class="h3 text-center">{{ 'cart.empty_suggestions' | t }}</h2>
+            <ul class="grid" role="list" style="--grid-cols-mobile: 2; --grid-cols-tablet: 3; --grid-cols-desktop: 3;">
+              {%- for product in shop_collection.products limit: 3 -%}
+                <li>
+                  {% render 'product-card', product: product, section_id: section.id, image_sizes: '(min-width: 750px) 33vw, 50vw' %}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Panier",
+  "class": "section-main-cart",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Suggestion de produit, note de commande et rappel de rétractation : Paramètres du thème > Panier."
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,185 @@
+{{ 'section-collection.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign cols_desktop = section.settings.columns_desktop
+  assign cols_mobile = section.settings.columns_mobile | plus: 0
+  assign sort_value = collection.sort_by | default: collection.default_sort_by
+  assign pack = settings.pack_product
+  assign most_chosen = 'products.most_chosen' | t
+  assign card_sizes = '(min-width: 990px) calc((min(100vw, 1280px) - 80px) / ' | append: cols_desktop | append: '), (min-width: 750px) calc((100vw - 72px) / 2), calc((100vw - 48px) / ' | append: cols_mobile | append: ')'
+  assign show_image = false
+  if section.settings.show_banner and collection.image != blank
+    assign show_image = true
+  endif
+-%}
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+{%- paginate collection.products by section.settings.products_per_page -%}
+  <div class="section main-collection section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+    <div class="page-width">
+      {% render 'breadcrumbs' %}
+
+      <div class="collection-banner{% if show_image %} collection-banner--image{% endif %}">
+        <div class="collection-banner__text stack">
+          <h1>{{ collection.title | escape }}</h1>
+          {%- if section.settings.show_description and collection.description != blank -%}
+            <div class="rte collection-banner__description">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+        {%- if show_image -%}
+          <div class="collection-banner__media">
+            {% render 'responsive-image',
+              image: collection.image,
+              sizes: '(min-width: 990px) 40vw, 100vw',
+              widths: '540, 720, 900, 1080, 1296',
+              loading: 'eager',
+              fetchpriority: 'high'
+            %}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="collection-toolbar">
+        <p class="collection-toolbar__count text-muted">{{ 'collection.products_count' | t: count: collection.products_count }}</p>
+        {%- comment -%}
+          Filtres : le catalogue ne compte que quelques produits. Pour en ajouter plus tard,
+          insérer ici un formulaire qui parcourt collection.filters.
+        {%- endcomment -%}
+        {%- if section.settings.show_sort and collection.products_count > 1 -%}
+          <form class="collection-sort" method="get" data-sort-form>
+            <label for="SortBy-{{ section.id }}" class="collection-sort__label">{{ 'collection.sort_by' | t }}</label>
+            <select id="SortBy-{{ section.id }}" name="sort_by" class="field__select collection-sort__select" data-sort-select>
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value | escape }}"{% if option.value == sort_value %} selected{% endif %}>{{ option.name | escape }}</option>
+              {%- endfor -%}
+            </select>
+            <noscript>
+              <button type="submit" class="button button--secondary button--small">{{ 'collection.apply' | t }}</button>
+            </noscript>
+          </form>
+        {%- endif -%}
+      </div>
+
+      {%- if collection.products.size > 0 -%}
+        <ul class="grid collection-grid" role="list" style="--grid-cols-mobile: {{ cols_mobile }}; --grid-cols-tablet: 2; --grid-cols-desktop: {{ cols_desktop }};">
+          {%- for product in collection.products -%}
+            {%- liquid
+              assign badge = ''
+              if pack != blank and product.id == pack.id
+                assign badge = most_chosen
+              endif
+            -%}
+            <li class="reveal">
+              {% render 'product-card',
+                product: product,
+                section_id: section.id,
+                badge_text: badge,
+                show_badge: true,
+                heading_level: 'h2',
+                image_sizes: card_sizes
+              %}
+            </li>
+          {%- endfor -%}
+        </ul>
+        {% render 'pagination', paginate: paginate %}
+      {%- else -%}
+        <div class="collection-empty stack">
+          <p>{{ 'collection.empty' | t }}</p>
+          <p><a href="{{ routes.root_url }}" class="button button--secondary">{{ 'general.back_to_home' | t }}</a></p>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "class": "section-main-collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Produits par page",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Colonnes sur ordinateur",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Colonnes sur mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Afficher la description de la collection",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Afficher le tri",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_banner",
+      "label": "Afficher l'image de la collection",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ]
+}
+{% endschema %}

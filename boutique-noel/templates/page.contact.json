@@ -1,0 +1,81 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "color_scheme": "cream",
+        "padding_top": 64,
+        "padding_bottom": 32
+      }
+    },
+    "form": {
+      "type": "contact-form",
+      "settings": {
+        "heading": "Écrivez-nous",
+        "text": "<p>Une question sur une commande ou un produit ? Écrivez-nous, nous répondons sous 24 h ouvrées.</p>",
+        "color_scheme": "white",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Quand vais-je recevoir ma commande ?",
+            "answer": "<p>Comptez 7 à 12 jours après votre commande. Vous recevez un numéro de suivi par e-mail dès l'expédition.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Ma commande peut-elle arriver en plusieurs colis ?",
+            "answer": "<p>Oui, si elle contient des produits de fournisseurs différents. Chaque colis a son propre numéro de suivi.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Mon colis est en retard ou n'est jamais arrivé : que faire ?",
+            "answer": "<p>Écrivez-nous avec votre numéro de commande. Nous trouvons une solution : renvoi ou remboursement.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Comment retourner un produit ?",
+            "answer": "<p>Vous disposez de 14 jours après réception pour changer d'avis. Écrivez-nous avec votre numéro de commande ; les conditions sont détaillées dans notre politique de remboursement.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Mon produit est arrivé abîmé : que faire ?",
+            "answer": "<p>Envoyez-nous une photo avec votre numéro de commande. Nous vous remboursons ou vous renvoyons un produit, sans frais.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "heading": "Livraison et retours",
+        "open_first": false,
+        "color_scheme": "white",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "form",
+    "faq"
+  ]
+}

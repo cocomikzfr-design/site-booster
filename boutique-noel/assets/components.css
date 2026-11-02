@@ -1852,3 +1852,76 @@ a.pagination__item:hover {
   text-align: left;
   --stack-gap: var(--space-3);
 }
+
+/* Carte cadeau */
+
+.gift-card {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding-block: var(--space-7);
+}
+
+.gift-card__card {
+  width: 100%;
+  padding: var(--space-6);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
+  border-radius: var(--radius-lg);
+  background: var(--color-night-soft);
+  box-shadow: var(--shadow-glow);
+}
+
+.gift-card__shop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-gold);
+  font-family: var(--font-heading-family);
+  font-size: var(--fs-h4);
+}
+
+.gift-card__balance {
+  font-family: var(--font-heading-family);
+  font-size: var(--fs-h2);
+}
+
+.gift-card__code-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.gift-card__code {
+  flex: 1;
+  min-width: 200px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.gift-card__qr {
+  width: fit-content;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.gift-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+@media print {
+  .gift-card__actions,
+  .gift-card__code-row .button,
+  .toast {
+    display: none !important;
+  }
+
+  .template-gift-card,
+  .gift-card__card {
+    background: var(--color-surface);
+    color: var(--color-text-dark);
+    box-shadow: none;
+  }
+}
