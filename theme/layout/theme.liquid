@@ -1,0 +1,191 @@
+<!doctype html>
+{%- comment -%}
+  Gabarit global du thème « La Galerie ».
+  Ordre du head : meta, polices préchargées, couleurs des réglages, CSS, scripts inline (classes js / mouvement réduit),
+  carte d'import des modules ES, content_for_header, modules communs.
+{%- endcomment -%}
+<html class="no-js{% if request.design_mode %} design-mode{% endif %}" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="{{ settings.color_vault }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+    {%- endif -%}
+
+    {%- render 'meta-tags' -%}
+
+    {{ 'fraunces-roman.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {{ 'inter-tight-600.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+
+    <style>
+      /* Polices auto-hébergées (licence OFL). Les @font-face sont ici car asset_url ne fonctionne pas dans un .css. */
+      @font-face { font-family: "Fraunces"; src: url({{ 'fraunces-roman.woff2' | asset_url }}) format("woff2"); font-weight: 300 600; font-style: normal; font-display: swap; }
+      @font-face { font-family: "Fraunces"; src: url({{ 'fraunces-italic.woff2' | asset_url }}) format("woff2"); font-weight: 300 500; font-style: italic; font-display: swap; }
+      @font-face { font-family: "Inter Tight"; src: url({{ 'inter-tight-500.woff2' | asset_url }}) format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+      @font-face { font-family: "Inter Tight"; src: url({{ 'inter-tight-600.woff2' | asset_url }}) format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+      @font-face { font-family: "JetBrains Mono"; src: url({{ 'jetbrains-mono-500.woff2' | asset_url }}) format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+
+      /* Couleurs principales issues des réglages du thème */
+      :root {
+        --vault: {{ settings.color_vault }};
+        --vault-2: {{ settings.color_vault_2 }};
+        --glass: {{ settings.color_glass }};
+        --paper: {{ settings.color_paper }};
+        --ink: {{ settings.color_ink }};
+        --brass: {{ settings.color_brass }};
+        --brass-deep: {{ settings.color_brass_deep }};
+        --slate: {{ settings.color_slate }};
+        --signal: {{ settings.color_signal }};
+      }
+      {%- if settings.anim_transitions -%}
+        @media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }
+      {%- endif -%}
+    </style>
+
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+    <script>
+      /* Classes posées avant le premier rendu : js, mouvement réduit, apparitions, écran d'ouverture */
+      (function () {
+        var d = document.documentElement;
+        d.classList.remove('no-js');
+        d.classList.add('js');
+        var rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (rm) d.classList.add('reduce-motion');
+        {%- unless request.design_mode -%}
+          {%- if settings.anim_reveal -%}
+            if (!rm) d.classList.add('rv');
+          {%- endif -%}
+          {%- if settings.anim_opening -%}
+            try { if (!rm && !sessionStorage.getItem('galerie:opened')) d.classList.add('is-opening'); } catch (e) {}
+          {%- endif -%}
+        {%- endunless -%}
+        /* Filets de sécurité : si les modules ne chargent pas, le contenu redevient visible */
+        setTimeout(function () {
+          if (!window.__reveal) d.classList.remove('rv');
+          if (!window.__opening) d.classList.remove('is-opening');
+        }, 2500);
+        /* Promesse résolue quand la transition de page (View Transitions) est terminée */
+        window.__pageReady = new Promise(function (res) {
+          if (!('onpagereveal' in window)) return res();
+          window.addEventListener('pagereveal', function (e) {
+            if (e.viewTransition) e.viewTransition.finished.then(res, res); else res();
+          }, { once: true });
+          setTimeout(res, 1600);
+        });
+      })();
+      window.theme = {
+        routes: {
+          root: {{ routes.root_url | json }},
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartChange: {{ routes.cart_change_url | json }},
+          cartUpdate: {{ routes.cart_update_url | json }},
+          search: {{ routes.search_url | json }},
+          predictive: {{ routes.predictive_search_url | json }},
+          recos: {{ routes.product_recommendations_url | json }}
+        },
+        cartType: {{ settings.cart_type | json }},
+        anim: {
+          cursor: {{ settings.anim_cursor | json }},
+          transitions: {{ settings.anim_transitions | json }},
+          magnetic: {{ settings.anim_magnetic | json }}
+        },
+        designMode: {{ request.design_mode | json }},
+        strings: {
+          close: {{ 'general.close' | t | json }},
+          added: {{ 'products.added' | t: title: '[title]' | json }},
+          error: {{ 'general.error' | t | json }},
+          cartCount: {{ 'cart.count_announce' | t: count: '[count]' | json }},
+          copied: {{ 'products.link_copied' | t | json }},
+          from: {{ 'general.from' | t | json }},
+          soldOut: {{ 'general.sold_out' | t | json }},
+          see: {{ 'general.see' | t | json }},
+          pause: {{ 'vitrine.pause' | t | json }},
+          play: {{ 'vitrine.play' | t | json }},
+          searchEmpty: {{ 'search.no_results' | t: terms: '[terms]' | json }},
+          searchProducts: {{ 'search.products' | t | json }},
+          searchCollections: {{ 'search.collections' | t | json }},
+          searchPages: {{ 'search.pages' | t | json }},
+          searchSuggestions: {{ 'search.suggestions' | t | json }},
+          searchAll: {{ 'search.see_all' | t: terms: '[terms]' | json }},
+          unavailable: {{ 'products.unavailable' | t | json }},
+          addToCart: {{ 'products.add_to_cart' | t | json }},
+          deliveryRange: {{ 'products.delivery_range' | t: from: '[from]', to: '[to]' | json }},
+          resultsCount: {{ 'collections.results_announce' | t: count: '[count]' | json }}
+        }
+      };
+    </script>
+
+    {%- comment -%} Carte d'import : chaque module est importé par son nom, avec son URL versionnée. {%- endcomment -%}
+    <script type="importmap">
+      {
+        "imports": {
+          "motion-core": {{ 'motion-core.js' | asset_url | json }},
+          "ui": {{ 'ui.js' | asset_url | json }},
+          "masked-text": {{ 'masked-text.js' | asset_url | json }},
+          "chips": {{ 'chips.js' | asset_url | json }},
+          "dust": {{ 'dust.js' | asset_url | json }},
+          "price-tag": {{ 'price-tag.js' | asset_url | json }},
+          "page-transitions": {{ 'page-transitions.js' | asset_url | json }},
+          "predictive-search": {{ 'predictive-search.js' | asset_url | json }}
+        }
+      }
+    </script>
+    <link rel="modulepreload" href="{{ 'motion-core.js' | asset_url }}">
+
+    {{ content_for_header }}
+
+    <script type="module" src="{{ 'motion-core.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'page-transitions.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'reveal.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'header.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'cart-drawer.js' | asset_url }}"></script>
+    {%- if settings.anim_cursor -%}
+      <script type="module" src="{{ 'cursor.js' | asset_url }}"></script>
+    {%- endif -%}
+  </head>
+
+  <body class="tpl-{{ template.name }}{% if template.suffix != blank %} tpl-{{ template.name }}--{{ template.suffix | handle }}{% endif %}">
+    <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {% section 'cart-drawer' %}
+    {%- endif -%}
+
+    {%- if settings.anim_cursor -%}
+      {% render 'cursor' %}
+    {%- endif -%}
+
+    <div id="a11y-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+    <div id="sheet-transition" aria-hidden="true"></div>
+
+    {%- if settings.anim_opening and request.design_mode == false -%}
+      {%- comment -%} Écran d'ouverture : cadran de coffre puis deux moitiés qui s'écartent. {%- endcomment -%}
+      <div class="opening" aria-hidden="true">
+        {%- for half in (1..2) -%}
+          <div class="opening__half opening__half--{% if half == 1 %}top{% else %}bottom{% endif %}">
+            <svg class="opening__dial" viewBox="0 0 200 200" width="200" height="200" focusable="false">
+              <circle cx="100" cy="100" r="86" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="100" cy="100" r="62" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 7.74"/>
+              <circle cx="100" cy="100" r="18" fill="currentColor"/>
+              <path d="M100 14v20M186 100h-20M100 186v-20M14 100h20" stroke="currentColor" stroke-width="2"/>
+              <path d="M100 82v-40" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </body>
+</html>

@@ -1,0 +1,32 @@
+{%- comment -%}
+  Image responsive : srcset + sizes + dimensions (pas de décalage de mise en page).
+  Paramètres : image (requis), widths ('360,540,720,900,1200'), sizes, class, alt, loading ('lazy'|'eager'),
+  fetchpriority ('high'), attrs (attributs bruts supplémentaires, ex. 'data-vt-media').
+{%- endcomment -%}
+{%- liquid
+  assign w_list = widths | default: '360,540,720,900,1200' | split: ','
+  assign img_alt = alt | default: image.alt | escape
+  assign img_loading = loading | default: 'lazy'
+  assign img_sizes = sizes | default: '100vw'
+  assign src_w = 720
+  if image.width < src_w
+    assign src_w = image.width
+  endif
+-%}
+{%- capture srcset -%}
+  {%- for w in w_list -%}
+    {%- assign wn = w | plus: 0 -%}
+    {%- if wn <= image.width -%}{{ image | image_url: width: wn }} {{ wn }}w,{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+<img
+  src="{{ image | image_url: width: src_w }}"
+  {% if srcset != blank %}srcset="{{ srcset | remove_last: ',' }}" sizes="{{ img_sizes }}"{% endif %}
+  width="{{ image.width }}" height="{{ image.height }}"
+  alt="{{ img_alt }}"
+  loading="{{ img_loading }}"
+  decoding="async"
+  {% if fetchpriority %}fetchpriority="{{ fetchpriority }}"{% endif %}
+  {% if class %}class="{{ class }}"{% endif %}
+  {{ attrs }}
+>

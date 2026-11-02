@@ -1,0 +1,3 @@
+# Configuration de shopify theme check
+ignore:
+  - docs/**

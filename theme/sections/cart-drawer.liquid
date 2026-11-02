@@ -1,0 +1,18 @@
+{%- comment -%}
+  Tiroir panier (salle) : entrée par clip-path depuis la droite, voile sombre, focus piégé, Échap.
+  Son contenu [data-cart-root] est rendu à nouveau par la Section Rendering API après chaque modification.
+{%- endcomment -%}
+{{ 'cart.css' | asset_url | stylesheet_tag }}
+<div id="CartDrawer" class="drawer" data-cart-drawer hidden>
+  <div class="drawer__scrim" data-cart-close></div>
+  <div class="drawer__panel world-dark" role="dialog" aria-modal="true" aria-labelledby="CartTitle-drawer">
+    {%- render 'cart-contents', context: 'drawer', section_id: section.id -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tiroir panier",
+  "settings": []
+}
+{% endschema %}

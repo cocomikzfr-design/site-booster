@@ -1,0 +1,17 @@
+{
+  "type": "footer",
+  "name": "Pied de page",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "title_shop": "Boutique",
+        "menu_shop": "main-menu",
+        "title_help": "Aide",
+        "menu_help": "footer",
+        "show_newsletter": true
+      }
+    }
+  },
+  "order": ["footer"]
+}

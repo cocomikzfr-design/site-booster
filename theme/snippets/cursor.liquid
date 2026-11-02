@@ -1,0 +1,9 @@
+{%- comment -%} Curseur sur mesure (pointeur fin uniquement, activé par cursor.js). {%- endcomment -%}
+<div class="cursor" aria-hidden="true">
+  <div class="cursor__pos">
+    <div class="cursor__ring">
+      <span class="cursor__label"><span data-cursor-text>{{ 'general.see' | t }}</span>{% render 'icon', icon: 'star4' %}</span>
+    </div>
+    <div class="cursor__dot"></div>
+  </div>
+</div>

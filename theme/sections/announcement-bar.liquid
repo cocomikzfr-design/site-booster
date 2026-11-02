@@ -1,0 +1,52 @@
+{%- comment -%}
+  Bandeau d'annonce : les messages défilent verticalement dans un masque toutes les 5 s
+  (pause au survol, au focus et via le bouton ; aucune rotation en mouvement réduit).
+{%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+  <div class="announce" data-announce {{ section.shopify_attributes }}>
+    <div class="announce__in wrap">
+      <div class="announce__track" aria-live="off">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}" class="announce__msg lbl" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</a>
+          {%- else -%}
+            <p class="announce__msg lbl" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- if section.blocks.size > 1 -%}
+        <button type="button" class="announce__pause" data-announce-pause aria-pressed="false" aria-label="{{ 'general.pause_messages' | t }}">
+          {%- render 'icon', icon: 'pause' -%}
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bandeau d'annonce",
+  "class": "announce-section",
+  "enabled_on": { "groups": ["header"] },
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "default": "LIVRAISON OFFERTE DÈS 39 € EN FRANCE ET EN BELGIQUE" },
+        { "type": "url", "id": "link", "label": "Lien" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bandeau d'annonce",
+      "blocks": [
+        { "type": "message", "settings": { "text": "LIVRAISON OFFERTE DÈS 39 € EN FRANCE ET EN BELGIQUE" } },
+        { "type": "message", "settings": { "text": "RETOURS 14 JOURS · PAIEMENT SÉCURISÉ" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

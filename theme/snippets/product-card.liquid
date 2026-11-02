@@ -1,0 +1,50 @@
+{%- comment -%}
+  Carte produit. Paramètres : product, index (pour le décalage d'apparition), sizes, loading, reveal (bool).
+  Toute la carte est un lien (lien étiré) ; le bouton d'ajout rapide est séparé (pas de lien imbriqué).
+  Badges uniquement vrais : Épuisé, Nouveau (tag « nouveau »), Kit (type « Kit »).
+{%- endcomment -%}
+{%- liquid
+  assign p = product
+  assign img = p.featured_media.preview_image
+  assign img2 = p.media[1].preview_image
+  assign card_sizes = sizes | default: '(min-width: 1100px) 22vw, (min-width: 768px) 30vw, 46vw'
+  assign line = p.metafields.custom.ligne_vitrine.value | default: p.metafields.custom.compatibilite.value
+  assign variant = p.selected_or_first_available_variant
+-%}
+<article class="card" data-cursor="view"{% if reveal %} data-reveal="clip-up" style="--i:{{ index | default: 0 | modulo: 4 }}"{% endif %}>
+  <div class="card__media">
+    <span class="socle-mini" aria-hidden="true"></span>
+    <div class="card__lift">
+      {%- if img -%}
+        {%- render 'responsive-image', image: img, widths: '300,450,600,800', sizes: card_sizes, loading: loading, alt: p.title, attrs: 'data-vt-media' -%}
+        {%- if img2 -%}
+          {%- render 'responsive-image', image: img2, widths: '300,450,600,800', sizes: card_sizes, alt: '', class: 'card__img2' -%}
+        {%- endif -%}
+      {%- else -%}
+        <img src="{{ 'placeholder-case.svg' | asset_url }}" alt="" width="400" height="500" loading="lazy" data-vt-media>
+      {%- endif -%}
+    </div>
+    <ul class="card__badges" role="list">
+      {%- unless p.available -%}<li class="box box--sold">{{ 'general.sold_out' | t }}</li>{%- endunless -%}
+      {%- if p.tags contains 'nouveau' -%}<li class="box">{{ 'general.new' | t }}</li>{%- endif -%}
+      {%- if p.type == 'Kit' -%}<li class="box box--brass">{{ 'general.kit' | t }}</li>{%- endif -%}
+    </ul>
+    {%- if p.available -%}
+      <div class="card__quick">
+        {%- if p.has_only_default_variant or p.variants.size == 1 -%}
+          {%- form 'product', p, class: 'card__form', data-product-form: '' -%}
+            <input type="hidden" name="id" value="{{ variant.id }}">
+            <button type="submit" class="card__qbtn" aria-label="{{ 'products.quick_add_label' | t: title: p.title | escape }}">{{ 'products.quick_add' | t }}</button>
+          {%- endform -%}
+        {%- else -%}
+          <a href="{{ p.url }}" class="card__qbtn" tabindex="-1" aria-hidden="true">{{ 'products.choose' | t }}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+  <div class="card__info">
+    <h3 class="card__title"><a href="{{ p.url }}" class="card__link">{{ p.title | escape }}</a></h3>
+    {%- if line != blank -%}<p class="card__line lbl">{{ line | escape }}</p>{%- endif -%}
+    {%- render 'price', product: p -%}
+  </div>
+</article>

@@ -1,0 +1,253 @@
+{
+  "general": {
+    "close": "Fermer",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "previous_product": "Produit précédent",
+    "next_product": "Produit suivant",
+    "pause": "Pause",
+    "see": "Voir",
+    "sold_out": "Épuisé",
+    "new": "Nouveau",
+    "kit": "Kit",
+    "number": "N°",
+    "from": "Dès",
+    "error": "Une erreur est survenue. Réessaie dans un instant.",
+    "pause_messages": "Mettre en pause les messages",
+    "payment_methods": "Moyens de paiement acceptés",
+    "back_home": "Retour à la vitrine",
+    "loading": "Chargement…",
+    "meta": {
+      "home_title": "{{ brand }} : boîtiers acryliques et classeurs pour cartes à collectionner",
+      "page": "Page {{ page }}"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Aller au contenu",
+    "breadcrumb": "Fil d'Ariane",
+    "home": "Accueil",
+    "new_window": "S'ouvre dans une nouvelle fenêtre",
+    "pagination": "Pagination",
+    "page": "Page {{ page }}",
+    "image_of": "Image {{ index }} sur {{ count }}",
+    "zoom": "Agrandir l'image",
+    "close_zoom": "Fermer l'agrandissement"
+  },
+  "header": {
+    "menu": "Menu",
+    "main_nav": "Navigation principale",
+    "search": "Rechercher",
+    "account": "Compte",
+    "home": "accueil",
+    "all_products": "Tous les produits",
+    "cart_label": {
+      "one": "Panier, {{ count }} article",
+      "other": "Panier, {{ count }} articles"
+    }
+  },
+  "vitrine": {
+    "all": "Tout",
+    "categories": "Catégories de produits",
+    "roledescription": "carrousel",
+    "label": "Vitrine des produits",
+    "pause": "Mettre en pause la rotation",
+    "play": "Relancer la rotation",
+    "scroll": "Défiler",
+    "hint": "Glisse pour faire tourner",
+    "empty_editor": "Ajoute au moins un produit à la collection choisie pour remplir la vitrine."
+  },
+  "products": {
+    "add_to_cart": "Ajouter au panier",
+    "added": "Ajouté au panier : {{ title }}",
+    "adding": "Ajout en cours",
+    "unavailable": "Indisponible",
+    "sold_out": "Épuisé",
+    "quantity": "Quantité",
+    "quick_add": "Ajout rapide",
+    "quick_add_label": "Ajout rapide : {{ title }}",
+    "choose": "Choisir",
+    "compare_price": "Prix de référence",
+    "reference": "Réf.",
+    "features": "Caractéristiques",
+    "compatibility": "Compatibilité",
+    "compat_measure": "Mesure ton coffret avant de commander. En cas de doute, écris-nous avec une photo.",
+    "compat_box": "Boîtier",
+    "compat_set": "Ton coffret",
+    "compat_inner": "Dimensions intérieures",
+    "delivery": "Livraison",
+    "delivery_days": "Livraison estimée sous {{ min }} à {{ max }} jours ouvrés.",
+    "delivery_range": "Livraison estimée entre le {{ from }} et le {{ to }}.",
+    "delivery_to": "Livraison en {{ countries }}",
+    "multi_parcel": "plusieurs colis possibles",
+    "delivery_more": "Délais, suivi et retours",
+    "complete": "Complète ta protection",
+    "reassurance_payment": "Paiement sécurisé",
+    "reassurance_returns": "Retours sous 14 jours",
+    "reassurance_service": "Service client en français",
+    "share": "Copier le lien",
+    "link_copied": "Lien copié",
+    "gallery": "Galerie d'images",
+    "thumbnails": "Choisir une image",
+    "variant_unavailable": "Cette combinaison n'existe pas.",
+    "specs": {
+      "dimensions_interieures": "Dimensions intérieures",
+      "dimensions_exterieures": "Dimensions extérieures",
+      "epaisseur_mm": "Épaisseur",
+      "matiere": "Matière",
+      "fermeture": "Fermeture",
+      "protection_uv": "Protection UV",
+      "capacite": "Capacité",
+      "contenu_pack": "Contenu du pack"
+    },
+    "sticky_label": "Achat rapide",
+    "kit_separately": "au lieu de {{ amount }} si acheté séparément",
+    "kit_contents": "Contenu du kit"
+  },
+  "sections": {
+    "promise": {
+      "threat": "Menace",
+      "answer": "Notre réponse"
+    },
+    "kit": {
+      "buy": "Ajouter le kit au panier",
+      "see": "Voir le kit"
+    },
+    "size_finder": {
+      "step1": "Qu'est-ce que tu veux protéger ?",
+      "step2": "C'est pour toi ou pour offrir ?",
+      "for_me": "Pour moi",
+      "gift": "Pour offrir",
+      "change": "Changer",
+      "result": "Notre recommandation",
+      "inner": "Dimensions intérieures du boîtier recommandé",
+      "gift_note": "Pour offrir, le kit réunit l'essentiel dans un seul colis… ou presque : plusieurs colis restent possibles.",
+      "no_product": "Choisis un produit recommandé pour ce format dans l'éditeur de thème.",
+      "dims_unknown": "Dimensions sur la fiche produit"
+    },
+    "faq": {
+      "title": "Questions fréquentes"
+    },
+    "reviews": {
+      "title": "Avis clients"
+    }
+  },
+  "collections": {
+    "products_count": {
+      "one": "{{ count }} produit",
+      "other": "{{ count }} produits"
+    },
+    "results_announce": "{{ count }} résultats",
+    "filters": "Filtres",
+    "filter_and_sort": "Filtrer et trier",
+    "sort_by": "Trier par",
+    "clear_all": "Tout effacer",
+    "apply": "Appliquer",
+    "see_results": "Voir les résultats",
+    "price_from": "Prix minimum",
+    "price_to": "Prix maximum",
+    "load_more": "Voir plus de produits",
+    "empty": "Aucun produit ne correspond à ces filtres.",
+    "empty_collection": "Cette collection est vide pour le moment.",
+    "remove_filter": "Retirer le filtre {{ filter }}",
+    "all_collections": "Toutes les collections"
+  },
+  "cart": {
+    "title": "Ton panier",
+    "items_count": {
+      "one": "{{ count }} article",
+      "other": "{{ count }} articles"
+    },
+    "count_announce": "Panier mis à jour : {{ count }} article(s)",
+    "empty": "Ton panier est vide.",
+    "back_to_vitrine": "Voir la vitrine",
+    "subtotal": "Sous-total",
+    "taxes_note": "Taxes et frais de port calculés au paiement.",
+    "checkout": "Paiement sécurisé",
+    "update": "Mettre à jour",
+    "remove": "Retirer",
+    "remove_label": "Retirer {{ title }} du panier",
+    "increase": "Augmenter la quantité de {{ title }}",
+    "decrease": "Diminuer la quantité de {{ title }}",
+    "quantity_for": "Quantité de {{ title }}",
+    "note": "Ajouter une note à la commande",
+    "upsell_title": "Pour aller avec",
+    "free_shipping_remaining_html": "Plus que <strong>{{ amount }}</strong> pour la livraison offerte",
+    "free_shipping_reached": "La livraison est offerte",
+    "free_shipping_progress": "Progression vers la livraison offerte"
+  },
+  "search": {
+    "title": "Recherche",
+    "placeholder": "Boîtier, classeur, présentoir…",
+    "submit": "Lancer la recherche",
+    "no_results": "Aucun résultat pour « {{ terms }} ».",
+    "results_for": "Résultats pour « {{ terms }} »",
+    "products": "Produits",
+    "collections": "Collections",
+    "pages": "Pages",
+    "suggestions": "Suggestions",
+    "see_all": "Voir tous les résultats pour « {{ terms }} »",
+    "results_count": {
+      "one": "{{ count }} résultat",
+      "other": "{{ count }} résultats"
+    }
+  },
+  "newsletter": {
+    "title": "Rejoins la liste.",
+    "text": "Nouveautés et conseils de conservation, au plus une fois par semaine.",
+    "footer_title": "La liste",
+    "email": "Ton adresse e-mail",
+    "submit": "S'inscrire",
+    "success": "C'est noté. À très vite.",
+    "consent_html": "En t'inscrivant, tu acceptes de recevoir nos e-mails. Désinscription en un clic. <a href=\"{{ url }}\">Politique de confidentialité</a>."
+  },
+  "contact": {
+    "name": "Nom",
+    "email": "E-mail",
+    "phone": "Téléphone (facultatif)",
+    "order": "Numéro de commande (facultatif)",
+    "message": "Message",
+    "send": "Envoyer",
+    "success": "Merci, ton message est bien parti. On te répond {{ time }}.",
+    "write_us": "Écris-nous à {{ email }}",
+    "response": "Réponse {{ time }}"
+  },
+  "not_found": {
+    "title": "Cette page s'est égarée dans la réserve.",
+    "text": "Le lien est peut-être ancien, ou la pièce a changé de salle.",
+    "button": "Retour à la vitrine"
+  },
+  "password": {
+    "soon": "Ouverture bientôt",
+    "title": "La galerie ouvre bientôt.",
+    "text": "Laisse ton e-mail pour être prévenu de l'ouverture.",
+    "access": "Accès boutique",
+    "password": "Mot de passe",
+    "enter": "Entrer",
+    "admin": "Tu es le propriétaire de la boutique ?",
+    "admin_link": "Connexion"
+  },
+  "gift_card": {
+    "title": "Ta carte cadeau",
+    "value": "Valeur de {{ value }}",
+    "balance": "Solde : {{ balance }}",
+    "code": "Code de la carte",
+    "copy": "Copier le code",
+    "copied": "Code copié",
+    "expired": "Cette carte cadeau a expiré.",
+    "disabled": "Cette carte cadeau est désactivée.",
+    "expires_on": "Valable jusqu'au {{ date }}",
+    "use": "Utiliser en boutique",
+    "print": "Imprimer",
+    "wallet": "Ajouter à Apple Wallet",
+    "qr": "QR code de la carte cadeau"
+  },
+  "shipping": {
+    "countries": "Pays livrés",
+    "delays": "Délais",
+    "delays_text": "Compte {{ min }} à {{ max }} jours ouvrés entre ta commande et la livraison.",
+    "threshold": "Livraison offerte",
+    "threshold_text": "La livraison est offerte dès {{ amount }} d'achat.",
+    "tracking": "Suivi",
+    "parcels": "Plusieurs colis"
+  }
+}

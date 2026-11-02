@@ -1,0 +1,95 @@
+{%- comment -%}
+  Contenu du panier partagé par le tiroir et la page. Paramètres : context ('drawer' | 'page'), section_id.
+  Le bloc [data-cart-root] est remplacé après chaque modification (Section Rendering API).
+{%- endcomment -%}
+{%- liquid
+  assign form_id = 'CartForm-' | append: context
+  assign upsell = settings.cart_upsell_product
+  assign upsell_in_cart = false
+  if upsell != blank
+    for item in cart.items
+      if item.product_id == upsell.id
+        assign upsell_in_cart = true
+      endif
+    endfor
+  endif
+-%}
+<div class="cart" data-cart-root data-section-id="{{ section_id }}" data-count="{{ cart.item_count }}">
+  <div class="cart__head">
+    <h2 class="cart__title h-sub" id="CartTitle-{{ context }}">{{ 'cart.title' | t }}</h2>
+    <span class="box box--num" aria-label="{{ 'cart.items_count' | t: count: cart.item_count }}"><span class="mask mask--inline"><span data-swap="count">{{ cart.item_count }}</span></span></span>
+    {%- if context == 'drawer' -%}
+      <button type="button" class="btn--icon cart__close" data-cart-close data-focus-key="close" aria-label="{{ 'general.close' | t }}">{% render 'icon', icon: 'close' %}</button>
+    {%- endif -%}
+  </div>
+
+  {%- if cart.item_count > 0 -%}
+    {%- render 'free-shipping-bar' -%}
+    <p class="form-msg form-msg--error cart__error" data-cart-error role="alert" hidden></p>
+    <form action="{{ routes.cart_url }}" method="post" id="{{ form_id }}" class="cart__form" novalidate>
+      <ul class="cart__items" role="list">
+        {%- for item in cart.items -%}
+          {%- render 'cart-item', item: item, index: forloop.index -%}
+        {%- endfor -%}
+      </ul>
+      {%- if context == 'page' -%}
+        <noscript><button type="submit" name="update" class="btn btn--ghost">{{ 'cart.update' | t }}</button></noscript>
+      {%- endif -%}
+    </form>
+
+    {%- if upsell != blank and upsell.available and upsell_in_cart == false -%}
+      <div class="cart__upsell">
+        <p class="lbl dim">{{ 'cart.upsell_title' | t }}</p>
+        <div class="upsell">
+          {%- if upsell.featured_media -%}
+            {%- render 'responsive-image', image: upsell.featured_media.preview_image, widths: '120,180', sizes: '64px', alt: '' -%}
+          {%- endif -%}
+          <div class="upsell__info">
+            <a href="{{ upsell.url }}" class="upsell__title">{{ upsell.title | escape }}</a>
+            {%- render 'price', product: upsell -%}
+          </div>
+          {%- form 'product', upsell, data-product-form: '' -%}
+            <input type="hidden" name="id" value="{{ upsell.selected_or_first_available_variant.id }}">
+            <button type="submit" class="btn--icon" aria-label="{{ 'products.quick_add_label' | t: title: upsell.title | escape }}">{% render 'icon', icon: 'plus' %}</button>
+          {%- endform -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div class="cart__foot">
+      {%- if settings.cart_show_note -%}
+        <details class="cart__note">
+          <summary class="lbl">{{ 'cart.note' | t }}</summary>
+          <label for="CartNote-{{ context }}" class="visually-hidden">{{ 'cart.note' | t }}</label>
+          <textarea id="CartNote-{{ context }}" name="note" form="{{ form_id }}" class="textarea" data-cart-note>{{ cart.note }}</textarea>
+        </details>
+      {%- endif -%}
+      {%- if cart.cart_level_discount_applications.size > 0 -%}
+        <ul class="cart__disc" role="list">
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <li class="ci__meta">{{ discount.title | escape }} (−{{ discount.total_allocated_amount | money }})</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      <div class="cart__total">
+        <span class="lbl">{{ 'cart.subtotal' | t }}</span>
+        <span class="cart__sum tnum"><span class="mask"><span data-swap="subtotal">{{ cart.total_price | money_with_currency }}</span></span></span>
+      </div>
+      <p class="cart__taxes dim">{{ 'cart.taxes_note' | t }}</p>
+      <button type="submit" name="checkout" form="{{ form_id }}" class="btn btn--block" data-focus-key="checkout"{% if settings.anim_magnetic %} data-magnetic{% endif %}>
+        {%- render 'icon', icon: 'lock' -%}{%- assign label = 'cart.checkout' | t -%}{%- render 'btn-label', text: label -%}
+      </button>
+    </div>
+  {%- else -%}
+    <div class="cart__empty">
+      <svg class="cart__plate" viewBox="0 0 220 120" aria-hidden="true" focusable="false">
+        <ellipse cx="110" cy="72" rx="96" ry="30" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <ellipse cx="110" cy="66" rx="96" ry="30" fill="none" stroke="var(--brass)" stroke-width="1.2"/>
+        <path d="M14 66v6M206 66v6" stroke="var(--brass)" stroke-width="1.2"/>
+        <path d="M110 66V12" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4"/>
+      </svg>
+      <p class="h-sub">{{ 'cart.empty' | t }}</p>
+      <a href="{{ routes.root_url }}" class="btn" data-focus-key="empty">{%- assign label = 'cart.back_to_vitrine' | t -%}{%- render 'btn-label', text: label -%}</a>
+    </div>
+  {%- endif -%}
+</div>

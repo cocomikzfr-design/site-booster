@@ -1,0 +1,86 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "La Galerie",
+    "theme_version": "1.0.0",
+    "theme_author": "NOM_BOUTIQUE",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com/"
+  },
+  {
+    "name": "Marque",
+    "settings": [
+      { "type": "text", "id": "brand_name", "label": "Nom de la boutique", "default": "NOM_BOUTIQUE", "info": "Utilisé partout : logo, titres, pied de page, référencement. Laisse vide pour utiliser le nom Shopify." },
+      { "type": "text", "id": "logo_tagline", "label": "Ligne sous le logo", "default": "Cartes · Collection · Protection" },
+      { "type": "image_picker", "id": "logo_image", "label": "Logo image (remplace le logo typographique)" },
+      { "type": "range", "id": "logo_width", "label": "Largeur du logo image", "min": 60, "max": 260, "step": 10, "unit": "px", "default": 140 },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "Image carrée, 64 × 64 px minimum." },
+      { "type": "textarea", "id": "promise", "label": "Promesse", "default": "Boîtiers, classeurs et présentoirs pour que ta collection garde sa valeur." },
+      { "type": "image_picker", "id": "share_image", "label": "Image de partage", "info": "1200 × 630 px, utilisée quand une page n'a pas d'image." }
+    ]
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      { "type": "color", "id": "color_vault", "label": "Salle (fond sombre)", "default": "#0E0F12" },
+      { "type": "color", "id": "color_vault_2", "label": "Salle, second fond", "default": "#17191E" },
+      { "type": "color", "id": "color_glass", "label": "Texte sur fond sombre", "default": "#EEF1F2" },
+      { "type": "color", "id": "color_paper", "label": "Papier (fond clair)", "default": "#F3EFE7" },
+      { "type": "color", "id": "color_ink", "label": "Encre (texte sur papier)", "default": "#15161A" },
+      { "type": "color", "id": "color_brass", "label": "Laiton (accent)", "default": "#C9A24E" },
+      { "type": "color", "id": "color_brass_deep", "label": "Laiton foncé (petits textes sur papier)", "default": "#94712B" },
+      { "type": "color", "id": "color_slate", "label": "Feutrine du plateau", "default": "#2B2F37" },
+      { "type": "color", "id": "color_signal", "label": "Signal (pastille panier, erreurs)", "default": "#D2452F" }
+    ]
+  },
+  {
+    "name": "Animations",
+    "settings": [
+      { "type": "paragraph", "content": "Toutes les animations respectent le réglage « réduire les animations » de l'appareil du visiteur." },
+      { "type": "checkbox", "id": "anim_cursor", "label": "Curseur personnalisé (souris uniquement)", "default": true },
+      { "type": "checkbox", "id": "anim_transitions", "label": "Transitions entre les pages", "default": true },
+      { "type": "checkbox", "id": "anim_opening", "label": "Écran d'ouverture (première page de la visite)", "default": true },
+      { "type": "checkbox", "id": "anim_magnetic", "label": "Boutons aimantés", "default": true },
+      { "type": "checkbox", "id": "anim_reveal", "label": "Apparitions au défilement", "default": true }
+    ]
+  },
+  {
+    "name": "Livraison",
+    "settings": [
+      { "type": "number", "id": "shipping_min_days", "label": "Délai minimum (jours ouvrés)", "default": 7 },
+      { "type": "number", "id": "shipping_max_days", "label": "Délai maximum (jours ouvrés)", "default": 15 },
+      { "type": "text", "id": "shipping_countries_text", "label": "Pays livrés", "default": "France et Belgique" },
+      { "type": "number", "id": "free_shipping_threshold", "label": "Seuil de livraison offerte (€)", "default": 39, "info": "Doit correspondre au tarif configuré dans Paramètres > Expédition. 0 masque la jauge." },
+      { "type": "checkbox", "id": "show_multi_parcel_note", "label": "Afficher « plusieurs colis possibles »", "default": true }
+    ]
+  },
+  {
+    "name": "Panier",
+    "settings": [
+      {
+        "type": "select", "id": "cart_type", "label": "Type de panier", "default": "drawer",
+        "options": [ { "value": "drawer", "label": "Tiroir" }, { "value": "page", "label": "Page" } ]
+      },
+      { "type": "product", "id": "cart_upsell_product", "label": "Produit suggéré dans le panier" },
+      { "type": "checkbox", "id": "cart_show_note", "label": "Afficher la note de commande", "default": false }
+    ]
+  },
+  {
+    "name": "Prix et mentions",
+    "settings": [
+      { "type": "text", "id": "omnibus_note", "label": "Mention sous un prix comparé", "default": "Prix le plus bas des 30 derniers jours :", "info": "Directive Omnibus : le prix comparé doit être le prix le plus bas pratiqué pendant les 30 jours précédant la réduction." },
+      { "type": "text", "id": "tax_note", "label": "Mention sous le prix", "default": "Frais de livraison calculés au paiement." },
+      { "type": "textarea", "id": "legal_mention", "label": "Mentions légales du pied de page", "default": "[À VÉRIFIER] Raison sociale · Numéro d'entreprise (BCE) · Adresse du siège" }
+    ]
+  },
+  {
+    "name": "Contact et réseaux",
+    "settings": [
+      { "type": "text", "id": "contact_email", "label": "E-mail de contact", "default": "[À VÉRIFIER] contact@exemple.com" },
+      { "type": "text", "id": "response_time", "label": "Délai de réponse", "default": "sous 48 h ouvrées" },
+      { "type": "url", "id": "social_tiktok", "label": "TikTok" },
+      { "type": "url", "id": "social_instagram", "label": "Instagram" },
+      { "type": "url", "id": "social_youtube", "label": "YouTube" }
+    ]
+  }
+]

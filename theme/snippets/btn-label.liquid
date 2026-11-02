@@ -1,0 +1,5 @@
+{%- comment -%}
+  Libellé doublé d'un bouton : le premier sort par le haut, le second (aria-hidden) arrive par le bas.
+  Paramètre : text
+{%- endcomment -%}
+<span class="btn__l"><span>{{ text }}</span><span aria-hidden="true">{{ text }}</span></span>

@@ -1,0 +1,101 @@
+{%- comment -%}
+  Titre, description, Open Graph, Twitter, JSON-LD Organization (accueil).
+  Jamais de nom de jeu sous licence dans les titres par défaut.
+{%- endcomment -%}
+{%- liquid
+  assign brand = settings.brand_name | default: shop.name
+  if request.page_type == 'index'
+    if page_title != blank and page_title != shop.name
+      assign meta_title = page_title
+    else
+      assign meta_title = 'general.meta.home_title' | t: brand: brand
+    endif
+  else
+    assign meta_title = page_title
+    if current_tags
+      assign meta_tags = current_tags | join: ', '
+      assign meta_title = meta_title | append: ' – ' | append: meta_tags
+    endif
+    if current_page != 1
+      assign page_label = 'general.meta.page' | t: page: current_page
+      assign meta_title = meta_title | append: ' – ' | append: page_label
+    endif
+    unless meta_title contains brand
+      assign meta_title = meta_title | append: ' – ' | append: brand
+    endunless
+  endif
+  assign meta_desc = page_description | default: settings.promise
+  assign og_type = 'website'
+  if request.page_type == 'product'
+    assign og_type = 'product'
+  elsif request.page_type == 'article'
+    assign og_type = 'article'
+  endif
+  assign og_image = page_image | default: settings.share_image
+-%}
+<title>{{ meta_title | strip_newlines | escape }}</title>
+{%- if meta_desc != blank -%}
+  <meta name="description" content="{{ meta_desc | strip_html | strip_newlines | truncate: 160 | escape }}">
+{%- endif -%}
+<meta property="og:site_name" content="{{ brand | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ meta_title | escape }}">
+<meta property="og:type" content="{{ og_type }}">
+<meta property="og:description" content="{{ meta_desc | strip_html | strip_newlines | truncate: 200 | escape }}">
+<meta property="og:locale" content="{{ request.locale.iso_code | replace: '-', '_' }}">
+{%- if og_image -%}
+  <meta property="og:image" content="https:{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image:secure_url" content="https:{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="{{ 1200 | divided_by: og_image.aspect_ratio | round }}">
+{%- endif -%}
+{%- if request.page_type == 'product' -%}
+  <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html | escape }}">
+  <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
+{%- endif -%}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ meta_title | escape }}">
+<meta name="twitter:description" content="{{ meta_desc | strip_html | strip_newlines | truncate: 200 | escape }}">
+
+{%- if request.page_type == 'index' -%}
+  {%- liquid
+    assign same_as = ''
+    if settings.social_instagram != blank
+      assign same_as = same_as | append: settings.social_instagram | append: '|'
+    endif
+    if settings.social_tiktok != blank
+      assign same_as = same_as | append: settings.social_tiktok | append: '|'
+    endif
+    if settings.social_youtube != blank
+      assign same_as = same_as | append: settings.social_youtube | append: '|'
+    endif
+    assign same_as_list = same_as | split: '|'
+  -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": {{ brand | json }},
+      "url": {{ shop.url | append: routes.root_url | json }}
+      {%- if settings.logo_image != blank -%},
+        "logo": {{ settings.logo_image | image_url: width: 600 | prepend: 'https:' | json }}
+      {%- endif -%}
+      {%- if same_as_list.size > 0 -%},
+        "sameAs": {{ same_as_list | json }}
+      {%- endif %}
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": {{ brand | json }},
+      "url": {{ shop.url | append: routes.root_url | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ shop.url | append: routes.search_url | append: '?q={search_term_string}' | json }},
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+{%- endif -%}

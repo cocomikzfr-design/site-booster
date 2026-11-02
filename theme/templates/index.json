@@ -1,0 +1,27 @@
+{
+  "sections": {
+    "vitrine": {
+      "type": "vitrine",
+      "blocks": {
+        "cat-1": { "type": "category", "settings": { "label": "Coffrets", "product_type": "Boîtier coffret" } },
+        "cat-2": { "type": "category", "settings": { "label": "Displays", "product_type": "Boîtier display" } },
+        "cat-3": { "type": "category", "settings": { "label": "Classeurs", "product_type": "Classeur" } },
+        "cat-4": { "type": "category", "settings": { "label": "Gradées", "product_type": "Cartes gradées" } },
+        "cat-5": { "type": "category", "settings": { "label": "Kits", "product_type": "Kit" } }
+      },
+      "block_order": ["cat-1", "cat-2", "cat-3", "cat-4", "cat-5"],
+      "settings": {
+        "max_products": 10,
+        "kicker": "Accessoires de protection pour cartes à collectionner",
+        "title": "Ta collection / garde sa valeur.",
+        "lede": "Boîtiers acryliques, classeurs et présentoirs pour protéger et exposer tes coffrets et tes cartes.",
+        "button_label": "Voir la collection",
+        "show_chips": true,
+        "show_tag": true,
+        "autoplay": 6,
+        "dust": 70
+      }
+    }
+  },
+  "order": ["vitrine"]
+}

@@ -1,0 +1,307 @@
+{%- comment -%}
+  La vitrine : un plateau tournant en feutrine cerclé de laiton, sous un projecteur, dans une salle sombre.
+  Sans JS (ou avec moins de 3 produits), la liste reste une rangée défilante de cartes : rien n'est caché.
+  Le JS (vitrine.js) ajoute .is-live et place les produits en 3D. Toutes les données viennent du JSON ci-dessous.
+{%- endcomment -%}
+{{ 'vitrine.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign coll = section.settings.collection
+  if coll == blank
+    assign coll = collections.all
+  endif
+  assign max = section.settings.max_products
+  assign start_id = section.settings.start_product.id
+  assign types = '|'
+  assign count = 0
+  assign start_index = 0
+  for p in coll.products limit: 50
+    if p.gift_card?
+      continue
+    endif
+    if count >= max
+      break
+    endif
+    if p.id == start_id
+      assign start_index = count
+    endif
+    assign types = types | append: p.type | append: '|'
+    assign count = count | plus: 1
+  endfor
+  assign title_lines = section.settings.title | split: ' / '
+  assign img_sizes = '(max-width: 767px) 54vw, 27vw'
+-%}
+
+<section
+  class="vitrine world-dark is-dark{% if count < 3 %} vitrine--flat{% endif %}"
+  id="Vitrine-{{ section.id }}"
+  data-vitrine
+  aria-labelledby="VitrineTitle-{{ section.id }}"
+>
+  <span class="vitrine__probe" aria-hidden="true"></span>
+  <div class="vitrine__bg" aria-hidden="true"></div>
+
+  <div class="vitrine__intro">
+    {%- if section.settings.kicker != blank -%}
+      <p class="lbl vitrine__kicker"><span class="line"><span>{{ section.settings.kicker | escape }}</span></span></p>
+    {%- endif -%}
+    <h1 class="h-hero vitrine__title" id="VitrineTitle-{{ section.id }}">
+      {%- for l in title_lines -%}
+        <span class="line" style="--i:{{ forloop.index }}"><span>{{ l | escape }}</span></span>
+      {%- endfor -%}
+    </h1>
+    {%- if section.settings.lede != blank -%}
+      <p class="vitrine__lede"><span class="line" style="--i:{{ title_lines.size | plus: 1 }}"><span>{{ section.settings.lede | escape }}</span></span></p>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <p class="vitrine__cta"><span class="line" style="--i:{{ title_lines.size | plus: 2 }}"><span>
+        <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn"{% if settings.anim_magnetic %} data-magnetic{% endif %}>
+          {%- render 'btn-label', text: section.settings.button_label -%}
+        </a>
+      </span></span></p>
+    {%- endif -%}
+  </div>
+
+  {%- if count > 0 -%}
+    {%- if section.settings.show_chips and section.blocks.size > 0 -%}
+      <div class="chips chips--scroll vitrine__chips" role="group" aria-label="{{ 'vitrine.categories' | t }}">
+        <button type="button" class="box chip" data-type="" aria-pressed="false">{{ 'vitrine.all' | t }}</button>
+        {%- for block in section.blocks -%}
+          {%- assign needle = '|' | append: block.settings.product_type | append: '|' -%}
+          {%- if types contains needle and block.settings.product_type != blank -%}
+            <button type="button" class="box chip" data-type="{{ block.settings.product_type | escape }}" aria-pressed="false" {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="vitrine__viewport" role="region" aria-roledescription="{{ 'vitrine.roledescription' | t }}" aria-label="{{ 'vitrine.label' | t }}">
+      <div class="vitrine__stage">
+        <div class="vitrine__plate" aria-hidden="true">
+          <div class="plate__edge"></div>
+          <div class="plate__top"><div class="plate__stripes"></div><div class="plate__pool"></div></div>
+        </div>
+        <ul class="vitrine__list" role="list">
+          {%- assign i = 0 -%}
+          {%- assign items_html = '' -%}
+          {%- capture products_json -%}
+            {%- for p in coll.products limit: 50 -%}
+              {%- if p.gift_card? -%}{%- continue -%}{%- endif -%}
+              {%- if i >= max -%}{%- break -%}{%- endif -%}
+              {%- liquid
+                assign vimg = p.metafields.custom.image_vitrine.value
+                if vimg != blank
+                  assign img = vimg.preview_image | default: vimg
+                else
+                  assign img = p.featured_media.preview_image
+                endif
+                assign ratio = 0.8
+                if img
+                  assign ratio = img.aspect_ratio | default: 0.8
+                endif
+                assign shape = p.metafields.custom.forme_vitrine.value | default: ''
+                if shape == blank
+                  if p.type == 'Classeur' or p.type == 'Kit' or p.type == 'Protections'
+                    assign shape = 'plat'
+                  else
+                    assign shape = 'boitier'
+                  endif
+                endif
+                assign depth = p.metafields.custom.profondeur_vitrine.value | default: 0.34 | plus: 0
+                if shape == 'plat'
+                  assign depth = 0.06
+                endif
+                assign line = p.metafields.custom.ligne_vitrine.value | default: p.metafields.custom.compatibilite.value | default: ''
+                assign price = p.price | money | strip_html
+                if p.price_varies
+                  assign from = 'general.from' | t
+                  assign price_label = from | append: ' ' | append: price
+                else
+                  assign price_label = price
+                endif
+                unless p.available
+                  assign sold = 'general.sold_out' | t
+                  assign price_label = price_label | append: ', ' | append: sold
+                endunless
+              -%}
+              {%- capture item_html -%}
+                <li class="vitrine__item" data-index="{{ i }}" style="--ratio:{{ ratio | round: 4 }};--depth:{{ depth }}">
+                  <a
+                    href="{{ p.url }}"
+                    class="item{% if i == start_index %} is-active{% endif %}"
+                    data-index="{{ i }}"
+                    data-shape="{{ shape }}"
+                    {% if depth < 0.5 %}data-refl{% endif %}
+                    data-cursor="{% if i == start_index %}view{% else %}item{% endif %}"
+                    aria-label="{{ p.title | escape }}, {{ price_label | escape }}"
+                    draggable="false"
+                  >
+                    <span class="face face--front">
+                      {%- if img -%}
+                        {%- if i == start_index -%}
+                          {%- render 'responsive-image', image: img, widths: '480,900', sizes: img_sizes, loading: 'eager', fetchpriority: 'high', alt: '', attrs: 'data-vt-media draggable="false"' -%}
+                        {%- else -%}
+                          {%- render 'responsive-image', image: img, widths: '480,900', sizes: img_sizes, alt: '', attrs: 'data-vt-media draggable="false"' -%}
+                        {%- endif -%}
+                      {%- else -%}
+                        <img src="{{ 'placeholder-case.svg' | asset_url }}" alt="" width="400" height="500" data-vt-media draggable="false">
+                      {%- endif -%}
+                      <span class="face__glare"></span>
+                    </span>
+                    <span class="face face--side face--l"></span>
+                    <span class="face face--side face--r"></span>
+                    <span class="face face--top"></span>
+                    {%- if img and depth < 0.5 -%}
+                      <span class="item__refl"><img src="{{ img | image_url: width: 480 }}" alt="" width="480" height="{{ 480 | divided_by: ratio | round }}" loading="lazy" draggable="false"></span>
+                    {%- endif -%}
+                    <span class="item__shadow"></span>
+                    <span class="item__cap" aria-hidden="true">
+                      <span class="item__name">{{ p.title | escape }}</span>
+                      <span class="item__price lbl">{{ price_label | escape }}</span>
+                    </span>
+                  </a>
+                </li>
+              {%- endcapture -%}
+              {%- assign items_html = items_html | append: item_html -%}
+              {%- unless i == 0 -%},{%- endunless -%}
+              {
+                "id": {{ p.id }},
+                "url": {{ p.url | json }},
+                "title": {{ p.title | json }},
+                "type": {{ p.type | json }},
+                "line": {{ line | json }},
+                "price": {{ price | json }},
+                "priceVaries": {{ p.price_varies | json }},
+                "available": {{ p.available | json }},
+                "variantId": {{ p.selected_or_first_available_variant.id | json }},
+                "image": {% if img %}{{ img | image_url: width: 900 | json }}{% else %}null{% endif %},
+                "imageSmall": {% if img %}{{ img | image_url: width: 480 | json }}{% else %}null{% endif %},
+                "ratio": {{ ratio | round: 4 }},
+                "depth": {{ depth }},
+                "shape": {{ shape | json }}
+              }
+              {%- if i == start_index -%}
+                {%- assign start_title = p.title -%}
+                {%- assign start_line = line -%}
+                {%- assign start_price = price_label -%}
+              {%- endif -%}
+              {%- if i == start_index and img -%}
+                {%- capture start_srcset -%}{{ img | image_url: width: 480 }} 480w, {{ img | image_url: width: 900 }} 900w{%- endcapture -%}
+                {%- assign start_img = img -%}
+              {%- endif -%}
+              {%- assign i = i | plus: 1 -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+          {{- items_html -}}
+        </ul>
+      </div>
+    </div>
+
+    <div class="vitrine__light" aria-hidden="true"><span class="vitrine__spot"></span></div>
+
+    {%- if start_img -%}
+      {{ start_img | image_url: width: 900 | preload_tag: as: 'image', imagesrcset: start_srcset, imagesizes: img_sizes, fetchpriority: 'high' }}
+    {%- endif -%}
+
+    {%- if section.settings.show_tag -%}
+      <div class="tag" aria-hidden="true" data-tag>
+        <span class="tag__string"></span>
+        <span class="tag__card">
+          <span class="tag__face tag__face--a"><span class="tag__from"></span><span class="tag__amount"></span><span class="tag__stamp">{{ 'general.sold_out' | t }}</span></span>
+          <span class="tag__face tag__face--b"><span class="tag__from"></span><span class="tag__amount"></span><span class="tag__stamp">{{ 'general.sold_out' | t }}</span></span>
+        </span>
+      </div>
+    {%- endif -%}
+
+    <div class="vitrine__legend" aria-live="polite" aria-atomic="true">
+      <span class="visually-hidden" data-live></span>
+      <p class="legend__name mask" aria-hidden="true"><span>{{ start_title | escape }}</span></p>
+      <p class="legend__line lbl mask" aria-hidden="true"><span>{{ start_line | escape }}</span></p>
+      <p class="legend__price mask" aria-hidden="true"><span>{{ start_price | escape }}</span></p>
+    </div>
+
+    <button type="button" class="btn--icon vitrine__arrow vitrine__arrow--prev" data-dir="prev" aria-label="{{ 'general.previous_product' | t }}">{% render 'icon', icon: 'arrow-left' %}</button>
+    <button type="button" class="btn--icon vitrine__arrow vitrine__arrow--next" data-dir="next" aria-label="{{ 'general.next_product' | t }}">{% render 'icon', icon: 'arrow-right' %}</button>
+
+    <a href="#" class="vitrine__see" data-see aria-label="{{ 'general.see' | t }}" data-cursor="view">{% render 'icon', icon: 'star4' %}</a>
+
+    <div class="vitrine__foot">
+      <p class="vitrine__counter mono" aria-hidden="true">
+        <span>N°</span> <span class="mask mask--inline" data-counter><span>{{ start_index | plus: 1 | prepend: '0' | slice: -2, 2 }}</span></span>
+        <span class="dim">/ {{ count | prepend: '0' | slice: -2, 2 }}</span>
+      </p>
+      <div class="vitrine__foot-r">
+        <button type="button" class="lbl vitrine__scroll" data-scroll-next>{{ 'vitrine.scroll' | t }} {% render 'icon', icon: 'arrow-down' %}</button>
+        {%- if section.settings.autoplay > 0 -%}
+          <button type="button" class="btn--icon vitrine__pause" data-pause aria-pressed="false" aria-label="{{ 'vitrine.pause' | t }}">{% render 'icon', icon: 'pause' %}</button>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <p class="vitrine__hint lbl" aria-hidden="true" data-hint>{{ 'vitrine.hint' | t }}</p>
+    <canvas class="vitrine__dust" aria-hidden="true"></canvas>
+
+    <script type="application/json" id="vitrine-data-{{ section.id }}">
+      {
+        "startIndex": {{ start_index }},
+        "autoplay": {{ section.settings.autoplay }},
+        "dust": {{ section.settings.dust | divided_by: 100.0 }},
+        "categories": [
+          {%- for block in section.blocks -%}
+            { "label": {{ block.settings.label | json }}, "type": {{ block.settings.product_type | json }} }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ],
+        "products": [{{ products_json }}]
+      }
+    </script>
+  {%- elsif request.design_mode -%}
+    <p class="vitrine__empty lbl">{{ 'vitrine.empty_editor' | t }}</p>
+  {%- endif -%}
+</section>
+
+<script type="module" src="{{ 'vitrine.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Vitrine",
+  "tag": "div",
+  "class": "vitrine-section",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Par défaut : tous les produits." },
+    { "type": "range", "id": "max_products", "label": "Nombre maximum de produits", "min": 6, "max": 12, "step": 1, "default": 10 },
+    { "type": "product", "id": "start_product", "label": "Produit de départ" },
+    { "type": "text", "id": "kicker", "label": "Sur-titre", "default": "Accessoires de protection pour cartes à collectionner" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Ta collection / garde sa valeur.", "info": "Sépare les lignes par « / »." },
+    { "type": "textarea", "id": "lede", "label": "Accroche", "default": "Boîtiers acryliques, classeurs et présentoirs pour protéger et exposer tes coffrets et tes cartes." },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "Voir la collection" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" },
+    { "type": "checkbox", "id": "show_chips", "label": "Afficher les puces de catégories", "default": true },
+    { "type": "checkbox", "id": "show_tag", "label": "Afficher l'étiquette de prix", "default": true },
+    { "type": "range", "id": "autoplay", "label": "Rotation automatique", "min": 0, "max": 12, "step": 1, "unit": "s", "default": 6, "info": "0 désactive la rotation automatique." },
+    { "type": "range", "id": "dust", "label": "Densité de poussière", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 70 }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Catégorie",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Libellé", "default": "Coffrets" },
+        { "type": "text", "id": "product_type", "label": "Type de produit Shopify", "default": "Boîtier coffret" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vitrine",
+      "blocks": [
+        { "type": "category", "settings": { "label": "Coffrets", "product_type": "Boîtier coffret" } },
+        { "type": "category", "settings": { "label": "Displays", "product_type": "Boîtier display" } },
+        { "type": "category", "settings": { "label": "Classeurs", "product_type": "Classeur" } },
+        { "type": "category", "settings": { "label": "Gradées", "product_type": "Cartes gradées" } },
+        { "type": "category", "settings": { "label": "Kits", "product_type": "Kit" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

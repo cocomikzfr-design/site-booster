@@ -1,0 +1,43 @@
+{%- comment -%}
+  Ligne du panier (tiroir et page). Paramètres : item, index (1-based).
+  Fonctionne sans JS : champ updates[] + bouton « Mettre à jour » de la page, lien de suppression.
+{%- endcomment -%}
+<li class="ci" data-line="{{ index }}" data-key="{{ item.key }}" style="--i:{{ index | minus: 1 }}">
+  <a href="{{ item.url }}" class="ci__img" tabindex="-1" aria-hidden="true">
+    {%- if item.image -%}
+      {%- render 'responsive-image', image: item.image, widths: '120,180,240', sizes: '90px', alt: '' -%}
+    {%- else -%}
+      <img src="{{ 'placeholder-case.svg' | asset_url }}" alt="" width="90" height="112" loading="lazy">
+    {%- endif -%}
+  </a>
+  <div class="ci__info">
+    <a href="{{ item.url }}" class="ci__title">{{ item.product.title | escape }}</a>
+    {%- unless item.product.has_only_default_variant -%}
+      <p class="ci__meta">{{ item.variant.title | escape }}</p>
+    {%- endunless -%}
+    {%- for prop in item.properties -%}
+      {%- assign first_char = prop.first | slice: 0 -%}
+      {%- if prop.last != blank and first_char != '_' -%}
+        <p class="ci__meta">{{ prop.first | escape }} : {{ prop.last | escape }}</p>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if item.selling_plan_allocation -%}<p class="ci__meta">{{ item.selling_plan_allocation.selling_plan.name | escape }}</p>{%- endif -%}
+    {%- for discount in item.line_level_discount_allocations -%}
+      <p class="ci__meta ci__disc">{{ discount.discount_application.title | escape }} (−{{ discount.amount | money }})</p>
+    {%- endfor -%}
+    <div class="ci__row">
+      <div class="qty">
+        <button type="button" data-qty-step="-1" data-line="{{ index }}" aria-label="{{ 'cart.decrease' | t: title: item.product.title | escape }}">{% render 'icon', icon: 'minus' %}</button>
+        <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" inputmode="numeric" data-qty-input data-line="{{ index }}" data-focus-key="qty-{{ item.key }}" aria-label="{{ 'cart.quantity_for' | t: title: item.product.title | escape }}">
+        <button type="button" data-qty-step="1" data-line="{{ index }}" aria-label="{{ 'cart.increase' | t: title: item.product.title | escape }}">{% render 'icon', icon: 'plus' %}</button>
+      </div>
+      <a href="{{ item.url_to_remove }}" class="ci__remove ul lbl" data-remove data-line="{{ index }}" aria-label="{{ 'cart.remove_label' | t: title: item.product.title | escape }}">{{ 'cart.remove' | t }}</a>
+    </div>
+  </div>
+  <div class="ci__price tnum">
+    {%- if item.original_line_price != item.final_line_price -%}
+      <s class="dim">{{ item.original_line_price | money }}</s>
+    {%- endif -%}
+    <span class="mask"><span data-swap="line-{{ item.key }}">{{ item.final_line_price | money }}</span></span>
+  </div>
+</li>

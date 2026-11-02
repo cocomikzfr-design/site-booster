@@ -1,0 +1,20 @@
+{
+  "type": "header",
+  "name": "En-tête",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "msg-1": { "type": "message", "settings": { "text": "LIVRAISON OFFERTE DÈS 39 € EN FRANCE ET EN BELGIQUE", "link": "" } },
+        "msg-2": { "type": "message", "settings": { "text": "RETOURS 14 JOURS · PAIEMENT SÉCURISÉ", "link": "" } }
+      },
+      "block_order": ["msg-1", "msg-2"],
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "settings": { "menu": "main-menu" }
+    }
+  },
+  "order": ["announcement", "header"]
+}

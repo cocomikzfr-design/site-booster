@@ -1,0 +1,39 @@
+{
+  "current": {
+    "brand_name": "NOM_BOUTIQUE",
+    "logo_tagline": "Cartes · Collection · Protection",
+    "logo_width": 140,
+    "promise": "Boîtiers, classeurs et présentoirs pour que ta collection garde sa valeur.",
+    "color_vault": "#0E0F12",
+    "color_vault_2": "#17191E",
+    "color_glass": "#EEF1F2",
+    "color_paper": "#F3EFE7",
+    "color_ink": "#15161A",
+    "color_brass": "#C9A24E",
+    "color_brass_deep": "#94712B",
+    "color_slate": "#2B2F37",
+    "color_signal": "#D2452F",
+    "anim_cursor": true,
+    "anim_transitions": true,
+    "anim_opening": true,
+    "anim_magnetic": true,
+    "anim_reveal": true,
+    "shipping_min_days": 7,
+    "shipping_max_days": 15,
+    "shipping_countries_text": "France et Belgique",
+    "free_shipping_threshold": 39,
+    "show_multi_parcel_note": true,
+    "cart_type": "drawer",
+    "cart_show_note": false,
+    "omnibus_note": "Prix le plus bas des 30 derniers jours :",
+    "tax_note": "Frais de livraison calculés au paiement.",
+    "legal_mention": "[À VÉRIFIER] Raison sociale · Numéro d'entreprise (BCE) · Adresse du siège",
+    "contact_email": "[À VÉRIFIER] contact@exemple.com",
+    "response_time": "sous 48 h ouvrées"
+  },
+  "presets": {
+    "Default": {
+      "brand_name": "NOM_BOUTIQUE"
+    }
+  }
+}

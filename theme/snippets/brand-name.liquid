@@ -1,0 +1,2 @@
+{%- comment -%} Nom de la boutique : un seul réglage, utilisé partout. {% render 'brand-name' %} {%- endcomment -%}
+{{- settings.brand_name | default: shop.name | escape -}}

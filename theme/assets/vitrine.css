@@ -1,0 +1,243 @@
+/* =========================================================================
+   Vitrine : plateau tournant en 3D CSS sous un projecteur.
+   Repères : --cx / --cy = centre de la scène ; le sol (y = 0) est à --cy + 0.5 V.
+   Sans JS ou avec moins de 3 produits (.vitrine--flat) : rangée défilante de cartes.
+   ========================================================================= */
+.vitrine {
+  --cx: calc(50% + 9vw); --cy: 50%;
+  --R: calc(var(--V) * 1.15); --PR: calc(var(--V) * 1.32);
+  position: relative; height: max(620px, calc(100svh - var(--announce-h, 0px))); overflow: hidden; isolation: isolate;
+  /* Coupe en biseau de 3° : le côté gauche remonte, la droite reste pleine (place pour « Défiler » et la pause) */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - var(--bevel)));
+}
+main > .shopify-section:first-child .vitrine { margin-top: calc(var(--hdr-h) * -1); }
+.vitrine__probe { position: absolute; left: 0; top: 0; width: 1px; height: var(--V); visibility: hidden; pointer-events: none; }
+.vitrine__bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 70% 60% at var(--cx) 60%, #15171c, var(--vault) 70%); }
+
+/* ---------- Intro ---------- */
+.vitrine__intro { position: absolute; z-index: 5; left: var(--gutter); top: 50%; transform: translateY(-50%); width: min(30vw, 440px); }
+.vitrine__kicker { color: var(--brass); margin-bottom: 22px; }
+.vitrine__lede { margin-top: 22px; color: var(--glass-dim); max-width: 34ch; }
+.vitrine__cta { margin-top: 30px; }
+.vitrine__cta .line { padding: 4px; margin: -4px; }
+.vitrine__intro .line > span { transition: transform 1s var(--ease); transition-delay: calc(120ms + var(--i, 0) * 90ms); }
+.rv .vitrine:not(.is-intro) .vitrine__intro .line > span { transform: translateY(110%); }
+
+/* ---------- Scène 3D ---------- */
+.vitrine__viewport {
+  position: absolute; inset: 0; z-index: 1; perspective: 1800px; perspective-origin: var(--cx) 38%;
+  touch-action: pan-y; user-select: none; -webkit-user-select: none;
+}
+.vitrine__stage {
+  position: absolute; left: var(--cx); top: calc(var(--cy) + var(--V) * .5); width: 0; height: 0;
+  transform-style: preserve-3d; transform: rotateX(-8deg);
+}
+.vitrine__list, .vitrine__item, .item, .vitrine__plate { transform-style: preserve-3d; }
+.vitrine__list { position: absolute; left: 0; top: 0; margin: 0; padding: 0; list-style: none; }
+.vitrine__item {
+  position: absolute; left: 0; top: 0; width: 0; height: 0;
+  --h: var(--V); --w: calc(var(--V) * var(--ratio, .8)); --d: calc(var(--V) * var(--depth, .34));
+}
+.vitrine.is-live .vitrine__item { will-change: transform; }
+.vitrine:not(.is-live) .vitrine__item:not(:has(.is-active)) { visibility: hidden; }
+.item {
+  position: absolute; display: block; left: calc(var(--w) / -2); top: calc(var(--h) * -1);
+  width: var(--w); height: var(--h); color: inherit; text-decoration: none; outline: 0;
+  -webkit-tap-highlight-color: transparent; -webkit-user-drag: none;
+}
+.item img { -webkit-user-drag: none; }
+.item:focus-visible .face--front { outline: 2px solid var(--focus); outline-offset: 6px; }
+
+/* Plateau : feutrine ardoise, stries qui tournent, tranche laiton dessous */
+.vitrine__plate { position: absolute; left: 0; top: 0; }
+.plate__top, .plate__edge {
+  position: absolute; left: calc(var(--PR) * -1); top: calc(var(--PR) * -1);
+  width: calc(var(--PR) * 2); height: calc(var(--PR) * 2); border-radius: 50%;
+}
+.plate__top {
+  overflow: hidden; transform: translateZ(calc(var(--R) * -1)) rotateX(90deg);
+  background: radial-gradient(circle at 50% 45%, var(--slate-light), var(--slate) 60%, #1b1e24);
+  box-shadow: inset 0 0 0 2px var(--brass), inset 0 0 0 7px rgba(14, 15, 18, .55);
+}
+.plate__edge {
+  transform: translate3d(0, calc(var(--V) * .04), calc(var(--R) * -1)) rotateX(90deg);
+  background: linear-gradient(90deg, #6e5420, var(--brass) 50%, #6e5420);
+}
+.plate__stripes {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: repeating-conic-gradient(rgba(255, 255, 255, .03) 0 2deg, transparent 2deg 9deg);
+  transform: rotate(var(--turn, 0deg));
+}
+.plate__pool {
+  position: absolute; left: 50%; top: calc(50% + var(--R)); width: calc(var(--V) * 1.4); height: calc(var(--V) * 1.4);
+  margin: calc(var(--V) * -.7); border-radius: 50%; opacity: var(--spot, 1);
+  background: radial-gradient(closest-side, rgba(201, 162, 78, .34), rgba(201, 162, 78, .1) 55%, transparent);
+}
+
+/* Bloc 3D : effet boîtier acrylique */
+.face { position: absolute; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.face::before { content: ""; position: absolute; inset: 0; z-index: 3; background: #000; opacity: var(--shade, 0); pointer-events: none; }
+:is(.face--side, .face--top)::before { opacity: calc(var(--shade, 0) * .45); }
+.face--front { inset: 0; overflow: hidden; transform: translateZ(calc(var(--d) / 2)); }
+.face--front img { position: relative; width: 100%; height: 100%; object-fit: contain; }
+.face--front::after { content: ""; position: absolute; inset: 0; z-index: 2; box-shadow: inset 0 0 0 1px rgba(238, 241, 242, .35); pointer-events: none; }
+.face__glare {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .28) 45%, rgba(255, 255, 255, .06) 52%, transparent 60%);
+  transform: translateX(calc(var(--g, 0) * 60%));
+}
+.face--side {
+  top: 0; left: calc((var(--w) - var(--d)) / 2); width: var(--d); height: 100%;
+  background: linear-gradient(90deg, rgba(180, 205, 225, .08), rgba(200, 222, 240, .2));
+  box-shadow: inset 0 0 0 1px rgba(238, 241, 242, .3);
+}
+.face--l { transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); }
+.face--r { transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); }
+.face--top {
+  left: 0; top: calc((var(--h) - var(--d)) / 2); width: 100%; height: var(--d);
+  transform: rotateX(90deg) translateZ(calc(var(--h) / 2));
+  background: linear-gradient(rgba(220, 235, 245, .24), rgba(220, 235, 245, .1));
+}
+/* Joint aimanté : ligne de laiton au milieu du dessus (seulement sur le produit actif, net à cet angle) */
+.face--top::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--brass); }
+.item:not(.is-active) .face--top::after { display: none; }
+.item[data-shape="plat"] :is(.face--side, .face--top, .face__glare) { display: none; }
+.item[data-shape="plat"] .face--front::after { box-shadow: none; }
+
+/* Reflet au sol (profondeur < 0.5) et ombre elliptique */
+.item__refl {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none;
+  transform-origin: 50% 100%; transform: translateZ(calc(var(--d) / 2)) scaleY(-1);
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, .38), transparent 42%);
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, .38), transparent 42%);
+  filter: brightness(.55);
+}
+.item__refl img { width: 100%; height: 100%; object-fit: contain; }
+.item__shadow {
+  position: absolute; left: -20%; width: 140%; top: calc(100% - var(--d) * 1.2 - 10px); height: calc(var(--d) * 2.4 + 20px);
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, .7), transparent);
+  transform: translateY(var(--rise, 0px)) rotateX(90deg) scale(calc(1 + var(--lift, 0) * .35));
+  opacity: calc(.9 - var(--lift, 0) * .4);
+}
+.item__cap { display: none; }
+
+/* ---------- Lumière : projecteur (mode écran) + vignette ---------- */
+.vitrine__light { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.vitrine__spot {
+  position: absolute; left: var(--cx); top: calc(var(--cy) - var(--V) * 1.25);
+  width: calc(var(--V) * 1.6); height: calc(var(--V) * 2.2); margin-left: calc(var(--V) * -.8);
+  background: radial-gradient(ellipse 50% 60% at 50% 30%, rgba(201, 162, 78, .34), rgba(201, 162, 78, .1) 45%, transparent 70%);
+  mix-blend-mode: screen; opacity: var(--spot, 1);
+}
+.vitrine__light::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(4, 5, 8, .7)), linear-gradient(90deg, rgba(14, 15, 18, .72), transparent 38%); }
+.vitrine__dust { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; pointer-events: none; }
+
+/* ---------- Interface ---------- */
+.vitrine__chips { position: absolute; z-index: 5; left: var(--cx); top: calc(var(--cy) - var(--V) * .5 - 92px); transform: translateX(-50%); max-width: calc(100% - var(--gutter) * 2); }
+.vitrine__legend {
+  position: absolute; z-index: 5; left: var(--cx); top: calc(var(--cy) + var(--V) * .62 + 24px);
+  width: calc(var(--V) * 1.9 - 20px); max-width: calc(100vw - 120px); transform: translateX(-50%);
+  display: grid; gap: 8px; text-align: center; pointer-events: none;
+}
+.legend__name { font: 400 34px/1.12 var(--font-display); letter-spacing: -.015em; }
+.legend__name > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.legend__line { color: var(--brass); min-height: 1em; }
+.legend__price { font: 600 14px/1.3 var(--font-sans); font-variant-numeric: tabular-nums; }
+.vitrine__arrow { position: absolute; z-index: 6; left: var(--cx); top: calc(var(--cy) + var(--V) * .62 + 30px); }
+.vitrine__arrow--prev { margin-left: calc((var(--V) * .95 + 40px) * -1 - 22px); }
+.vitrine__arrow--next { margin-left: calc(var(--V) * .95 + 40px - 22px); }
+.vitrine__see {
+  position: absolute; z-index: 6; left: 0; top: 0; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%;
+  display: grid; place-items: center; border: 1px solid var(--brass); color: var(--brass); background: rgba(14, 15, 18, .55);
+  transform: scale(0);
+}
+.vitrine__see svg { width: 14px; height: 14px; }
+.vitrine__foot { position: absolute; z-index: 5; left: var(--gutter); right: var(--gutter); bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; pointer-events: none; }
+.vitrine__foot > * { pointer-events: auto; }
+.vitrine__foot-r { display: flex; align-items: center; gap: 16px; }
+.vitrine__counter { margin-bottom: calc(var(--bevel) * .9); }
+.vitrine__counter { display: flex; gap: 6px; align-items: baseline; }
+.vitrine__scroll { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+.vitrine__scroll svg { width: 14px; height: 14px; }
+.vitrine__pause svg { width: 14px; height: 14px; }
+.vitrine__hint { display: none; }
+.vitrine__empty { position: absolute; left: 50%; bottom: 30%; transform: translateX(-50%); z-index: 5; color: var(--glass-dim); }
+
+/* Étiquette de prix pendue au produit actif */
+.tag { position: absolute; z-index: 6; left: 0; top: 0; --L: calc(var(--V) * .28); perspective: 500px; transform-origin: 0 0; }
+.tag__string { position: absolute; left: -.5px; top: 0; width: 1px; height: var(--L); background: linear-gradient(var(--brass), #6e5420); }
+.tag__card { position: absolute; left: -37px; top: calc(var(--L) - 4px); width: 74px; height: 40px; transform-style: preserve-3d; }
+.tag__face {
+  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 2px; padding-top: 8px;
+  background: var(--paper); color: var(--ink); backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%, 0 12px);
+}
+.tag__face--b { transform: rotateY(180deg); }
+.tag__face::before { content: ""; position: absolute; left: 50%; top: 4px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; border: 1.5px solid var(--brass); background: var(--vault-2); }
+.tag__from { font: 600 6.5px/1 var(--font-sans); letter-spacing: .14em; color: var(--muted); }
+.tag__from:empty { display: none; }
+.tag__amount { font: 600 12.5px/1 var(--font-sans); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tag__stamp {
+  display: none; position: absolute; left: 50%; top: 50%; padding: 2px 4px; border: 1.5px solid var(--signal); color: var(--signal);
+  font: 600 7px/1 var(--font-sans); letter-spacing: .1em; transform: translate(-50%, -30%) rotate(-12deg); background: rgba(243, 239, 231, .85);
+}
+.tag__face.is-sold .tag__stamp { display: block; }
+.tag__face.is-sold .tag__amount { text-decoration: line-through; }
+.vitrine:not(.is-live) :is(.tag, .vitrine__see) { visibility: hidden; }
+
+/* ---------- Tablette ---------- */
+@media (min-width: 768px) and (max-width: 1099px) {
+  .vitrine { --cx: 50%; --cy: 57%; }
+  .vitrine__intro { top: calc(var(--hdr-h) + 28px); transform: none; width: min(70vw, 560px); }
+  .vitrine__lede { display: none; }
+  .vitrine__cta { margin-top: 18px; }
+  .vitrine__chips { top: calc(var(--cy) - var(--V) * .5 - 76px); }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 767px) {
+  .vitrine { --cx: 50%; --cy: 59%; --R: calc(var(--V) * .95); }
+  .vitrine__intro { top: calc(var(--hdr-h) + 18px); transform: none; width: auto; right: var(--gutter); }
+  .vitrine__title { font-size: 36px; }
+  .vitrine__kicker { margin-bottom: 12px; }
+  .vitrine__lede { display: none; }
+  .vitrine__cta { margin-top: 14px; }
+  .vitrine__cta .btn { min-height: 44px; }
+  .vitrine__chips { left: 0; right: 0; transform: none; max-width: none; top: calc(var(--cy) - var(--V) * .5 - 70px); padding-inline: var(--gutter); }
+  .vitrine__legend { top: calc(var(--cy) + var(--V) * .62 + 8px); gap: 5px; }
+  .legend__name { font-size: 24px; }
+  .vitrine__arrow { top: calc(var(--cy) + var(--V) * .62 + 12px); }
+  .vitrine__arrow--prev { left: var(--gutter); margin-left: 0; }
+  .vitrine__arrow--next { left: auto; right: var(--gutter); margin-left: 0; }
+  .vitrine__scroll { display: none; }
+  .vitrine__foot { bottom: 14px; }
+  .vitrine__counter { margin-bottom: calc(var(--bevel) * .7); }
+  .vitrine__item:not(:has(.is-active)) .item__refl { display: none; }
+  .tag { --L: calc(var(--V) * .22); }
+  .tag__card { left: -30px; width: 60px; height: 34px; }
+  .tag__amount { font-size: 11px; }
+  .vitrine__hint {
+    display: block; position: absolute; z-index: 6; left: 50%; top: calc(var(--cy) - var(--V) * .15);
+    padding: 9px 14px; background: rgba(14, 15, 18, .8); border: 1px solid var(--rule-dark);
+    transform: translateX(-50%); clip-path: inset(0 100% 0 0); transition: clip-path .7s var(--ease-io); pointer-events: none;
+  }
+  .vitrine.show-hint .vitrine__hint { clip-path: inset(0); }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+  .vitrine { height: max(520px, 100svh); }
+}
+
+/* ---------- Sans JS ou moins de 3 produits : rangée défilante ---------- */
+:is(.no-js .vitrine, .vitrine--flat) { height: auto; padding: calc(var(--hdr-h) + 48px) 0 calc(var(--bevel) + 56px); }
+.vitrine--flat .vitrine__intro .line > span { transform: none !important; }
+:is(.no-js .vitrine, .vitrine--flat) .vitrine__intro { position: relative; left: auto; top: auto; transform: none; width: auto; max-width: 640px; padding-inline: var(--gutter); margin-bottom: 40px; }
+:is(.no-js .vitrine, .vitrine--flat) :is(.vitrine__viewport, .vitrine__stage, .vitrine__list) { position: static; transform: none; perspective: none; width: auto; height: auto; }
+:is(.no-js .vitrine, .vitrine--flat) .vitrine__list { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--gutter) 16px; }
+:is(.no-js .vitrine, .vitrine--flat) .vitrine__item { position: static; flex: 0 0 min(70vw, 260px); width: auto; height: auto; scroll-snap-align: start; visibility: visible; }
+:is(.no-js .vitrine, .vitrine--flat) .item { position: static; width: auto; height: auto; display: grid; gap: 12px; }
+:is(.no-js .vitrine, .vitrine--flat) .face--front { position: relative; aspect-ratio: 4 / 5; transform: none; background: var(--vault-2); padding: 10%; }
+:is(.no-js .vitrine, .vitrine--flat) .item__cap { display: grid; gap: 6px; }
+:is(.no-js .vitrine, .vitrine--flat) .item__name { font: 400 19px/1.2 var(--font-display); }
+:is(.no-js .vitrine, .vitrine--flat) .item__price { color: var(--brass); }
+:is(.no-js .vitrine, .vitrine--flat) :is(.face--side, .face--top, .face__glare, .item__refl, .item__shadow, .vitrine__plate, .vitrine__chips, .tag, .vitrine__legend, .vitrine__arrow, .vitrine__see, .vitrine__foot, .vitrine__hint, .vitrine__dust, .vitrine__light, .vitrine__probe) { display: none; }

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+  <!-- Boîtier acrylique vide contenant un coffret fictif à motifs abstraits (aucun logo, aucun personnage) -->
+  <defs>
+    <linearGradient id="box" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3A3F49"/>
+      <stop offset="1" stop-color="#22252C"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#DDE8F0" stop-opacity=".18"/>
+      <stop offset=".5" stop-color="#DDE8F0" stop-opacity=".06"/>
+      <stop offset="1" stop-color="#DDE8F0" stop-opacity=".2"/>
+    </linearGradient>
+  </defs>
+  <rect x="78" y="70" width="244" height="372" fill="url(#box)"/>
+  <circle cx="200" cy="210" r="62" fill="none" stroke="#C9A24E" stroke-width="2"/>
+  <circle cx="200" cy="210" r="38" fill="none" stroke="#C9A24E" stroke-opacity=".5" stroke-width="1"/>
+  <path d="M200 160c3 30 20 47 50 50-30 3-47 20-50 50-3-30-20-47-50-50 30-3 47-20 50-50z" fill="#C9A24E" fill-opacity=".8"/>
+  <rect x="110" y="330" width="180" height="8" fill="#EEF1F2" fill-opacity=".25"/>
+  <rect x="140" y="350" width="120" height="6" fill="#EEF1F2" fill-opacity=".15"/>
+  <rect x="58" y="50" width="284" height="412" rx="3" fill="url(#glass)" stroke="#EEF1F2" stroke-opacity=".55" stroke-width="2"/>
+  <path d="M58 70h284" stroke="#C9A24E" stroke-width="1.2"/>
+  <path d="M84 60l60 392" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="10"/>
+</svg>

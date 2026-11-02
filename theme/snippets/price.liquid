@@ -1,0 +1,35 @@
+{%- comment -%}
+  Prix. Paramètres : product, variant (facultatif), size ('lg').
+  Règles : aucun faux prix barré. Le prix comparé n'apparaît que s'il est rempli dans l'admin et supérieur au prix,
+  toujours suivi de la mention Omnibus (réglage omnibus_note). Avec des prix variables : « Dès » + prix minimal, sans prix comparé.
+{%- endcomment -%}
+{%- liquid
+  if variant
+    assign target = variant
+    assign varies = false
+  else
+    assign target = product.selected_or_first_available_variant
+    assign varies = product.price_varies
+  endif
+  if varies
+    assign amount = product.price_min
+    assign compare = 0
+    assign is_available = product.available
+  else
+    assign amount = target.price
+    assign compare = target.compare_at_price | default: 0
+    assign is_available = target.available
+  endif
+-%}
+<div class="price{% if size == 'lg' %} price--lg{% endif %}" data-price>
+  {%- if varies -%}<span class="price__from">{{ 'general.from' | t }}</span>{%- endif -%}
+  <span class="price__now" data-swap="price">{{ amount | money }}</span>
+  {%- if compare > amount -%}
+    <span class="visually-hidden">{{ 'products.compare_price' | t }}</span>
+    <s class="price__was">{{ compare | money }}</s>
+    {%- if settings.omnibus_note != blank -%}
+      <p class="price__omnibus">{{ settings.omnibus_note | escape }} {{ compare | money }}</p>
+    {%- endif -%}
+  {%- endif -%}
+  {%- unless is_available -%}<span class="price__soldout">{{ 'general.sold_out' | t }}</span>{%- endunless -%}
+</div>

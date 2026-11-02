@@ -1,0 +1,18 @@
+{%- comment -%}
+  Livraison estimée : N jours ouvrés (réglages min/max). Le JS calcule les dates (Intl.DateTimeFormat),
+  le texte serveur sert de repli sans JS.
+{%- endcomment -%}
+{%- liquid
+  assign dmin = settings.shipping_min_days | default: 7
+  assign dmax = settings.shipping_max_days | default: 15
+-%}
+<div class="delivery" data-delivery data-min="{{ dmin }}" data-max="{{ dmax }}">
+  {% render 'icon', icon: 'truck' %}
+  <div>
+    <p class="delivery__main" data-delivery-text>{{ 'products.delivery_days' | t: min: dmin, max: dmax }}</p>
+    <p class="delivery__sub dim">
+      {%- if settings.shipping_countries_text != blank -%}{{ 'products.delivery_to' | t: countries: settings.shipping_countries_text }}{%- endif -%}
+      {%- if settings.show_multi_parcel_note %} · {{ 'products.multi_parcel' | t }}{% endif -%}
+    </p>
+  </div>
+</div>

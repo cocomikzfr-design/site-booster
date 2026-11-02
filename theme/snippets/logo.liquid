@@ -1,0 +1,18 @@
+{%- comment -%}
+  Logo typographique : étoile à quatre branches, nom en Fraunces italique, ligne de catégories.
+  Remplacé par settings.logo_image si renseigné.
+{%- endcomment -%}
+<a href="{{ routes.root_url }}" class="logo" aria-label="{% render 'brand-name' %}, {{ 'header.home' | t }}"{% if settings.anim_magnetic %} data-magnetic{% endif %}>
+  {%- if settings.logo_image != blank -%}
+    {%- assign logo_w = settings.logo_width -%}
+    {{- settings.logo_image | image_url: width: 520 | image_tag: width: logo_w, alt: '', loading: 'eager', style: '--logo-w:' | append: logo_w | append: 'px' -}}
+  {%- else -%}
+    <span class="logo__name">
+      <svg class="logo__star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0z" fill="currentColor"/></svg>
+      {%- render 'brand-name' -%}
+    </span>
+    {%- if settings.logo_tagline != blank -%}
+      <span class="logo__tag" aria-hidden="true">{{ settings.logo_tagline | escape }}</span>
+    {%- endif -%}
+  {%- endif -%}
+</a>

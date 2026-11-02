@@ -1,0 +1,99 @@
+{%- comment -%}
+  Header : menu à gauche, logo au centre, recherche / compte / panier à droite.
+  Transparent au-dessus de la vitrine de l'accueil, collant sur papier ailleurs (header.js).
+  Contient aussi le menu plein écran et le panneau de recherche instantanée.
+{%- endcomment -%}
+{{ 'search.css' | asset_url | stylesheet_tag }}
+{%- assign menu = section.settings.menu -%}
+
+<header class="hdr" data-header>
+  <div class="hdr__bg" aria-hidden="true"></div>
+  <div class="hdr__in wrap">
+    <div class="hdr__left">
+      <button type="button" class="hdr__icon" data-menu-open aria-controls="MenuDrawer" aria-expanded="false">
+        {%- render 'icon', icon: 'menu' -%}<span class="visually-hidden">{{ 'header.menu' | t }}</span>
+      </button>
+      {%- if menu.links.size > 0 -%}
+        <nav class="hdr__nav" aria-label="{{ 'header.main_nav' | t }}">
+          <ul role="list">
+            {%- for link in menu.links limit: 5 -%}
+              <li><a href="{{ link.url }}" class="ul ul--hover"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    </div>
+
+    {%- render 'logo' -%}
+
+    <div class="hdr__right">
+      <a href="{{ routes.search_url }}" class="hdr__icon" data-search-open aria-label="{{ 'header.search' | t }}">{% render 'icon', icon: 'search' %}</a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}" class="hdr__icon" aria-label="{{ 'header.account' | t }}">{% render 'icon', icon: 'user' %}</a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="hdr__icon" data-cart-open>
+        {%- render 'icon', icon: 'cart' -%}
+        <span class="visually-hidden" data-cart-label>{{ 'header.cart_label' | t: count: cart.item_count }}</span>
+        <span class="bubble" data-cart-bubble aria-hidden="true"{% if cart.item_count == 0 %} hidden{% endif %}>
+          <span class="mask"><span data-bubble-count>{{ cart.item_count }}</span></span>
+        </span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div id="MenuDrawer" class="menu world-dark" role="dialog" aria-modal="true" aria-label="{{ 'header.menu' | t }}" data-menu hidden>
+  <button type="button" class="btn--icon menu__close" data-menu-close aria-label="{{ 'general.close' | t }}">{% render 'icon', icon: 'close' %}</button>
+  <nav aria-label="{{ 'header.main_nav' | t }}">
+    <ul class="menu__list" role="list">
+      {%- for link in menu.links -%}
+        <li style="--i:{{ forloop.index0 }}">
+          <a href="{{ link.url }}" class="menu__link"{% if link.current %} aria-current="page"{% endif %}><span class="line"><span>{{ link.title | escape }}</span></span></a>
+          {%- if link.links.size > 0 -%}
+            <ul class="menu__sub" role="list">
+              {%- for child in link.links -%}
+                <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- else -%}
+        <li><a href="{{ routes.all_products_collection_url }}" class="menu__link"><span class="line"><span>{{ 'header.all_products' | t }}</span></span></a></li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+  <div class="menu__foot lbl">
+    {%- if shop.customer_accounts_enabled -%}<a href="{{ routes.account_url }}" class="ul">{{ 'header.account' | t }}</a>{%- endif -%}
+    {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" class="ul" rel="noopener" target="_blank">Instagram</a>{%- endif -%}
+    {%- if settings.social_tiktok != blank -%}<a href="{{ settings.social_tiktok }}" class="ul" rel="noopener" target="_blank">TikTok</a>{%- endif -%}
+    {%- if settings.social_youtube != blank -%}<a href="{{ settings.social_youtube }}" class="ul" rel="noopener" target="_blank">YouTube</a>{%- endif -%}
+  </div>
+</div>
+
+<div id="SearchPanel" class="search-panel world-dark" role="dialog" aria-modal="true" aria-labelledby="SearchPanelTitle" data-search-panel hidden>
+  <div class="wrap search-panel__in">
+    <div class="search-panel__top">
+      <h2 class="lbl dim" id="SearchPanelTitle">{{ 'header.search' | t }}</h2>
+      <button type="button" class="btn--icon" data-search-close aria-label="{{ 'general.close' | t }}">{% render 'icon', icon: 'close' %}</button>
+    </div>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-panel__form">
+      <label for="SearchInput" class="visually-hidden">{{ 'header.search' | t }}</label>
+      <input id="SearchInput" type="search" name="q" class="search-panel__input" placeholder="{{ 'search.placeholder' | t }}" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="SearchStatus" aria-controls="SearchResults" data-search-input>
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="submit" class="btn--icon" aria-label="{{ 'search.submit' | t }}">{% render 'icon', icon: 'arrow-right' %}</button>
+    </form>
+    <p id="SearchStatus" class="visually-hidden" aria-live="polite" data-search-status></p>
+    <div id="SearchResults" class="search-panel__results" data-search-results></div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "hdr-section",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" }
+  ]
+}
+{% endschema %}

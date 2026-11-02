@@ -1,0 +1,95 @@
+{%- comment -%}
+  Pied de page (salle) : logo et promesse, menus Boutique et Aide, newsletter compacte,
+  politiques Shopify, moyens de paiement, mentions légales, nom géant en parallaxe.
+{%- endcomment -%}
+<footer class="ftr world-dark" data-footer>
+  <div class="wrap">
+    <div class="ftr__grid">
+      <div>
+        {%- render 'logo' -%}
+        {%- if settings.promise != blank -%}<p class="ftr__promise">{{ settings.promise | escape }}</p>{%- endif -%}
+        <div class="ftr__social">
+          {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" class="btn--icon" target="_blank" rel="noopener" aria-label="Instagram">{% render 'icon', icon: 'instagram' %}</a>{%- endif -%}
+          {%- if settings.social_tiktok != blank -%}<a href="{{ settings.social_tiktok }}" class="btn--icon" target="_blank" rel="noopener" aria-label="TikTok">{% render 'icon', icon: 'tiktok' %}</a>{%- endif -%}
+          {%- if settings.social_youtube != blank -%}<a href="{{ settings.social_youtube }}" class="btn--icon" target="_blank" rel="noopener" aria-label="YouTube">{% render 'icon', icon: 'youtube' %}</a>{%- endif -%}
+        </div>
+      </div>
+
+      {%- for menu_id in (1..2) -%}
+        {%- liquid
+          if menu_id == 1
+            assign fmenu = section.settings.menu_shop
+            assign ftitle = section.settings.title_shop
+          else
+            assign fmenu = section.settings.menu_help
+            assign ftitle = section.settings.title_help
+          endif
+        -%}
+        {%- if fmenu.links.size > 0 -%}
+          <nav aria-label="{{ ftitle | escape }}">
+            <h2 class="ftr__title lbl">{{ ftitle | escape }}</h2>
+            <ul class="ftr__links" role="list">
+              {%- for link in fmenu.links -%}
+                <li><a href="{{ link.url }}" class="ul">{{ link.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if section.settings.show_newsletter -%}
+        <div>
+          <h2 class="ftr__title lbl" id="FooterNlTitle">{{ 'newsletter.footer_title' | t }}</h2>
+          {%- form 'customer', id: 'FooterNewsletter', class: 'ftr__nl' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            {%- if form.posted_successfully? -%}
+              <p class="form-msg" role="status"><span class="mask"><span>{{ 'newsletter.success' | t }}</span></span></p>
+            {%- else -%}
+              <div class="inline-form">
+                <label for="FooterNlEmail" class="visually-hidden">{{ 'newsletter.email' | t }}</label>
+                <input id="FooterNlEmail" type="email" name="contact[email]" class="input" autocomplete="email" required placeholder="{{ 'newsletter.email' | t }}" aria-describedby="FooterNlTitle{% if form.errors %} FooterNlError{% endif %}">
+                <button type="submit" class="btn--icon" aria-label="{{ 'newsletter.submit' | t }}">{% render 'icon', icon: 'arrow-right' %}</button>
+              </div>
+              {%- if form.errors -%}<p id="FooterNlError" class="form-msg form-msg--error" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>{%- endif -%}
+              <p class="ftr__consent dim">{{ 'newsletter.consent_html' | t: url: shop.privacy_policy.url }}</p>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="ftr__bottom">
+      <p>© {{ 'now' | date: '%Y' }} {% render 'brand-name' %}{% if settings.legal_mention != blank %} · {{ settings.legal_mention | escape }}{% endif %}</p>
+      {%- if shop.policies.size > 0 -%}
+        <ul class="ftr__policies" role="list">
+          {%- for policy in shop.policies -%}
+            <li><a href="{{ policy.url }}" class="ul">{{ policy.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <ul class="ftr__pay" role="list" aria-label="{{ 'general.payment_methods' | t }}">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+  <div class="ftr__giant" aria-hidden="true"><span data-giant>{% render 'brand-name' %}</span></div>
+</footer>
+
+{% schema %}
+{
+  "name": "Pied de page",
+  "class": "ftr-section",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "text", "id": "title_shop", "label": "Titre du menu 1", "default": "Boutique" },
+    { "type": "link_list", "id": "menu_shop", "label": "Menu 1", "default": "main-menu" },
+    { "type": "text", "id": "title_help", "label": "Titre du menu 2", "default": "Aide" },
+    { "type": "link_list", "id": "menu_help", "label": "Menu 2", "default": "footer" },
+    { "type": "checkbox", "id": "show_newsletter", "label": "Afficher la newsletter", "default": true }
+  ]
+}
+{% endschema %}
