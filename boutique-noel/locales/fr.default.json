@@ -1,0 +1,241 @@
+{
+  "general": {
+    "skip_to_content": "Aller au contenu",
+    "close": "Fermer",
+    "open_menu": "Ouvrir le menu",
+    "close_menu": "Fermer le menu",
+    "menu": "Menu",
+    "search": "Rechercher",
+    "search_placeholder": "Rechercher une décoration",
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "back_to_home": "Retour à l'accueil",
+    "continue_shopping": "Continuer mes achats",
+    "view_all": "Tout voir",
+    "learn_more": "En savoir plus",
+    "required": "obligatoire",
+    "home": "Accueil",
+    "breadcrumbs": "Fil d'Ariane",
+    "share": "Partager",
+    "link_copied": "Lien copié",
+    "noscript": "JavaScript est désactivé : le panier et la commande fonctionnent quand même, page par page.",
+    "placeholder_product": "Exemple de produit",
+    "months": "janvier,février,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre",
+    "first_day": "1er"
+  },
+  "accessibility": {
+    "play_video": "Lire la vidéo",
+    "pause_video": "Mettre la vidéo en pause",
+    "new_window": "S'ouvre dans une nouvelle fenêtre",
+    "previous_image": "Image précédente",
+    "next_image": "Image suivante",
+    "image_of": "Image {{ index }} sur {{ count }}",
+    "social_link": "{{ network }} de {{ shop }}",
+    "decorative": "Décoration",
+    "pause_announcements": "Mettre les annonces en pause",
+    "play_announcements": "Relancer les annonces",
+    "go_to_image": "Afficher l'image {{ index }}",
+    "zoom_dialog": "Image agrandie",
+    "thumbnails": "Miniatures"
+  },
+  "social": {
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "youtube": "YouTube"
+  },
+  "header": {
+    "cart": "Panier",
+    "cart_count": {
+      "one": "{{ count }} article dans le panier",
+      "other": "{{ count }} articles dans le panier"
+    },
+    "account": "Mon compte"
+  },
+  "announcement": {
+    "default": "Livraison offerte en France et en Belgique"
+  },
+  "countdown": {
+    "title": "Pour recevoir avant Noël",
+    "intro": "Commandez avant le {{ date }}",
+    "days": "j",
+    "hours": "h",
+    "minutes": "min",
+    "days_long": "jours",
+    "hours_long": "heures",
+    "minutes_long": "minutes",
+    "days_one": "jour",
+    "hours_one": "heure",
+    "minutes_one": "minute",
+    "deadline_passed": "La date limite pour une livraison avant Noël est passée.",
+    "remaining_label": "Temps restant avant la date limite de commande",
+    "summary": "Temps restant avant la date limite de commande : {{ days }} {{ days_unit }}, {{ hours }} {{ hours_unit }} et {{ minutes }} {{ minutes_unit }}"
+  },
+  "delivery": {
+    "estimate": "Livraison estimée entre le {{ start }} et le {{ end }}",
+    "delay": "Livraison en {{ min }} à {{ max }} jours",
+    "free": "Livraison offerte {{ countries }}",
+    "before_christmas": "Commandé avant le {{ date }}, reçu avant Noël",
+    "after_christmas": "Les commandes passées maintenant arriveront après Noël.",
+    "tracking": "Numéro de suivi envoyé par e-mail dès l'expédition",
+    "auto_text": "Nos décorations sont livrées en {{ min }} à {{ max }} jours. Pour les recevoir avant Noël, commandez au plus tard le {{ date }}.",
+    "timeline_label": "Étapes de votre commande",
+    "step_order": "Aujourd'hui : vous commandez",
+    "step_shipping": "Expédition : numéro de suivi par e-mail",
+    "step_delivery": "Livraison estimée",
+    "range": "{{ start }} – {{ end }}"
+  },
+  "products": {
+    "add_to_cart": "Ajouter au panier",
+    "adding": "Ajout en cours…",
+    "added": "Ajouté au panier",
+    "sold_out": "Épuisé",
+    "unavailable": "Indisponible",
+    "choose_option": "Choisir {{ option }}",
+    "quantity": "Quantité",
+    "increase_quantity": "Augmenter la quantité de {{ product }}",
+    "decrease_quantity": "Diminuer la quantité de {{ product }}",
+    "price": "Prix",
+    "regular_price": "Prix habituel",
+    "sale_price": "Prix réduit",
+    "from_price": "À partir de {{ price }}",
+    "save_percent": "−{{ percent }} %",
+    "save_amount": "−{{ amount }}",
+    "taxes_included": "Taxes incluses.",
+    "withdrawal": "{{ days }} jours pour changer d'avis",
+    "most_chosen": "Le plus choisi",
+    "in_pack": "Inclus dans le pack",
+    "see_pack": "Voir le pack",
+    "see_product": "Voir le produit",
+    "sticky_add": "Ajouter — {{ price }}",
+    "description": "Description",
+    "contents": "Contenu du colis",
+    "specs": "Caractéristiques",
+    "safety": "Sécurité et utilisation",
+    "faq": "Questions fréquentes",
+    "secure_payment": "Paiement sécurisé",
+    "gallery": "Galerie de photos",
+    "open_media": "Agrandir l'image {{ index }}",
+    "video_label": "Vidéo du produit allumé",
+    "free_shipping": "Livraison offerte",
+    "pack_cta_title": "Encore mieux en pack",
+    "bundle_saving": "Vous économisez {{ amount }} par rapport aux produits achetés séparément."
+  },
+  "cart": {
+    "title": "Votre panier",
+    "empty": "Votre panier est vide.",
+    "empty_cta": "Découvrir les décorations",
+    "empty_suggestions": "Nos décorations préférées",
+    "subtotal": "Sous-total",
+    "checkout": "Passer commande",
+    "note": "Note pour la commande",
+    "remove": "Retirer",
+    "remove_item": "Retirer {{ title }} du panier",
+    "update": "Mettre à jour",
+    "shipping_note": "Livraison offerte. Taxes et frais éventuels calculés à l'étape suivante.",
+    "shipping_note_paid": "Taxes et frais de livraison calculés à l'étape suivante.",
+    "withdrawal": "Vous disposez de {{ days }} jours pour changer d'avis après réception.",
+    "upsell_title": "Complétez votre façade",
+    "upsell_add": "Ajouter",
+    "error_generic": "Impossible de mettre à jour le panier. Veuillez réessayer.",
+    "error_quantity": "Cette quantité n'est pas disponible.",
+    "item_added": "{{ title }} a été ajouté au panier.",
+    "view_cart": "Voir le panier",
+    "items": {
+      "one": "{{ count }} article",
+      "other": "{{ count }} articles"
+    },
+    "discount": "Réduction",
+    "price_each": "{{ price }} l'unité",
+    "line_total": "Total de la ligne"
+  },
+  "collection": {
+    "empty": "Aucun produit dans cette collection pour le moment.",
+    "products_count": {
+      "one": "{{ count }} produit",
+      "other": "{{ count }} produits"
+    },
+    "sort_by": "Trier par",
+    "apply": "Appliquer"
+  },
+  "search": {
+    "title": "Recherche",
+    "results_for": "Résultats pour « {{ terms }} »",
+    "no_results": "Aucun résultat pour « {{ terms }} ». Essayez un autre mot, par exemple « guirlande ».",
+    "submit": "Lancer la recherche",
+    "results_count": {
+      "one": "{{ count }} résultat",
+      "other": "{{ count }} résultats"
+    }
+  },
+  "contact": {
+    "title": "Nous contacter",
+    "name": "Nom",
+    "email": "E-mail",
+    "phone": "Téléphone (facultatif)",
+    "order_number": "Numéro de commande (facultatif)",
+    "message": "Message",
+    "send": "Envoyer",
+    "success": "Merci, votre message a bien été envoyé. Nous répondons sous 24 h ouvrées.",
+    "error": "Veuillez corriger les champs signalés.",
+    "email_missing": "[À COMPLÉTER : e-mail du service client]"
+  },
+  "newsletter": {
+    "label": "Adresse e-mail",
+    "placeholder": "vous@exemple.fr",
+    "submit": "S'inscrire",
+    "success": "Merci, votre inscription est confirmée.",
+    "consent": "En vous inscrivant, vous acceptez de recevoir nos e-mails. Désinscription en un clic à tout moment.",
+    "error": "Veuillez saisir une adresse e-mail valide."
+  },
+  "footer": {
+    "payment_methods": "Moyens de paiement acceptés",
+    "legal": "Informations légales",
+    "help": "Aide",
+    "copyright": "© {{ year }} {{ name }}",
+    "withdrawal": "Rétractation : {{ days }} jours",
+    "social": "Suivez-nous"
+  },
+  "blog": {
+    "read_more": "Lire la suite",
+    "published_on": "Publié le {{ date }}",
+    "back_to_blog": "Retour au blog",
+    "empty": "Aucun article pour le moment.",
+    "related_products": "Les décorations de cet article"
+  },
+  "not_found": {
+    "title": "Page introuvable",
+    "text": "La page que vous cherchez n'existe pas ou a été déplacée.",
+    "products_heading": "Nos décorations lumineuses"
+  },
+  "password": {
+    "title": "Ouverture prochaine",
+    "enter_password": "Entrer avec le mot de passe",
+    "password_label": "Mot de passe",
+    "submit": "Entrer",
+    "admin_login": "Accès propriétaire",
+    "error": "Mot de passe incorrect.",
+    "newsletter_heading": "Soyez prévenu de l'ouverture"
+  },
+  "gift_card": {
+    "title": "Votre carte cadeau",
+    "code": "Code de la carte cadeau",
+    "balance": "Solde : {{ value }}",
+    "print": "Imprimer",
+    "copy": "Copier le code",
+    "copied": "Code copié",
+    "initial_value": "Valeur initiale : {{ value }}",
+    "expired": "Cette carte cadeau a expiré.",
+    "disabled": "Cette carte cadeau est désactivée.",
+    "expires_on": "Valable jusqu'au {{ date }}",
+    "use_online": "Utiliser ma carte sur la boutique",
+    "qr_label": "QR code de la carte cadeau",
+    "apple_wallet": "Ajouter à Apple Wallet"
+  },
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Page précédente",
+    "next": "Page suivante",
+    "page": "Page {{ number }}"
+  }
+}

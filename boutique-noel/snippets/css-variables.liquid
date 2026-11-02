@@ -1,0 +1,36 @@
+{%- comment -%}
+  Polices et variables CSS issues des réglages du thème.
+  Partagé par layout/theme.liquid, layout/password.liquid et templates/gift_card.liquid.
+  Accepte : rien (utilise les réglages du thème).
+{%- endcomment -%}
+{%- liquid
+  assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+-%}
+<style>
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_face: font_display: 'swap' }}
+  {{ body_font_bold | font_face: font_display: 'swap' }}
+
+  :root {
+    --color-night: {{ settings.color_night }};
+    --color-night-soft: {{ settings.color_night_soft }};
+    --color-cream: {{ settings.color_cream }};
+    --color-surface: {{ settings.color_surface }};
+    --color-text-dark: {{ settings.color_text_dark }};
+    --color-text-light: {{ settings.color_text_light }};
+    --color-muted-dark: {{ settings.color_muted_dark }};
+    --color-muted-light: {{ settings.color_muted_light }};
+    --color-gold: {{ settings.color_gold }};
+    --color-red: {{ settings.color_red }};
+    --color-green: {{ settings.color_green }};
+    --font-heading-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-heading-weight: {{ settings.type_heading_font.weight }};
+    --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --font-body-weight: {{ settings.type_body_font.weight }};
+    --font-body-weight-bold: {{ body_font_bold.weight | default: 700 }};
+    --heading-scale: {{ settings.heading_scale | divided_by: 100.0 }};
+    --body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+    --logo-width: {{ settings.logo_width }}px;
+    --logo-width-mobile: {{ settings.logo_width_mobile }}px;
+  }
+</style>

@@ -1,0 +1,428 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Noël en Façade",
+    "theme_version": "1.0.0",
+    "theme_author": "Corentin",
+    "theme_documentation_url": "https://www.shopify.com",
+    "theme_support_url": "https://www.shopify.com"
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_night",
+        "label": "Bleu nuit des sections sombres",
+        "default": "#0E1A2B"
+      },
+      {
+        "type": "color",
+        "id": "color_night_soft",
+        "label": "Bleu nuit des cartes",
+        "default": "#15243A"
+      },
+      {
+        "type": "color",
+        "id": "color_cream",
+        "label": "Fond des sections claires",
+        "default": "#FBF7F0"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Fond des cartes claires",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_text_dark",
+        "label": "Texte sur fond clair",
+        "default": "#1B2430"
+      },
+      {
+        "type": "color",
+        "id": "color_text_light",
+        "label": "Texte sur fond sombre",
+        "default": "#F7F4EE"
+      },
+      {
+        "type": "color",
+        "id": "color_muted_dark",
+        "label": "Texte secondaire sur fond clair",
+        "default": "#5B6575"
+      },
+      {
+        "type": "color",
+        "id": "color_muted_light",
+        "label": "Texte secondaire sur fond sombre",
+        "default": "#A9B4C4"
+      },
+      {
+        "type": "color",
+        "id": "color_gold",
+        "label": "Accent doré",
+        "default": "#E8B54A"
+      },
+      {
+        "type": "color",
+        "id": "color_red",
+        "label": "Bouton d'achat",
+        "default": "#C8312B"
+      },
+      {
+        "type": "color",
+        "id": "color_green",
+        "label": "Confirmations",
+        "default": "#1F5E46"
+      },
+      {
+        "type": "paragraph",
+        "content": "Vérifiez la lisibilité après chaque changement de couleur."
+      }
+    ]
+  },
+  {
+    "name": "Typographie",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "label": "Police des titres",
+        "default": "playfair_display_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Police du texte",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "label": "Taille des titres",
+        "min": 100,
+        "max": 130,
+        "step": 5,
+        "unit": "%",
+        "default": 105
+      },
+      {
+        "type": "range",
+        "id": "body_scale",
+        "label": "Taille du texte",
+        "min": 100,
+        "max": 120,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Logo et favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo",
+        "info": "Laissez vide pour afficher le nom de la boutique en texte."
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "label": "Largeur du logo sur ordinateur",
+        "min": 60,
+        "max": 240,
+        "step": 10,
+        "unit": "px",
+        "default": 140
+      },
+      {
+        "type": "range",
+        "id": "logo_width_mobile",
+        "label": "Largeur du logo sur mobile",
+        "min": 60,
+        "max": 180,
+        "step": 10,
+        "unit": "px",
+        "default": 110
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "32 × 32 px recommandé."
+      }
+    ]
+  },
+  {
+    "name": "Saison de Noël",
+    "settings": [
+      {
+        "type": "select",
+        "id": "season_mode",
+        "label": "Mode",
+        "options": [
+          { "value": "christmas", "label": "Noël : compte à rebours et livraison avant Noël" },
+          { "value": "off_season", "label": "Hors saison : aucun message lié à Noël" }
+        ],
+        "default": "christmas"
+      },
+      {
+        "type": "text",
+        "id": "delivery_deadline_date",
+        "label": "Date limite pour recevoir avant Noël",
+        "info": "Format AAAA-MM-JJ, par exemple 2026-12-08.",
+        "default": "2026-12-08"
+      },
+      {
+        "type": "text",
+        "id": "delivery_deadline_time",
+        "label": "Heure limite (heure de Bruxelles)",
+        "info": "Format HH:MM, par exemple 23:59.",
+        "default": "23:59"
+      },
+      {
+        "type": "text",
+        "id": "christmas_date",
+        "label": "Date de Noël utilisée pour les calculs",
+        "info": "Format AAAA-MM-JJ. Une livraison estimée après cette date affiche le message « après Noël ».",
+        "default": "2026-12-24"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_countdown",
+        "label": "Afficher le compte à rebours",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "snow_enabled",
+        "label": "Neige décorative animée",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "snow_density",
+        "label": "Nombre de flocons",
+        "min": 10,
+        "max": 60,
+        "step": 5,
+        "default": 25
+      },
+      {
+        "type": "paragraph",
+        "content": "Après la date limite, le site affiche automatiquement un message de livraison après Noël."
+      }
+    ]
+  },
+  {
+    "name": "Livraison",
+    "settings": [
+      {
+        "type": "range",
+        "id": "delivery_min_days",
+        "label": "Délai minimum",
+        "min": 3,
+        "max": 20,
+        "step": 1,
+        "unit": "j",
+        "default": 7
+      },
+      {
+        "type": "range",
+        "id": "delivery_max_days",
+        "label": "Délai maximum",
+        "min": 5,
+        "max": 30,
+        "step": 1,
+        "unit": "j",
+        "default": 12
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_skip_sundays",
+        "label": "Ne pas compter les dimanches dans l'estimation",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "free_shipping",
+        "label": "Afficher « Livraison offerte »",
+        "info": "Doit correspondre au tarif réglé dans Paramètres > Expédition et livraison.",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "shipping_countries_text",
+        "label": "Pays de livraison affichés",
+        "default": "en France et en Belgique"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_delivery_estimate",
+        "label": "Afficher les dates estimées sur les fiches produits",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Panier",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Type de panier",
+        "options": [
+          { "value": "drawer", "label": "Tiroir latéral" },
+          { "value": "page", "label": "Page panier" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "product",
+        "id": "cart_upsell_product",
+        "label": "Produit proposé dans le panier",
+        "info": "Conseillé : la guirlande neige. Il n'apparaît pas s'il est déjà dans le panier."
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_upsell_enabled",
+        "label": "Afficher la suggestion dans le panier",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cart_note",
+        "label": "Champ « Note pour la commande »",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_withdrawal_notice",
+        "label": "Rappeler le délai de rétractation dans le panier",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Produits",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_discount_badge",
+        "label": "Badge de réduction quand un prix barré réel existe",
+        "info": "Une réduction se calcule sur le prix le plus bas pratiqué dans les 30 jours précédents.",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "discount_badge_style",
+        "label": "Affichage de la réduction",
+        "options": [
+          { "value": "percent", "label": "Pourcentage" },
+          { "value": "amount", "label": "Montant" }
+        ],
+        "default": "percent"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sticky_atc",
+        "label": "Barre d'achat collante sur mobile",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_payment_icons",
+        "label": "Moyens de paiement sous le bouton d'achat",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "card_image_ratio",
+        "label": "Format des images des cartes produits",
+        "options": [
+          { "value": "square", "label": "Carré" },
+          { "value": "portrait", "label": "Portrait 4:5" },
+          { "value": "landscape", "label": "Paysage 16:9" }
+        ],
+        "default": "square"
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_secondary_image",
+        "label": "Deuxième image au survol (ordinateur)",
+        "default": true
+      },
+      {
+        "type": "product",
+        "id": "pack_product",
+        "label": "Produit pack",
+        "info": "Utilisé pour les liens « Voir le pack » et la mise en avant du pack."
+      }
+    ]
+  },
+  {
+    "name": "Service client",
+    "settings": [
+      {
+        "type": "text",
+        "id": "support_email",
+        "label": "E-mail affiché sur le site",
+        "info": "[À COMPLÉTER]"
+      },
+      {
+        "type": "text",
+        "id": "support_hours",
+        "label": "Délai de réponse",
+        "default": "Réponse sous 24 h, du lundi au samedi"
+      },
+      {
+        "type": "number",
+        "id": "return_days",
+        "label": "Jours de rétractation affichés",
+        "default": 14
+      },
+      {
+        "type": "text",
+        "id": "legal_entity_name",
+        "label": "Nom légal de l'entreprise",
+        "info": "Affiché dans le pied de page. [À COMPLÉTER]"
+      }
+    ]
+  },
+  {
+    "name": "Réseaux sociaux",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Seuls les liens remplis s'affichent."
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "Lien TikTok",
+        "placeholder": "https://www.tiktok.com/@..."
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Lien Instagram",
+        "placeholder": "https://www.instagram.com/..."
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Lien Facebook",
+        "placeholder": "https://www.facebook.com/..."
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "Lien YouTube",
+        "placeholder": "https://www.youtube.com/@..."
+      }
+    ]
+  }
+]

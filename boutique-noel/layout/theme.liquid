@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_night }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_page != 1 %} – {{ 'pagination.page' | t: number: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} – {{ shop.name }}{% endunless -%}
+    </title>
+
+    {%- if template.name == 'search' -%}
+      <meta name="robots" content="noindex">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+
+    {{ content_for_header }}
+
+    {% render 'css-variables' %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'components.css' | asset_url | stylesheet_tag }}
+
+    <script>document.documentElement.classList.replace('no-js', 'js');</script>
+    <script>
+      window.themeConfig = {
+        routes: {
+          cart_url: {{ routes.cart_url | json }},
+          cart_add_url: {{ routes.cart_add_url | json }},
+          cart_change_url: {{ routes.cart_change_url | json }},
+          cart_update_url: {{ routes.cart_update_url | json }},
+          root_url: {{ routes.root_url | json }},
+          search_url: {{ routes.search_url | json }}
+        },
+        cartType: {{ settings.cart_type | json }},
+        seasonMode: {{ settings.season_mode | json }},
+        deadline: {
+          date: {{ settings.delivery_deadline_date | json }},
+          time: {{ settings.delivery_deadline_time | json }},
+          christmas: {{ settings.christmas_date | json }}
+        },
+        delivery: {
+          min: {{ settings.delivery_min_days | json }},
+          max: {{ settings.delivery_max_days | json }},
+          skipSundays: {{ settings.delivery_skip_sundays | json }}
+        },
+        discountBadge: {
+          enabled: {{ settings.show_discount_badge | json }},
+          style: {{ settings.discount_badge_style | json }}
+        },
+        moneyFormat: {{ shop.money_format | json }},
+        locale: {{ request.locale.iso_code | json }},
+        strings: {
+          adding: {{ 'products.adding' | t | json }},
+          added: {{ 'products.added' | t | json }},
+          addToCart: {{ 'products.add_to_cart' | t | json }},
+          soldOut: {{ 'products.sold_out' | t | json }},
+          unavailable: {{ 'products.unavailable' | t | json }},
+          priceLabel: {{ 'products.price' | t | json }},
+          salePriceLabel: {{ 'products.sale_price' | t | json }},
+          savePercent: {{ 'products.save_percent' | t: percent: '[percent]' | json }},
+          saveAmount: {{ 'products.save_amount' | t: amount: '[amount]' | json }},
+          stickyAdd: {{ 'products.sticky_add' | t: price: '[price]' | json }},
+          imageOf: {{ 'accessibility.image_of' | t: index: '[index]', count: '[count]' | json }},
+          cartError: {{ 'cart.error_generic' | t | json }},
+          quantityError: {{ 'cart.error_quantity' | t | json }},
+          itemAdded: {{ 'cart.item_added' | t: title: '[title]' | json }},
+          linkCopied: {{ 'general.link_copied' | t | json }},
+          days: {{ 'countdown.days' | t | json }},
+          hours: {{ 'countdown.hours' | t | json }},
+          minutes: {{ 'countdown.minutes' | t | json }},
+          daysLong: {{ 'countdown.days_long' | t | json }},
+          hoursLong: {{ 'countdown.hours_long' | t | json }},
+          minutesLong: {{ 'countdown.minutes_long' | t | json }},
+          daysOne: {{ 'countdown.days_one' | t | json }},
+          hoursOne: {{ 'countdown.hours_one' | t | json }},
+          minutesOne: {{ 'countdown.minutes_one' | t | json }},
+          countdownSummary: {{ 'countdown.summary' | t: days: '[days]', days_unit: '[days_unit]', hours: '[hours]', hours_unit: '[hours_unit]', minutes: '[minutes]', minutes_unit: '[minutes_unit]' | json }},
+          deadlinePassed: {{ 'countdown.deadline_passed' | t | json }},
+          estimate: {{ 'delivery.estimate' | t: start: '[start]', end: '[end]' | json }},
+          range: {{ 'delivery.range' | t: start: '[start]', end: '[end]' | json }},
+          afterChristmas: {{ 'delivery.after_christmas' | t | json }}
+        }
+      };
+    </script>
+
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+    <script src="{{ 'cart.js' | asset_url }}" defer></script>
+    <script src="{{ 'delivery.js' | asset_url }}" defer></script>
+    {%- if settings.snow_enabled -%}
+      <script src="{{ 'snow.js' | asset_url }}" defer></script>
+    {%- endif -%}
+  </head>
+
+  <body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}--{{ template.suffix }}{% endif %}">
+    <div id="ThemeAnnouncer" class="visually-hidden" role="status" aria-live="polite"></div>
+    <a class="skip-link" href="#MainContent">{{ 'general.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="main" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {% section 'cart-drawer' %}
+    {%- endif -%}
+
+    {%- if settings.snow_enabled -%}
+      <div class="snow-layer" aria-hidden="true" data-density="{{ settings.snow_density }}"></div>
+    {%- endif -%}
+
+    <div class="toast" role="status" aria-live="polite" hidden></div>
+
+    <noscript>
+      <p class="noscript-notice">{{ 'general.noscript' | t }}</p>
+    </noscript>
+  </body>
+</html>
