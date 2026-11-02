@@ -49,7 +49,8 @@
           "settings": {
             "heading": "Livraison et retours",
             "icon": "truck",
-            "content": "<p>Livraison offerte en France et en Belgique.</p><p>Délai : 7 à 12 jours après la commande. Numéro de suivi envoyé par e-mail.</p><p>Pour recevoir avant Noël, commandez au plus tard le 8 décembre.</p><p>14 jours pour changer d'avis après réception, selon notre politique de remboursement.</p>"
+            "content": "<p>Livraison offerte en France et en Belgique.</p><p>Délai : 7 à 12 jours après la commande. Numéro de suivi envoyé par e-mail.</p><p>14 jours pour changer d'avis après réception, selon notre politique de remboursement.</p>",
+            "christmas_note": true
           }
         }
       },

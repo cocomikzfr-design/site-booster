@@ -1,0 +1,20 @@
+{%- comment -%}
+  Phrase sur la date limite de Noël, construite à partir des réglages du thème (toujours à jour).
+  Avant la date limite : « Pour recevoir avant Noël, commandez au plus tard le 8 décembre. »
+  Après : « Les commandes passées maintenant arriveront après Noël. » (bascule faite aussi par delivery.js)
+  Hors saison ou date mal saisie : rien.
+  Accepte : rien (utilise les réglages du thème).
+{%- endcomment -%}
+{%- if settings.season_mode == 'christmas' -%}
+  {%- capture deadline_remaining -%}{% render 'deadline-remaining' %}{%- endcapture -%}
+  {%- if deadline_remaining != blank -%}
+    {%- liquid
+      assign remaining = deadline_remaining | plus: 0
+      capture deadline_text
+        render 'format-date', value: settings.delivery_deadline_date
+      endcapture
+    -%}
+    <p data-deadline-before{% if remaining <= 0 %} hidden{% endif %}>{{ 'delivery.deadline_sentence' | t: date: deadline_text }}</p>
+    <p data-deadline-after{% if remaining > 0 %} hidden{% endif %}>{{ 'delivery.after_christmas' | t }}</p>
+  {%- endif -%}
+{%- endif -%}

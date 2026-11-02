@@ -295,8 +295,7 @@
   color: var(--link);
 }
 
-.price__compare,
-.price--compare {
+.price__compare {
   color: var(--fg-muted);
   font-size: var(--fs-small);
 }

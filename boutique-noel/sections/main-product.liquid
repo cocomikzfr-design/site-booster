@@ -241,7 +241,7 @@
                       {%- if block.settings.text != blank -%}
                         <p class="pack-cta__text">{{ block.settings.text | escape }}</p>
                       {%- endif -%}
-                      <p class="pack-cta__footer">
+                      <p class="pack-cta__footer cluster">
                         <span class="pack-cta__price">{{ pack.price | money }}</span>
                         <a href="{{ pack.url }}" class="pack-cta__link">
                           {{- 'products.see_pack' | t -}}
@@ -269,6 +269,9 @@
                       {{ block.settings.page.content }}
                     {%- else -%}
                       {{ block.settings.content }}
+                    {%- endif -%}
+                    {%- if block.settings.christmas_note -%}
+                      {% render 'christmas-note' %}
                     {%- endif -%}
                   </div>
                 </details>
@@ -588,6 +591,13 @@
           "id": "page",
           "label": "Page à afficher à la place du contenu",
           "info": "Facultatif."
+        },
+        {
+          "type": "checkbox",
+          "id": "christmas_note",
+          "label": "Ajouter la phrase sur la date limite de Noël",
+          "info": "Construite à partir des Paramètres du thème > Saison de Noël. Masquée hors saison.",
+          "default": false
         }
       ]
     },

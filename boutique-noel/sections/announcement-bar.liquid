@@ -32,7 +32,7 @@
 {%- endcapture -%}
 
 {%- if slide_count > 0 -%}
-  <div class="announcement-bar section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+  <div class="announcement-bar section-{{ section.id }} scheme-{{ section.settings.color_scheme }}" role="region" aria-label="{{ 'announcement.label' | t }}">
     <announcement-bar class="announcement-bar__inner page-width">
       {%- if section.settings.link != blank -%}
         <a href="{{ section.settings.link }}" class="announcement-bar__link">{{ slides_html }}</a>

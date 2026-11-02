@@ -36,7 +36,10 @@
           }
         }
       },
-      "block_order": ["included-projector", "included-garland"],
+      "block_order": [
+        "included-projector",
+        "included-garland"
+      ],
       "settings": {
         "product": "pack-facade-de-noel",
         "badge": "Le plus choisi",
@@ -104,7 +107,11 @@
           }
         }
       },
-      "block_order": ["step-1", "step-2", "step-3"],
+      "block_order": [
+        "step-1",
+        "step-2",
+        "step-3"
+      ],
       "settings": {
         "heading": "Installé en 3 étapes",
         "color_scheme": "night",
@@ -131,22 +138,43 @@
       "blocks": {
         "shipping": {
           "type": "badge",
-          "settings": { "icon": "truck", "title": "Livraison offerte", "text": "En France et en Belgique" }
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison offerte",
+            "text": "En France et en Belgique"
+          }
         },
         "payment": {
           "type": "badge",
-          "settings": { "icon": "shield", "title": "Paiement sécurisé", "text": "Carte, Bancontact, Apple Pay" }
+          "settings": {
+            "icon": "shield",
+            "title": "Paiement sécurisé",
+            "text": "Carte, Bancontact, Apple Pay"
+          }
         },
         "returns": {
           "type": "badge",
-          "settings": { "icon": "return", "title": "14 jours pour changer d'avis", "text": "Rétractation selon nos conditions" }
+          "settings": {
+            "icon": "return",
+            "title": "14 jours pour changer d'avis",
+            "text": "Rétractation selon nos conditions"
+          }
         },
         "support": {
           "type": "badge",
-          "settings": { "icon": "mail", "title": "Service client", "text": "Réponse sous 24 h ouvrées" }
+          "settings": {
+            "icon": "mail",
+            "title": "Service client",
+            "text": "Réponse sous 24 h ouvrées"
+          }
         }
       },
-      "block_order": ["shipping", "payment", "returns", "support"],
+      "block_order": [
+        "shipping",
+        "payment",
+        "returns",
+        "support"
+      ],
       "settings": {
         "color_scheme": "cream",
         "padding_top": 48,
@@ -167,7 +195,8 @@
           "type": "question",
           "settings": {
             "question": "Puis-je encore recevoir avant Noël ?",
-            "answer": "<p>Oui, si vous commandez au plus tard le 8 décembre. Après cette date, la livraison peut arriver après Noël.</p>"
+            "answer": "<p>Oui, si vous commandez au plus tard le 8 décembre. Après cette date, la livraison peut arriver après Noël.</p>",
+            "christmas_only": true
           }
         },
         "q3": {
@@ -192,7 +221,13 @@
           }
         }
       },
-      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
       "settings": {
         "heading": "Questions fréquentes",
         "open_first": false,
@@ -212,5 +247,15 @@
       }
     }
   },
-  "order": ["hero", "pack", "deadline", "grid", "steps", "gift", "trust", "faq", "newsletter"]
+  "order": [
+    "hero",
+    "pack",
+    "deadline",
+    "grid",
+    "steps",
+    "gift",
+    "trust",
+    "faq",
+    "newsletter"
+  ]
 }

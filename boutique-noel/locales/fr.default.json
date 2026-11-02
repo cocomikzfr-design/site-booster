@@ -53,7 +53,8 @@
     "account": "Mon compte"
   },
   "announcement": {
-    "default": "Livraison offerte en France et en Belgique"
+    "default": "Livraison offerte en France et en Belgique",
+    "label": "Annonces"
   },
   "countdown": {
     "title": "Pour recevoir avant Noël",
@@ -83,7 +84,8 @@
     "step_order": "Aujourd'hui : vous commandez",
     "step_shipping": "Expédition : numéro de suivi par e-mail",
     "step_delivery": "Livraison estimée",
-    "range": "{{ start }} – {{ end }}"
+    "range": "{{ start }} – {{ end }}",
+    "deadline_sentence": "Pour recevoir avant Noël, commandez au plus tard le {{ date }}."
   },
   "products": {
     "add_to_cart": "Ajouter au panier",
@@ -119,7 +121,8 @@
     "video_label": "Vidéo du produit allumé",
     "free_shipping": "Livraison offerte",
     "pack_cta_title": "Encore mieux en pack",
-    "bundle_saving": "Vous économisez {{ amount }} par rapport aux produits achetés séparément."
+    "bundle_saving": "Vous économisez {{ amount }} par rapport aux produits achetés séparément.",
+    "details_heading": "Informations sur le produit"
   },
   "cart": {
     "title": "Votre panier",

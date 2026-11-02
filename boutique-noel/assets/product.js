@@ -233,21 +233,20 @@
       if (!this.mainButton || !this.button || !('IntersectionObserver' in window)) return;
 
       this.footer = document.querySelector('.footer');
-      this.buttonGone = false;
-      this.footerVisible = false;
 
-      this.observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.target === this.mainButton) {
-            this.buttonGone = !entry.isIntersecting && entry.boundingClientRect.top < 0;
-          } else {
-            this.footerVisible = entry.isIntersecting;
-          }
-        });
-        this.update();
-      });
+      // L'observateur signale les passages à l'écran ; le défilement couvre les sauts par-dessus le bouton.
+      this.observer = new IntersectionObserver(() => this.measure());
       this.observer.observe(this.mainButton);
       if (this.footer) this.observer.observe(this.footer);
+      this.onScroll = () => {
+        if (this.ticking) return;
+        this.ticking = true;
+        window.requestAnimationFrame(() => {
+          this.ticking = false;
+          this.measure();
+        });
+      };
+      window.addEventListener('scroll', this.onScroll, { passive: true });
 
       this.onVariantChange = (event) => {
         const { sectionId, variant } = event.detail || {};
@@ -265,12 +264,15 @@
 
     disconnectedCallback() {
       if (this.observer) this.observer.disconnect();
+      window.removeEventListener('scroll', this.onScroll);
       document.removeEventListener('variant:change', this.onVariantChange);
       document.body.classList.remove('has-sticky-atc');
     }
 
-    update() {
-      const visible = this.buttonGone && !this.footerVisible;
+    measure() {
+      const buttonGone = this.mainButton.getBoundingClientRect().bottom < 0;
+      const footerVisible = this.footer ? this.footer.getBoundingClientRect().top < window.innerHeight : false;
+      const visible = buttonGone && !footerVisible;
       this.classList.toggle('is-visible', visible);
       document.body.classList.toggle('has-sticky-atc', visible);
     }

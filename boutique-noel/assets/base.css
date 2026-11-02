@@ -354,11 +354,6 @@ a:hover {
   text-align: center;
 }
 
-.section__intro {
-  max-width: 60ch;
-  color: var(--fg-muted);
-}
-
 .section__footer {
   display: flex;
   justify-content: center;

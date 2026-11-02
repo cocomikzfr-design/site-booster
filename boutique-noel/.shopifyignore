@@ -1,4 +1,5 @@
 content/**
+tests/**
 README.md
 PROMPT.md
 .gitignore

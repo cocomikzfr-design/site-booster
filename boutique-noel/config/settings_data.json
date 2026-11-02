@@ -45,7 +45,15 @@
       "card_show_secondary_image": true,
       "pack_product": "pack-facade-de-noel",
       "support_hours": "Réponse sous 24 h, du lundi au samedi",
-      "return_days": 14
+      "return_days": 14,
+      "sections": {
+        "cart-drawer": {
+          "type": "cart-drawer",
+          "settings": {
+            "empty_product": "projecteur-de-noel-led"
+          }
+        }
+      }
     }
   }
 }

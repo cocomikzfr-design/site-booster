@@ -167,7 +167,11 @@ Le compte à rebours est le même pour tous les visiteurs : il compte jusqu'à c
 Après la date limite, le site affiche automatiquement « La date limite pour une livraison avant Noël est passée » et prévient que les commandes arriveront après Noël.
 Le site continue de vendre normalement.
 
-Après les fêtes, passe le réglage « Mode » sur « Hors saison » : tous les messages liés à Noël disparaissent (voir l'annexe F de `PROMPT.md`).
+Les phrases « Pour recevoir avant Noël, commandez au plus tard le… » des blocs « Livraison et retours » et des FAQ des fiches produits sont construites automatiquement à partir de cette date (option « Ajouter la phrase sur la date limite de Noël » du bloc).
+Elles se mettent à jour toutes seules si tu changes la date, et disparaissent hors saison.
+Exception : la dernière phrase de la description du pack (champ Description de l'admin) est un texte fixe, à retirer après Noël.
+
+Après les fêtes, passe le réglage « Mode » sur « Hors saison » : le compte à rebours, la section « Date limite de Noël » et les phrases automatiques disparaissent (voir l'annexe F de `PROMPT.md`).
 
 ## 6. Les règles à ne pas casser
 
@@ -194,10 +198,35 @@ grep -rn "À COMPLÉTER\|À VÉRIFIER" content templates sections
 
 Dans l'éditeur de thème, ces mentions apparaissent dans les réglages des blocs des fiches produits.
 
-## 8. En cas de problème
+## 8. Vérifier le thème (tests automatiques)
+
+Le dossier `tests/` contient une simulation locale de la boutique (5 faux produits, panier, pages) et 78 tests de navigateur :
+affichage à 320, 375, 390, 768 et 1280 px, accessibilité, panier, variantes, compte à rebours, mode hors saison, fonctionnement sans JavaScript.
+Ce n'est pas Shopify : c'est une imitation, utile pour vérifier le code après une modification. Le test final reste l'aperçu `shopify theme dev`.
+Ce dossier n'est pas envoyé à Shopify.
+
+Première fois :
+
+```bash
+cd tests && npm install && npx playwright install chromium
+```
+
+Lancer les tests :
+
+```bash
+cd tests && npm test
+```
+
+Voir la simulation dans ton navigateur (http://localhost:9393) :
+
+```bash
+cd tests && npm run simulation
+```
+
+## 9. En cas de problème
 
 Voir le tableau de dépannage de l'annexe E de `PROMPT.md`.
 
-## 9. Après Noël
+## 10. Après Noël
 
 Voir l'annexe F de `PROMPT.md`.

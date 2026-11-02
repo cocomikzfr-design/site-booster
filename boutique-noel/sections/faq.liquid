@@ -13,6 +13,9 @@
 
     <div class="faq__list">
       {%- for block in section.blocks -%}
+        {%- if block.settings.christmas_only and settings.season_mode != 'christmas' -%}
+          {%- continue -%}
+        {%- endif -%}
         <details
           class="accordion"
           {% if section.settings.open_first and forloop.first %}
@@ -24,31 +27,31 @@
             <span class="accordion__title">{{ block.settings.question | escape }}</span>
             {%- render 'icon', icon: 'plus', size: 20, class: 'accordion__icon' -%}
           </summary>
-          <div class="accordion__content rte">{{ block.settings.answer }}</div>
+          <div class="accordion__content rte">
+            {{- block.settings.answer -}}
+            {%- if block.settings.christmas_note -%}
+              {% render 'christmas-note' %}
+            {%- endif -%}
+          </div>
         </details>
       {%- endfor -%}
     </div>
   </div>
 </div>
 
-{%- if section.blocks.size > 0 -%}
+{%- capture faq_entities -%}
+  {%- for block in section.blocks -%}
+    {%- if block.settings.christmas_only and settings.season_mode != 'christmas' -%}
+      {%- continue -%}
+    {%- endif -%}
+    {%- if block.settings.question != blank -%}
+      {"@type": "Question", "name": {{ block.settings.question | strip | json }}, "acceptedAnswer": {"@type": "Answer", "text": {{ block.settings.answer | strip_html | strip | json }}}},
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if faq_entities != blank -%}
   <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {%- for block in section.blocks -%}
-          {
-            "@type": "Question",
-            "name": {{ block.settings.question | strip | json }},
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": {{ block.settings.answer | strip_html | strip | json }}
-            }
-          }{% unless forloop.last %},{% endunless %}
-        {%- endfor -%}
-      ]
-    }
+    {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{{ faq_entities | strip | remove_last: ',' }}]}
   </script>
 {%- endif -%}
 
@@ -119,6 +122,19 @@
           "id": "answer",
           "label": "Réponse",
           "default": "<p>Comptez 7 à 12 jours après votre commande. Vous recevez un numéro de suivi par e-mail dès l'expédition.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "christmas_note",
+          "label": "Ajouter la phrase sur la date limite de Noël",
+          "info": "Construite à partir des Paramètres du thème > Saison de Noël. Masquée hors saison.",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "christmas_only",
+          "label": "Afficher cette question uniquement pendant la saison de Noël",
+          "default": false
         }
       ]
     }
@@ -138,7 +154,8 @@
           "type": "question",
           "settings": {
             "question": "Puis-je encore recevoir avant Noël ?",
-            "answer": "<p>Oui, si vous commandez au plus tard le 8 décembre. Après cette date, la livraison peut arriver après Noël.</p>"
+            "answer": "<p>Oui, si vous commandez au plus tard le 8 décembre. Après cette date, la livraison peut arriver après Noël.</p>",
+            "christmas_only": true
           }
         },
         {
