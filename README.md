@@ -7,6 +7,7 @@ Deux pages statiques autonomes (HTML, CSS et JS dans un seul fichier, sans build
 | `index.html` | **Planet Jumping** : expérience spatiale immersive. Préchargement vidéo vers Mars, portail en canvas avec faux 3D qui suit la souris, voyages Mars → Terre → Vénus. Le bouton « Menu » mène à BoosterVerse. |
 | `booster.html` | **BoosterVerse** : prototype jouable du jeu de cartes à collectionner (100 000 créatures générées en SVG, ouverture de boosters, raretés, collection, booster gratuit toutes les heures). Il reprend la même base visuelle que Planet Jumping. |
 | `docs/BOOSTERVERSE.md` | Description complète du projet BoosterVerse : concept, raretés, boucle de jeu, feuille de route, modèle économique, risques. |
+| `theme/` | **La Galerie** : thème Shopify complet pour une boutique d'accessoires de cartes à collectionner (vitrine 3D animée). Voir `theme/README.md`. |
 
 ## Lancer en local
 
