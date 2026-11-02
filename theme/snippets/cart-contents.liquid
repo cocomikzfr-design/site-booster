@@ -16,7 +16,11 @@
 -%}
 <div class="cart" data-cart-root data-section-id="{{ section_id }}" data-count="{{ cart.item_count }}">
   <div class="cart__head">
-    <h2 class="cart__title h-sub" id="CartTitle-{{ context }}">{{ 'cart.title' | t }}</h2>
+    {%- if context == 'page' -%}
+      <h1 class="cart__title h-sub" id="CartTitle-{{ context }}">{{ 'cart.title' | t }}</h1>
+    {%- else -%}
+      <h2 class="cart__title h-sub" id="CartTitle-{{ context }}">{{ 'cart.title' | t }}</h2>
+    {%- endif -%}
     <span class="box box--num" aria-label="{{ 'cart.items_count' | t: count: cart.item_count }}"><span class="mask mask--inline"><span data-swap="count">{{ cart.item_count }}</span></span></span>
     {%- if context == 'drawer' -%}
       <button type="button" class="btn--icon cart__close" data-cart-close data-focus-key="close" aria-label="{{ 'general.close' | t }}">{% render 'icon', icon: 'close' %}</button>

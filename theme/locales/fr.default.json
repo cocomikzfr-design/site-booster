@@ -20,7 +20,8 @@
     "meta": {
       "home_title": "{{ brand }} : boîtiers acryliques et classeurs pour cartes à collectionner",
       "page": "Page {{ page }}"
-    }
+    },
+    "announcements": "Annonces"
   },
   "accessibility": {
     "skip_to_content": "Aller au contenu",

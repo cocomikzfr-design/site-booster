@@ -50,7 +50,7 @@
             <li class="kit__piece kit__piece--{{ side }}" data-kit-piece style="--x:{{ block.settings.x }};--y:{{ block.settings.y }};--r:{{ block.settings.rotation }};--i:{{ forloop.index0 }}" {{ block.shopify_attributes }}>
               <div class="kit__img">
                 {%- if bimg -%}
-                  {%- render 'responsive-image', image: bimg, widths: '240,360,480', sizes: '(min-width: 768px) 18vw, 40vw', alt: block.settings.label -%}
+                  {%- render 'responsive-image', image: bimg, widths: '240,360,480', sizes: '(min-width: 768px) 18vw, 40vw', alt: '' -%}
                 {%- else -%}
                   <img src="{{ 'placeholder-case.svg' | asset_url }}" alt="" width="400" height="500" loading="lazy">
                 {%- endif -%}

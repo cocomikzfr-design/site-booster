@@ -39,7 +39,7 @@ main > .shopify-section:first-child .vitrine { margin-top: calc(var(--hdr-h) * -
   --h: var(--V); --w: calc(var(--V) * var(--ratio, .8)); --d: calc(var(--V) * var(--depth, .34));
 }
 .vitrine.is-live .vitrine__item { will-change: transform; }
-.vitrine:not(.is-live) .vitrine__item:not(:has(.is-active)) { visibility: hidden; }
+.js .vitrine:not(.is-live):not(.vitrine--flat) .vitrine__item:not(:has(.is-active)) { visibility: hidden; }
 .item {
   position: absolute; display: block; left: calc(var(--w) / -2); top: calc(var(--h) * -1);
   width: var(--w); height: var(--h); color: inherit; text-decoration: none; outline: 0;

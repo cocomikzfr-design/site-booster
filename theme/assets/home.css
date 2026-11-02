@@ -24,6 +24,9 @@
 .threat__product > span { display: grid; gap: 4px; }
 .threat__pname { font: 500 14px/1.3 var(--font-sans); justify-self: start; }
 
+/* Rendu différé des sections sous la ligne de flottaison */
+.featured, .faq, .newsletter { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+
 /* Avis */
 .reviews__title { margin-bottom: 40px; }
 

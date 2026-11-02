@@ -1,0 +1,256 @@
+{
+  "general": {
+    "close": "Sluiten",
+    "previous": "Vorige",
+    "next": "Volgende",
+    "previous_product": "Vorig product",
+    "next_product": "Volgend product",
+    "pause": "Pauzeren",
+    "see": "Bekijk",
+    "sold_out": "Uitverkocht",
+    "new": "Nieuw",
+    "kit": "Kit",
+    "number": "Nr.",
+    "from": "Vanaf",
+    "error": "Er ging iets mis. Probeer het zo meteen opnieuw.",
+    "pause_messages": "Berichten pauzeren",
+    "payment_methods": "Aanvaarde betaalmethoden",
+    "back_home": "Terug naar de vitrine",
+    "loading": "Laden…",
+    "meta": {
+      "home_title": "{{ brand }}: acrylboxen en verzamelmappen voor verzamelkaarten",
+      "page": "Pagina {{ page }}"
+    },
+    "announcements": "Aankondigingen"
+  },
+  "accessibility": {
+    "skip_to_content": "Naar de inhoud",
+    "breadcrumb": "Kruimelpad",
+    "home": "Home",
+    "new_window": "Opent in een nieuw venster",
+    "pagination": "Paginering",
+    "page": "Pagina {{ page }}",
+    "image_of": "Afbeelding {{ index }} van {{ count }}",
+    "zoom": "Afbeelding vergroten",
+    "close_zoom": "Vergroting sluiten"
+  },
+  "header": {
+    "menu": "Menu",
+    "main_nav": "Hoofdnavigatie",
+    "search": "Zoeken",
+    "account": "Account",
+    "home": "home",
+    "all_products": "Alle producten",
+    "cart_label": {
+      "one": "Winkelmand, {{ count }} artikel",
+      "other": "Winkelmand, {{ count }} artikelen"
+    }
+  },
+  "vitrine": {
+    "all": "Alles",
+    "categories": "Productcategorieën",
+    "roledescription": "carrousel",
+    "label": "Productvitrine",
+    "pause": "Draaien pauzeren",
+    "play": "Draaien hervatten",
+    "scroll": "Scrollen",
+    "hint": "Veeg om te draaien",
+    "empty_editor": "Voeg minstens één product toe aan de gekozen collectie om de vitrine te vullen."
+  },
+  "products": {
+    "add_to_cart": "In winkelmand",
+    "added": "Toegevoegd aan winkelmand: {{ title }}",
+    "adding": "Bezig met toevoegen",
+    "unavailable": "Niet beschikbaar",
+    "sold_out": "Uitverkocht",
+    "quantity": "Aantal",
+    "decrease": "Aantal verlagen",
+    "increase": "Aantal verhogen",
+    "quick_add": "Snel toevoegen",
+    "quick_add_label": "Snel toevoegen: {{ title }}",
+    "choose": "Kiezen",
+    "compare_price": "Referentieprijs",
+    "reference": "Ref.",
+    "features": "Kenmerken",
+    "compatibility": "Compatibiliteit",
+    "compat_measure": "Meet je box op voor je bestelt. Twijfel je? Stuur ons een foto.",
+    "compat_box": "Box",
+    "compat_set": "Jouw box",
+    "compat_inner": "Binnenafmetingen",
+    "delivery": "Levering",
+    "delivery_days": "Verwachte levering binnen {{ min }} tot {{ max }} werkdagen.",
+    "delivery_range": "Verwachte levering tussen {{ from }} en {{ to }}.",
+    "delivery_to": "Levering in {{ countries }}",
+    "multi_parcel": "mogelijk in meerdere pakketten",
+    "delivery_more": "Levertijden, tracking en retouren",
+    "complete": "Maak je bescherming compleet",
+    "reassurance_payment": "Veilig betalen",
+    "reassurance_returns": "Retour binnen 14 dagen",
+    "reassurance_service": "Klantenservice in het Frans",
+    "share": "Link kopiëren",
+    "link_copied": "Link gekopieerd",
+    "gallery": "Afbeeldingengalerij",
+    "thumbnails": "Kies een afbeelding",
+    "variant_unavailable": "Deze combinatie bestaat niet.",
+    "specs": {
+      "dimensions_interieures": "Binnenafmetingen",
+      "dimensions_exterieures": "Buitenafmetingen",
+      "epaisseur_mm": "Dikte",
+      "matiere": "Materiaal",
+      "fermeture": "Sluiting",
+      "protection_uv": "UV-bescherming",
+      "capacite": "Capaciteit",
+      "contenu_pack": "Inhoud van het pakket"
+    },
+    "sticky_label": "Snel kopen",
+    "kit_separately": "in plaats van {{ amount }} als je alles apart koopt",
+    "kit_contents": "Inhoud van de kit"
+  },
+  "sections": {
+    "promise": {
+      "threat": "Gevaar",
+      "answer": "Ons antwoord"
+    },
+    "kit": {
+      "buy": "Kit in winkelmand",
+      "see": "Bekijk de kit"
+    },
+    "size_finder": {
+      "step1": "Wat wil je beschermen?",
+      "step2": "Is het voor jezelf of een cadeau?",
+      "for_me": "Voor mezelf",
+      "gift": "Als cadeau",
+      "change": "Wijzigen",
+      "result": "Ons advies",
+      "inner": "Binnenafmetingen van de aanbevolen box",
+      "gift_note": "Als cadeau bundelt de kit het essentiële in één bestelling. Meerdere pakketten blijven mogelijk.",
+      "no_product": "Kies in de thema-editor een aanbevolen product voor dit formaat.",
+      "dims_unknown": "Afmetingen op de productpagina"
+    },
+    "faq": {
+      "title": "Veelgestelde vragen"
+    },
+    "reviews": {
+      "title": "Klantbeoordelingen"
+    }
+  },
+  "collections": {
+    "products_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} producten"
+    },
+    "results_announce": "{{ count }} resultaten",
+    "filters": "Filters",
+    "filter_and_sort": "Filteren en sorteren",
+    "sort_by": "Sorteren op",
+    "clear_all": "Alles wissen",
+    "apply": "Toepassen",
+    "see_results": "Resultaten bekijken",
+    "price_from": "Minimumprijs",
+    "price_to": "Maximumprijs",
+    "load_more": "Meer producten tonen",
+    "empty": "Geen enkel product komt overeen met deze filters.",
+    "empty_collection": "Deze collectie is voorlopig leeg.",
+    "remove_filter": "Filter {{ filter }} verwijderen",
+    "all_collections": "Alle collecties"
+  },
+  "cart": {
+    "title": "Je winkelmand",
+    "items_count": {
+      "one": "{{ count }} artikel",
+      "other": "{{ count }} artikelen"
+    },
+    "count_announce": "Winkelmand bijgewerkt: {{ count }} artikel(en)",
+    "empty": "Je winkelmand is leeg.",
+    "back_to_vitrine": "Naar de vitrine",
+    "subtotal": "Subtotaal",
+    "taxes_note": "Belastingen en verzendkosten worden bij het afrekenen berekend.",
+    "checkout": "Veilig afrekenen",
+    "update": "Bijwerken",
+    "remove": "Verwijderen",
+    "remove_label": "{{ title }} uit winkelmand verwijderen",
+    "increase": "Aantal van {{ title }} verhogen",
+    "decrease": "Aantal van {{ title }} verlagen",
+    "quantity_for": "Aantal van {{ title }}",
+    "note": "Een opmerking bij je bestelling",
+    "upsell_title": "Past goed bij",
+    "free_shipping_remaining_html": "Nog <strong>{{ amount }}</strong> voor gratis verzending",
+    "free_shipping_reached": "Verzending is gratis",
+    "free_shipping_progress": "Voortgang naar gratis verzending"
+  },
+  "search": {
+    "title": "Zoeken",
+    "placeholder": "Box, verzamelmap, standaard…",
+    "submit": "Zoeken",
+    "no_results": "Geen resultaten voor ‘{{ terms }}’.",
+    "results_for": "Resultaten voor ‘{{ terms }}’",
+    "products": "Producten",
+    "collections": "Collecties",
+    "pages": "Pagina's",
+    "suggestions": "Suggesties",
+    "see_all": "Alle resultaten voor ‘{{ terms }}’",
+    "results_count": {
+      "one": "{{ count }} resultaat",
+      "other": "{{ count }} resultaten"
+    }
+  },
+  "newsletter": {
+    "title": "Schrijf je in.",
+    "text": "Nieuwigheden en bewaartips, hooguit één keer per week.",
+    "footer_title": "De lijst",
+    "email": "Je e-mailadres",
+    "submit": "Inschrijven",
+    "success": "Genoteerd. Tot snel.",
+    "consent_html": "Door je in te schrijven ga je akkoord met onze e-mails. Uitschrijven met één klik. <a href=\"{{ url }}\">Privacybeleid</a>."
+  },
+  "contact": {
+    "name": "Naam",
+    "email": "E-mail",
+    "phone": "Telefoon (optioneel)",
+    "order": "Bestelnummer (optioneel)",
+    "message": "Bericht",
+    "send": "Versturen",
+    "success": "Bedankt, je bericht is verstuurd. We antwoorden {{ time }}.",
+    "write_us": "Schrijf ons op {{ email }}",
+    "response": "Antwoord {{ time }}"
+  },
+  "not_found": {
+    "title": "Deze pagina is zoekgeraakt in het depot.",
+    "text": "De link is misschien oud, of het stuk is naar een andere zaal verhuisd.",
+    "button": "Terug naar de vitrine"
+  },
+  "password": {
+    "soon": "Binnenkort open",
+    "title": "De galerie opent binnenkort.",
+    "text": "Laat je e-mailadres achter om op de hoogte te blijven.",
+    "access": "Toegang tot de winkel",
+    "password": "Wachtwoord",
+    "enter": "Binnengaan",
+    "admin": "Ben je de eigenaar van de winkel?",
+    "admin_link": "Inloggen"
+  },
+  "gift_card": {
+    "title": "Je cadeaubon",
+    "value": "Waarde van {{ value }}",
+    "balance": "Saldo: {{ balance }}",
+    "code": "Code van de bon",
+    "copy": "Code kopiëren",
+    "copied": "Code gekopieerd",
+    "expired": "Deze cadeaubon is verlopen.",
+    "disabled": "Deze cadeaubon is gedeactiveerd.",
+    "expires_on": "Geldig tot {{ date }}",
+    "use": "Gebruiken in de winkel",
+    "print": "Afdrukken",
+    "wallet": "Toevoegen aan Apple Wallet",
+    "qr": "QR-code van de cadeaubon"
+  },
+  "shipping": {
+    "countries": "Leveringslanden",
+    "delays": "Levertijden",
+    "delays_text": "Reken op {{ min }} tot {{ max }} werkdagen tussen je bestelling en de levering.",
+    "threshold": "Gratis verzending",
+    "threshold_text": "Verzending is gratis vanaf {{ amount }}.",
+    "tracking": "Tracking",
+    "parcels": "Meerdere pakketten"
+  }
+}

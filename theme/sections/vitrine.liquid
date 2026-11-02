@@ -227,7 +227,7 @@
 
     <div class="vitrine__foot">
       <p class="vitrine__counter mono" aria-hidden="true">
-        <span>N°</span> <span class="mask mask--inline" data-counter><span>{{ start_index | plus: 1 | prepend: '0' | slice: -2, 2 }}</span></span>
+        <span>{{ 'general.number' | t }}</span> <span class="mask mask--inline" data-counter><span>{{ start_index | plus: 1 | prepend: '0' | slice: -2, 2 }}</span></span>
         <span class="dim">/ {{ count | prepend: '0' | slice: -2, 2 }}</span>
       </p>
       <div class="vitrine__foot-r">

@@ -28,7 +28,7 @@
       { "type": "color", "id": "color_paper", "label": "Papier (fond clair)", "default": "#F3EFE7" },
       { "type": "color", "id": "color_ink", "label": "Encre (texte sur papier)", "default": "#15161A" },
       { "type": "color", "id": "color_brass", "label": "Laiton (accent)", "default": "#C9A24E" },
-      { "type": "color", "id": "color_brass_deep", "label": "Laiton foncé (petits textes sur papier)", "default": "#94712B" },
+      { "type": "color", "id": "color_brass_deep", "label": "Laiton foncé (petits textes sur papier)", "default": "#80611F" },
       { "type": "color", "id": "color_slate", "label": "Feutrine du plateau", "default": "#2B2F37" },
       { "type": "color", "id": "color_signal", "label": "Signal (pastille panier, erreurs)", "default": "#D2452F" }
     ]

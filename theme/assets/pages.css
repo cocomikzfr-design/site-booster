@@ -22,9 +22,9 @@
 .contact__ok { color: var(--brass-deep); }
 
 /* Livraison et retours */
-.shipping__grid { display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.shipping__grid { display: grid; gap: 16px; }
 @media (min-width: 768px) { .shipping__grid { grid-template-columns: 1fr 1fr; } }
-.shipping__item { display: grid; gap: 14px; align-content: start; padding: clamp(22px, 3vw, 36px); background: var(--paper); }
+.shipping__item { display: grid; gap: 14px; align-content: start; padding: clamp(22px, 3vw, 36px); border: 1px solid var(--rule); }
 .shipping__icon { color: var(--brass-deep); }
 
 /* Mot de passe : rideau métallique fermé */

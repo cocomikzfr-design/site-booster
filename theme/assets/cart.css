@@ -24,7 +24,7 @@
 .ci__row { display: flex; align-items: center; gap: 14px; margin-top: 8px; flex-wrap: wrap; }
 .ci__remove { color: var(--dim); }
 .ci__price { font: 600 14px/1.3 var(--font-sans); text-align: right; display: grid; gap: 2px; justify-items: end; }
-.ci .qty { height: 40px; }
+.ci .qty { height: 44px; }
 .cart__error { padding: 10px 12px; border: 1px solid currentColor; }
 
 /* Jauge de livraison offerte : rail laiton + cadran */

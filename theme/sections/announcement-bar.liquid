@@ -3,7 +3,7 @@
   (pause au survol, au focus et via le bouton ; aucune rotation en mouvement réduit).
 {%- endcomment -%}
 {%- if section.blocks.size > 0 -%}
-  <div class="announce" data-announce {{ section.shopify_attributes }}>
+  <aside class="announce" data-announce aria-label="{{ 'general.announcements' | t }}" {{ section.shopify_attributes }}>
     <div class="announce__in wrap">
       <div class="announce__track" aria-live="off">
         {%- for block in section.blocks -%}
@@ -20,7 +20,7 @@
         </button>
       {%- endif -%}
     </div>
-  </div>
+  </aside>
 {%- endif -%}
 
 {% schema %}

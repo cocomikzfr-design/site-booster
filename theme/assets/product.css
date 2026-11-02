@@ -135,4 +135,5 @@
 }
 
 /* Recommandations */
+.related { content-visibility: auto; contain-intrinsic-size: auto 700px; }
 .related__title { margin-bottom: 32px; }

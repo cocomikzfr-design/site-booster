@@ -1,0 +1,256 @@
+{
+  "general": {
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
+    "previous_product": "Previous product",
+    "next_product": "Next product",
+    "pause": "Pause",
+    "see": "View",
+    "sold_out": "Sold out",
+    "new": "New",
+    "kit": "Kit",
+    "number": "No.",
+    "from": "From",
+    "error": "Something went wrong. Please try again in a moment.",
+    "pause_messages": "Pause the messages",
+    "payment_methods": "Accepted payment methods",
+    "back_home": "Back to the showcase",
+    "loading": "Loading…",
+    "meta": {
+      "home_title": "{{ brand }}: acrylic cases and binders for collectible cards",
+      "page": "Page {{ page }}"
+    },
+    "announcements": "Announcements"
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "breadcrumb": "Breadcrumb",
+    "home": "Home",
+    "new_window": "Opens in a new window",
+    "pagination": "Pagination",
+    "page": "Page {{ page }}",
+    "image_of": "Image {{ index }} of {{ count }}",
+    "zoom": "Enlarge image",
+    "close_zoom": "Close enlarged image"
+  },
+  "header": {
+    "menu": "Menu",
+    "main_nav": "Main navigation",
+    "search": "Search",
+    "account": "Account",
+    "home": "home",
+    "all_products": "All products",
+    "cart_label": {
+      "one": "Cart, {{ count }} item",
+      "other": "Cart, {{ count }} items"
+    }
+  },
+  "vitrine": {
+    "all": "All",
+    "categories": "Product categories",
+    "roledescription": "carousel",
+    "label": "Product showcase",
+    "pause": "Pause the rotation",
+    "play": "Resume the rotation",
+    "scroll": "Scroll",
+    "hint": "Swipe to turn",
+    "empty_editor": "Add at least one product to the selected collection to fill the showcase."
+  },
+  "products": {
+    "add_to_cart": "Add to cart",
+    "added": "Added to cart: {{ title }}",
+    "adding": "Adding",
+    "unavailable": "Unavailable",
+    "sold_out": "Sold out",
+    "quantity": "Quantity",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "quick_add": "Quick add",
+    "quick_add_label": "Quick add: {{ title }}",
+    "choose": "Choose",
+    "compare_price": "Reference price",
+    "reference": "Ref.",
+    "features": "Specifications",
+    "compatibility": "Compatibility",
+    "compat_measure": "Measure your box before ordering. If in doubt, write to us with a photo.",
+    "compat_box": "Case",
+    "compat_set": "Your box",
+    "compat_inner": "Inner dimensions",
+    "delivery": "Delivery",
+    "delivery_days": "Estimated delivery within {{ min }} to {{ max }} business days.",
+    "delivery_range": "Estimated delivery between {{ from }} and {{ to }}.",
+    "delivery_to": "Delivery to {{ countries }}",
+    "multi_parcel": "may arrive in several parcels",
+    "delivery_more": "Delivery times, tracking and returns",
+    "complete": "Complete your protection",
+    "reassurance_payment": "Secure payment",
+    "reassurance_returns": "14-day returns",
+    "reassurance_service": "Customer service in French",
+    "share": "Copy link",
+    "link_copied": "Link copied",
+    "gallery": "Image gallery",
+    "thumbnails": "Choose an image",
+    "variant_unavailable": "This combination does not exist.",
+    "specs": {
+      "dimensions_interieures": "Inner dimensions",
+      "dimensions_exterieures": "Outer dimensions",
+      "epaisseur_mm": "Thickness",
+      "matiere": "Material",
+      "fermeture": "Closure",
+      "protection_uv": "UV protection",
+      "capacite": "Capacity",
+      "contenu_pack": "Pack contents"
+    },
+    "sticky_label": "Quick buy",
+    "kit_separately": "instead of {{ amount }} if bought separately",
+    "kit_contents": "Kit contents"
+  },
+  "sections": {
+    "promise": {
+      "threat": "Threat",
+      "answer": "Our answer"
+    },
+    "kit": {
+      "buy": "Add the kit to cart",
+      "see": "View the kit"
+    },
+    "size_finder": {
+      "step1": "What do you want to protect?",
+      "step2": "Is it for you or a gift?",
+      "for_me": "For me",
+      "gift": "As a gift",
+      "change": "Change",
+      "result": "Our recommendation",
+      "inner": "Inner dimensions of the recommended case",
+      "gift_note": "As a gift, the kit brings the essentials together in one order. Several parcels remain possible.",
+      "no_product": "Choose a recommended product for this format in the theme editor.",
+      "dims_unknown": "Dimensions on the product page"
+    },
+    "faq": {
+      "title": "Frequently asked questions"
+    },
+    "reviews": {
+      "title": "Customer reviews"
+    }
+  },
+  "collections": {
+    "products_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
+    "results_announce": "{{ count }} results",
+    "filters": "Filters",
+    "filter_and_sort": "Filter and sort",
+    "sort_by": "Sort by",
+    "clear_all": "Clear all",
+    "apply": "Apply",
+    "see_results": "See results",
+    "price_from": "Minimum price",
+    "price_to": "Maximum price",
+    "load_more": "Show more products",
+    "empty": "No product matches these filters.",
+    "empty_collection": "This collection is empty for now.",
+    "remove_filter": "Remove filter {{ filter }}",
+    "all_collections": "All collections"
+  },
+  "cart": {
+    "title": "Your cart",
+    "items_count": {
+      "one": "{{ count }} item",
+      "other": "{{ count }} items"
+    },
+    "count_announce": "Cart updated: {{ count }} item(s)",
+    "empty": "Your cart is empty.",
+    "back_to_vitrine": "See the showcase",
+    "subtotal": "Subtotal",
+    "taxes_note": "Taxes and shipping calculated at checkout.",
+    "checkout": "Secure checkout",
+    "update": "Update",
+    "remove": "Remove",
+    "remove_label": "Remove {{ title }} from cart",
+    "increase": "Increase quantity of {{ title }}",
+    "decrease": "Decrease quantity of {{ title }}",
+    "quantity_for": "Quantity of {{ title }}",
+    "note": "Add a note to your order",
+    "upsell_title": "Goes well with",
+    "free_shipping_remaining_html": "Only <strong>{{ amount }}</strong> more for free shipping",
+    "free_shipping_reached": "Shipping is free",
+    "free_shipping_progress": "Progress towards free shipping"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Case, binder, display stand…",
+    "submit": "Search",
+    "no_results": "No results for “{{ terms }}”.",
+    "results_for": "Results for “{{ terms }}”",
+    "products": "Products",
+    "collections": "Collections",
+    "pages": "Pages",
+    "suggestions": "Suggestions",
+    "see_all": "See all results for “{{ terms }}”",
+    "results_count": {
+      "one": "{{ count }} result",
+      "other": "{{ count }} results"
+    }
+  },
+  "newsletter": {
+    "title": "Join the list.",
+    "text": "New arrivals and storage tips, at most once a week.",
+    "footer_title": "The list",
+    "email": "Your email address",
+    "submit": "Subscribe",
+    "success": "Noted. See you soon.",
+    "consent_html": "By subscribing, you agree to receive our emails. Unsubscribe in one click. <a href=\"{{ url }}\">Privacy policy</a>."
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone (optional)",
+    "order": "Order number (optional)",
+    "message": "Message",
+    "send": "Send",
+    "success": "Thank you, your message has been sent. We will reply {{ time }}.",
+    "write_us": "Write to us at {{ email }}",
+    "response": "Reply {{ time }}"
+  },
+  "not_found": {
+    "title": "This page got lost in the storeroom.",
+    "text": "The link may be old, or the piece moved to another room.",
+    "button": "Back to the showcase"
+  },
+  "password": {
+    "soon": "Opening soon",
+    "title": "The gallery opens soon.",
+    "text": "Leave your email to be told when we open.",
+    "access": "Store access",
+    "password": "Password",
+    "enter": "Enter",
+    "admin": "Are you the store owner?",
+    "admin_link": "Log in"
+  },
+  "gift_card": {
+    "title": "Your gift card",
+    "value": "Value of {{ value }}",
+    "balance": "Balance: {{ balance }}",
+    "code": "Card code",
+    "copy": "Copy code",
+    "copied": "Code copied",
+    "expired": "This gift card has expired.",
+    "disabled": "This gift card is disabled.",
+    "expires_on": "Valid until {{ date }}",
+    "use": "Use in store",
+    "print": "Print",
+    "wallet": "Add to Apple Wallet",
+    "qr": "Gift card QR code"
+  },
+  "shipping": {
+    "countries": "Countries served",
+    "delays": "Delivery times",
+    "delays_text": "Allow {{ min }} to {{ max }} business days between your order and delivery.",
+    "threshold": "Free shipping",
+    "threshold_text": "Shipping is free from {{ amount }}.",
+    "tracking": "Tracking",
+    "parcels": "Several parcels"
+  }
+}

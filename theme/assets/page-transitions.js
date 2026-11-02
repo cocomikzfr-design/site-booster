@@ -18,7 +18,10 @@ window.addEventListener('pageswap', (e) => {
   const link = lastLink.closest('.vitrine') ? lastLink.closest('.vitrine').querySelector('.item.is-active') || lastLink : lastLink;
   if (new URL(link.href).pathname !== target) return;
   const media = link.querySelector('[data-vt-media]') || link.closest('.card')?.querySelector('[data-vt-media]');
-  if (media) media.style.viewTransitionName = 'vt-product-media';
+  if (!media) return;
+  // Un seul élément peut porter ce nom (la fiche en cours a déjà son image principale nommée)
+  document.querySelectorAll('[data-vt-media]').forEach((el) => { el.style.viewTransitionName = ''; });
+  media.style.viewTransitionName = 'vt-product-media';
 });
 
 // 2. Secours sans View Transitions : une feuille de papier sort du rectangle du produit puis on navigue

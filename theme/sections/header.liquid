@@ -29,7 +29,7 @@
     <div class="hdr__right">
       <a href="{{ routes.search_url }}" class="hdr__icon" data-search-open aria-label="{{ 'header.search' | t }}">{% render 'icon', icon: 'search' %}</a>
       {%- if shop.customer_accounts_enabled -%}
-        <a href="{{ routes.account_url }}" class="hdr__icon" aria-label="{{ 'header.account' | t }}">{% render 'icon', icon: 'user' %}</a>
+        <a href="{{ routes.account_url }}" class="hdr__icon hdr__account" aria-label="{{ 'header.account' | t }}">{% render 'icon', icon: 'user' %}</a>
       {%- endif -%}
       <a href="{{ routes.cart_url }}" class="hdr__icon" data-cart-open>
         {%- render 'icon', icon: 'cart' -%}

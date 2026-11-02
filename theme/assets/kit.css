@@ -1,5 +1,5 @@
 /* Kit du Collectionneur : vue éclatée pilotée par le défilement (kit.js) */
-.kit { position: relative; padding-block: clamp(64px, 9vw, 120px); }
+.kit { position: relative; padding-block: clamp(64px, 9vw, 120px); overflow-x: clip; }
 .kit__layout { display: grid; gap: 40px; }
 .kit__head { display: grid; gap: 20px; justify-items: start; }
 .kit__stage { position: relative; aspect-ratio: 4 / 3; max-height: 70svh; width: 100%; }
@@ -19,7 +19,7 @@
 .kit__piece--l .kit__tag { right: 92%; flex-direction: row-reverse; transform-origin: 100% 50%; }
 .kit__line { width: 48px; height: 1px; background: var(--brass-deep); transform-origin: 0 50%; flex: none; }
 .kit__piece--l .kit__line { transform-origin: 100% 50%; }
-.kit__label { background: var(--paper); white-space: nowrap; text-decoration: none; }
+.kit__label { background: var(--paper); text-decoration: none; height: auto; min-height: 22px; max-width: 10em; padding-block: 4px; line-height: 1.25; white-space: normal; }
 .kit__buy { display: grid; gap: 12px; align-content: start; max-width: 380px; padding: 24px; border: 1px solid var(--rule); background: var(--paper); }
 .kit__separately { font: 500 13px/1.4 var(--font-sans); }
 .kit__form { display: grid; gap: 10px; margin-top: 6px; }

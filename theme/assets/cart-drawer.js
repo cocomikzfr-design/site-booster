@@ -25,6 +25,7 @@ export function openDrawer(opener) {
   const panel = d.querySelector('.drawer__panel'), scrim = d.querySelector('.drawer__scrim');
   d.hidden = false;
   layer = openLayer(d, { opener, onEsc: closeDrawer, focus: panel.querySelector('[data-cart-close]') });
+  document.dispatchEvent(new Event('cursor:refresh'));
   if (isReduced()) return;
   panel.animate([{ clipPath: 'inset(0 0 0 100%)' }, { clipPath: 'inset(0 0 0 0%)' }], { duration: 850, easing: EASE_IO });
   scrim.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500 }); // voile (pas du contenu)
