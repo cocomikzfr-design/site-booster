@@ -1,0 +1,220 @@
+{%- liquid
+  assign featured = section.settings.product | default: settings.pack_product
+  assign featured_variant = featured.selected_or_first_available_variant
+  assign media_image = section.settings.image
+  assign media_alt = section.settings.image.alt
+  if media_image == blank and featured.featured_media != blank
+    assign media_image = featured.featured_media.preview_image
+    assign media_alt = featured.featured_media.alt | default: featured.title
+  endif
+
+  assign bundle_saving = 0
+  if section.settings.show_bundle_saving and featured != blank
+    assign bundle_total = 0
+    for block in section.blocks
+      if block.settings.product != blank
+        assign bundle_total = bundle_total | plus: block.settings.product.price
+      endif
+    endfor
+    assign bundle_saving = bundle_total | minus: featured_variant.price
+  endif
+-%}
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div class="section featured-pack section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width featured-pack__grid featured-pack--{{ section.settings.layout }}">
+    <div class="featured-pack__media">
+      {% render 'responsive-image',
+        image: media_image,
+        alt: media_alt,
+        sizes: '(min-width: 990px) 50vw, 100vw',
+        widths: '360, 540, 720, 900, 1080, 1296',
+        class: 'featured-pack__image',
+        placeholder: 'product-2'
+      %}
+    </div>
+
+    <div class="featured-pack__content stack">
+      {%- if section.settings.badge != blank -%}
+        <span class="badge badge--gold">{{ section.settings.badge | escape }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="featured-pack__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+
+      {%- if featured != blank -%}
+        {% render 'price', variant: featured_variant, show_badge: true, show_taxes: true, class: 'price--large' %}
+        {%- if bundle_saving > 0 -%}
+          {%- assign bundle_saving_money = bundle_saving | money -%}
+          <p class="featured-pack__saving">{{ 'products.bundle_saving' | t: amount: bundle_saving_money }}</p>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="featured-pack__included">
+          {%- if section.settings.included_heading != blank -%}
+            <h3 class="h4">{{ section.settings.included_heading | escape }}</h3>
+          {%- endif -%}
+          <ul class="featured-pack__items" role="list">
+            {%- for block in section.blocks -%}
+              {%- assign included = block.settings.product -%}
+              <li class="featured-pack__item" {{ block.shopify_attributes }}>
+                {%- if included.featured_media != blank -%}
+                  {{ included.featured_media.preview_image | image_url: width: 112 | image_tag: widths: '56, 112', sizes: '56px', loading: 'lazy', alt: '', class: 'featured-pack__thumb' }}
+                {%- else -%}
+                  {%- render 'icon', icon: 'check', size: 24 -%}
+                {%- endif -%}
+                <span>{{ included.title | default: block.settings.label | escape }}</span>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      {%- if featured != blank -%}
+        {% render 'buy-buttons', product: featured, section_id: section.id %}
+      {%- endif -%}
+
+      {%- if section.settings.show_delivery -%}
+        {% render 'delivery-estimate', style: 'compact' %}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Pack mis en avant",
+  "class": "section-featured-pack",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Produit",
+      "info": "Laissez vide pour utiliser le produit pack des Paramètres du thème."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Visuel d'ambiance",
+      "info": "Facultatif. Sinon, la photo principale du produit est utilisée. Le visuel doit montrer l'effet réel du produit."
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Étiquette",
+      "default": "Le plus choisi"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Le pack Façade de Noël"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texte",
+      "default": "<p>Le projecteur de motifs et la guirlande neige : tout ce qu'il faut pour transformer votre façade, dans un seul colis.</p>"
+    },
+    {
+      "type": "text",
+      "id": "included_heading",
+      "label": "Titre de la liste des produits inclus",
+      "default": "Dans le pack"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_delivery",
+      "label": "Afficher le délai de livraison",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bundle_saving",
+      "label": "Afficher l'économie par rapport aux produits achetés séparément",
+      "info": "Calculée avec les prix réels des produits inclus. À n'activer que si ces produits sont vendus séparément à ces prix.",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Position de l'image sur ordinateur",
+      "options": [
+        { "value": "image_left", "label": "À gauche" },
+        { "value": "image_right", "label": "À droite" }
+      ],
+      "default": "image_left"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "cream"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "included_item",
+      "name": "Produit inclus",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Produit"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Texte de remplacement",
+          "info": "Affiché si aucun produit n'est choisi."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pack mis en avant",
+      "blocks": [
+        { "type": "included_item" },
+        { "type": "included_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

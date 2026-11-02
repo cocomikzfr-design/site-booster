@@ -1,0 +1,126 @@
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div class="section section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <ul class="trust-badges" role="list">
+      {%- for block in section.blocks -%}
+        <li class="trust-badges__item reveal" {{ block.shopify_attributes }}>
+          {% render 'icon', icon: block.settings.icon, size: 32, class: 'trust-badges__icon' %}
+          <p class="trust-badges__title">{{ block.settings.title | escape }}</p>
+          {%- if block.settings.text != blank -%}
+            <p class="trust-badges__text text-muted">{{ block.settings.text | escape }}</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Garanties",
+  "tag": "section",
+  "class": "section-trust-badges",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "N'affichez que des garanties présentes dans les politiques de la boutique."
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "cream"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Garantie",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "truck", "label": "Camion" },
+            { "value": "shield", "label": "Bouclier" },
+            { "value": "return", "label": "Retour" },
+            { "value": "mail", "label": "E-mail" },
+            { "value": "clock", "label": "Horloge" },
+            { "value": "gift", "label": "Cadeau" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Livraison offerte"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte",
+          "default": "En France et en Belgique"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Garanties",
+      "blocks": [
+        {
+          "type": "badge",
+          "settings": { "icon": "truck", "title": "Livraison offerte", "text": "En France et en Belgique" }
+        },
+        {
+          "type": "badge",
+          "settings": { "icon": "shield", "title": "Paiement sécurisé", "text": "Carte, Bancontact, Apple Pay" }
+        },
+        {
+          "type": "badge",
+          "settings": { "icon": "return", "title": "14 jours pour changer d'avis", "text": "Rétractation selon nos conditions" }
+        },
+        {
+          "type": "badge",
+          "settings": { "icon": "mail", "title": "Service client", "text": "Réponse sous 24 h ouvrées" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

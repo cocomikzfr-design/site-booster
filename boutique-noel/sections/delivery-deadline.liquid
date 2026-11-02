@@ -1,0 +1,139 @@
+{%- if settings.season_mode == 'christmas' -%}
+  {%- liquid
+    capture deadline_remaining
+      render 'deadline-remaining'
+    endcapture
+    assign deadline_passed = false
+    if deadline_remaining != blank
+      assign remaining = deadline_remaining | plus: 0
+      if remaining <= 0
+        assign deadline_passed = true
+      endif
+    endif
+  -%}
+  {%- style -%}
+    .section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  {%- endstyle -%}
+
+  <div class="section delivery-deadline section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+    <div class="page-width delivery-deadline__inner">
+      {%- if section.settings.heading != blank -%}
+        <h2>{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+
+      <div class="delivery-deadline__inner" data-deadline-before{% if deadline_passed %} hidden{% endif %}>
+        <div class="rte">
+          {%- if section.settings.use_auto_text and deadline_remaining != blank -%}
+            {%- capture deadline_text -%}{% render 'format-date', value: settings.delivery_deadline_date %}{%- endcapture -%}
+            <p>{{ 'delivery.auto_text' | t: min: settings.delivery_min_days, max: settings.delivery_max_days, date: deadline_text }}</p>
+          {%- else -%}
+            {{ section.settings.text }}
+          {%- endif -%}
+        </div>
+
+        {% render 'deadline-countdown', style: 'blocks' %}
+
+        <ol class="delivery-timeline" role="list" aria-label="{{ 'delivery.timeline_label' | t }}">
+          <li class="delivery-timeline__step">
+            {%- render 'icon', icon: 'gift', size: 28 -%}
+            <span class="delivery-timeline__label">{{ 'delivery.step_order' | t }}</span>
+          </li>
+          <li class="delivery-timeline__step">
+            {%- render 'icon', icon: 'truck', size: 28 -%}
+            <span class="delivery-timeline__label">{{ 'delivery.step_shipping' | t }}</span>
+          </li>
+          <li class="delivery-timeline__step">
+            {%- render 'icon', icon: 'clock', size: 28 -%}
+            <div>
+              <span class="delivery-timeline__label">{{ 'delivery.step_delivery' | t }}</span>
+              {% render 'delivery-estimate', format: 'range' %}
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="rte" data-deadline-after{% unless deadline_passed %} hidden{% endunless %}>
+        {{ section.settings.after_text }}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Date limite de Noël",
+  "class": "section-delivery-deadline",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Recevez votre commande avant Noël"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_auto_text",
+      "label": "Texte automatique",
+      "info": "Phrase construite avec le délai de livraison et la date limite des Paramètres du thème.",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texte personnalisé",
+      "info": "Utilisé si le texte automatique est désactivé.",
+      "default": "<p>Nos décorations sont livrées en 7 à 12 jours. Pour les recevoir à temps, commandez au plus tard le 8 décembre.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "after_text",
+      "label": "Texte après la date limite",
+      "default": "<p>Les commandes passées maintenant arriveront après Noël, juste à temps pour le Nouvel An.</p>"
+    },
+    {
+      "type": "paragraph",
+      "content": "En mode hors saison, cette section ne s'affiche pas."
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "night-soft"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Date limite de Noël"
+    }
+  ]
+}
+{% endschema %}

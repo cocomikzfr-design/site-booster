@@ -1582,7 +1582,7 @@ a.pagination__item:hover {
   font-weight: var(--font-body-weight-bold, 700);
 }
 
-.delivery-timeline__value {
+.delivery-timeline .delivery-estimate {
   color: var(--fg-muted);
   font-size: var(--fs-small);
 }

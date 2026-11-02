@@ -1,0 +1,163 @@
+{%- liquid
+  assign video = section.settings.video
+  assign image = section.settings.image
+  assign image_alt = section.settings.image_alt | default: image.alt
+  assign video_id = 'ImageTextVideo-' | append: section.id
+-%}
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div class="section image-with-text section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width image-with-text__grid image-with-text--{{ section.settings.layout }}">
+    <div class="image-with-text__media">
+      {%- if video != blank -%}
+        <div class="image-with-text__video" id="{{ video_id }}" data-autoplay-video>
+          {{ video | video_tag: muted: true, loop: true, playsinline: true, controls: false, preload: 'metadata', image_size: '1100x' }}
+        </div>
+        <button
+          type="button"
+          class="icon-button media-toggle play-toggle"
+          data-video-toggle
+          aria-controls="{{ video_id }}"
+          data-label-pause="{{ 'accessibility.pause_video' | t }}"
+          data-label-play="{{ 'accessibility.play_video' | t }}"
+          aria-label="{{ 'accessibility.pause_video' | t }}"
+        >
+          {%- render 'icon', icon: 'pause', size: 20 -%}
+          {%- render 'icon', icon: 'play', size: 20 -%}
+        </button>
+      {%- else -%}
+        {% render 'responsive-image',
+          image: image,
+          alt: image_alt,
+          sizes: '(min-width: 990px) 50vw, 100vw',
+          widths: '360, 540, 720, 900, 1080, 1296',
+          placeholder: 'lifestyle-2'
+        %}
+      {%- endif -%}
+    </div>
+
+    <div class="image-with-text__content stack reveal">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2>{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+        <p>
+          <a href="{{ section.settings.button_link }}" class="button button--secondary">{{ section.settings.button_label | escape }}</a>
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image et texte",
+  "class": "section-image-with-text",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Texte alternatif de l'image",
+      "info": "Décrivez l'image pour les personnes malvoyantes. Laissez vide pour utiliser celui de la bibliothèque."
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Vidéo",
+      "info": "Facultatif, prioritaire sur l'image. Boucle muette courte."
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Position de l'image sur ordinateur",
+      "options": [
+        { "value": "image_left", "label": "À gauche" },
+        { "value": "image_right", "label": "À droite" }
+      ],
+      "default": "image_left"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Surtitre",
+      "default": "Idée cadeau"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Le cadeau qui illumine tout le quartier"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texte",
+      "default": "<p>Offrez un Noël lumineux : simple à installer, magique dès la première nuit.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Texte du bouton",
+      "default": "Voir le projecteur"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Lien du bouton"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "night"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image et texte"
+    }
+  ]
+}
+{% endschema %}

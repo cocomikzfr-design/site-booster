@@ -1,0 +1,148 @@
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div class="section how-it-works section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="section__header section__header--center">
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </div>
+    {%- endif -%}
+
+    <ol class="how-it-works__list" role="list">
+      {%- for block in section.blocks -%}
+        <li class="how-it-works__step reveal" {{ block.shopify_attributes }}>
+          <span class="how-it-works__number" aria-hidden="true">{{ forloop.index }}</span>
+          {%- render 'icon', icon: block.settings.icon, size: 36, class: 'how-it-works__icon' -%}
+          {%- if block.settings.title != blank -%}
+            <h3 class="h4">{{ block.settings.title | escape }}</h3>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <p class="how-it-works__text">{{ block.settings.text | escape }}</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Étapes d'installation",
+  "class": "section-how-it-works",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Installé en 3 étapes"
+    },
+    {
+      "type": "paragraph",
+      "content": "Ces étapes doivent rester vraies pour les produits vendus (par exemple : piquet de sol inclus ou non)."
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "night"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Étape",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "plug", "label": "Prise" },
+            { "value": "bulb", "label": "Ampoule" },
+            { "value": "snowflake", "label": "Flocon" },
+            { "value": "clock", "label": "Horloge" },
+            { "value": "gift", "label": "Cadeau" },
+            { "value": "ruler", "label": "Règle" }
+          ],
+          "default": "plug"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Branchez"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texte",
+          "default": "Une prise suffit. Pas d'outil, pas d'installation électrique."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Étapes d'installation",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "icon": "plug",
+            "title": "Branchez",
+            "text": "Une prise suffit. Pas d'outil, pas d'installation électrique."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "icon": "ruler",
+            "title": "Orientez",
+            "text": "Posez le projecteur au sol ou piquez-le dans la pelouse, face à la façade. [À VÉRIFIER : piquet inclus]"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "icon": "bulb",
+            "title": "Allumez",
+            "text": "La façade s'illumine dès la tombée de la nuit."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
