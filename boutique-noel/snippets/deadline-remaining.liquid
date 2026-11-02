@@ -1,0 +1,19 @@
+{%- comment -%}
+  Secondes restantes avant la date limite de livraison avant Noël (nombre négatif si elle est passée).
+  Ne rend rien si la date ou l'heure sont mal saisies dans les réglages du thème.
+  Utilisation : {% capture remaining %}{% render 'deadline-remaining' %}{% endcapture %}
+  Accepte : rien (utilise les réglages du thème, heure de la boutique).
+{%- endcomment -%}
+{%- liquid
+  assign deadline_date = settings.delivery_deadline_date | strip
+  assign deadline_time = settings.delivery_deadline_time | strip | default: '23:59'
+  if deadline_date.size == 10
+    assign deadline_raw = deadline_date | append: ' ' | append: deadline_time
+    assign deadline_year = deadline_raw | date: '%Y'
+    if deadline_year.size == 4
+      assign deadline_ts = deadline_raw | date: '%s' | plus: 0
+      assign now_ts = 'now' | date: '%s' | plus: 0
+      echo deadline_ts | minus: now_ts
+    endif
+  endif
+-%}

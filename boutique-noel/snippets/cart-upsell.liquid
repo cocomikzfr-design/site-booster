@@ -1,0 +1,55 @@
+{%- comment -%}
+  Suggestion d'un produit complémentaire dans le panier (tiroir et page panier).
+  Ne rend rien si la suggestion est désactivée, indisponible ou déjà dans le panier.
+  Accepte :
+  - context {String} 'drawer' ou 'page', pour des identifiants uniques (obligatoire)
+{%- endcomment -%}
+{%- liquid
+  assign upsell = settings.cart_upsell_product
+  assign show_upsell = false
+  if settings.cart_upsell_enabled and upsell != blank and upsell.available
+    assign show_upsell = true
+    for item in cart.items
+      if item.product_id == upsell.id
+        assign show_upsell = false
+        break
+      endif
+    endfor
+  endif
+-%}
+{%- if show_upsell -%}
+  {%- liquid
+    assign upsell_variant = upsell.selected_or_first_available_variant
+    assign upsell_form_id = 'CartUpsellForm-' | append: context
+    assign upsell_title_id = 'CartUpsellTitle-' | append: context
+  -%}
+  <div class="cart-upsell" data-cart-upsell>
+    <p class="cart-upsell__title">{{ 'cart.upsell_title' | t }}</p>
+    <div class="cart-upsell__card">
+      <a href="{{ upsell.url }}" class="cart-upsell__media" tabindex="-1" aria-hidden="true">
+        {%- if upsell.featured_media -%}
+          {{ upsell.featured_media.preview_image | image_url: width: 160 | image_tag: widths: '80, 160', sizes: '72px', loading: 'lazy', alt: '', class: 'cart-upsell__image' }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </a>
+      <div class="cart-upsell__body">
+        <a href="{{ upsell.url }}" class="cart-upsell__name" id="{{ upsell_title_id }}">{{ upsell.title | escape }}</a>
+        <span class="cart-upsell__price">{{ upsell_variant.price | money }}</span>
+      </div>
+      {%- if upsell.variants.size == 1 -%}
+        {%- form 'product', upsell, id: upsell_form_id, class: 'cart-upsell__form', data-type: 'add-to-cart-form' -%}
+          <input type="hidden" name="id" value="{{ upsell_variant.id }}">
+          <button type="submit" name="add" class="button button--secondary button--small" aria-describedby="{{ upsell_title_id }}">
+            <span>{{ 'cart.upsell_add' | t }}</span>
+          </button>
+          <p class="card__error" role="alert" data-form-error></p>
+        {%- endform -%}
+      {%- else -%}
+        <a href="{{ upsell.url }}" class="button button--secondary button--small" aria-describedby="{{ upsell_title_id }}">
+          {{- 'products.see_product' | t -}}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}

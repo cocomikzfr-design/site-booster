@@ -1,0 +1,47 @@
+{%- comment -%}
+  Délai de livraison réel. Texte serveur toujours vrai (« Livraison en 7 à 12 jours »),
+  remplacé par delivery.js par de vraies dates en français.
+  Accepte :
+  - style {String} 'compact' (défaut) ou 'full' (ajoute la livraison offerte et le suivi)
+  - format {String} 'range' pour n'afficher que les deux dates (frise de livraison) (facultatif)
+{%- endcomment -%}
+{%- liquid
+  assign estimate_style = style | default: 'compact'
+  assign deadline_passed = false
+  if settings.season_mode == 'christmas'
+    capture deadline_remaining
+      render 'deadline-remaining'
+    endcapture
+    if deadline_remaining != blank
+      assign remaining = deadline_remaining | plus: 0
+      if remaining <= 0
+        assign deadline_passed = true
+      endif
+    endif
+  endif
+-%}
+<delivery-estimate class="delivery-estimate delivery-estimate--{{ estimate_style }}"{% if format %} data-format="{{ format }}"{% endif %}>
+  <p class="delivery-estimate__line">
+    {%- unless format == 'range' -%}
+      {%- render 'icon', icon: 'truck', size: 20 -%}
+    {%- endunless -%}
+    <span data-delivery-text>{{ 'delivery.delay' | t: min: settings.delivery_min_days, max: settings.delivery_max_days }}</span>
+  </p>
+  {%- if settings.season_mode == 'christmas' and format != 'range' -%}
+    <p class="delivery-estimate__warning" data-delivery-after{% unless deadline_passed %} hidden{% endunless %}>
+      <strong>{{ 'delivery.after_christmas' | t }}</strong>
+    </p>
+  {%- endif -%}
+  {%- if estimate_style == 'full' -%}
+    {%- if settings.free_shipping -%}
+      <p class="delivery-estimate__line">
+        {%- render 'icon', icon: 'gift', size: 20 -%}
+        <span>{{ 'delivery.free' | t: countries: settings.shipping_countries_text }}</span>
+      </p>
+    {%- endif -%}
+    <p class="delivery-estimate__line text-muted">
+      {%- render 'icon', icon: 'mail', size: 20 -%}
+      <span>{{ 'delivery.tracking' | t }}</span>
+    </p>
+  {%- endif -%}
+</delivery-estimate>

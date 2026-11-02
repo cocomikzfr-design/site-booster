@@ -1,0 +1,51 @@
+{%- comment -%}
+  Sélecteur de quantité (bouton moins, champ numérique, bouton plus). Composant <quantity-input> défini dans theme.js.
+  Accepte :
+  - id {String} identifiant du champ (obligatoire)
+  - name {String} nom du champ (défaut : 'quantity')
+  - value {Number} valeur initiale (défaut : 1)
+  - min {Number} valeur minimale (défaut : 1)
+  - max {Number} valeur maximale (facultatif)
+  - product_title {String} titre du produit, pour les libellés accessibles
+  - form_id {String} formulaire auquel rattacher le champ quand il est placé hors du formulaire (facultatif)
+  - index {Number} numéro de ligne du panier, pour cart.js (facultatif)
+  - label {String} libellé accessible du champ (défaut : « Quantité »)
+{%- endcomment -%}
+{%- liquid
+  assign q_name = name | default: 'quantity'
+  assign q_value = value | default: 1
+  assign q_min = min | default: 1
+  assign q_label = label
+  if q_label == blank
+    assign q_label = 'products.quantity' | t
+  endif
+  assign title = product_title | escape
+-%}
+<quantity-input class="quantity">
+  <button type="button" name="minus" class="quantity__button" aria-label="{{ 'products.decrease_quantity' | t: product: title }}">
+    {%- render 'icon', icon: 'minus', size: 18 -%}
+  </button>
+  <input
+    class="quantity__input"
+    type="number"
+    id="{{ id }}"
+    name="{{ q_name }}"
+    value="{{ q_value }}"
+    min="{{ q_min }}"
+    {% if max %}
+      max="{{ max }}"
+    {% endif %}
+    step="1"
+    inputmode="numeric"
+    aria-label="{{ q_label | escape }}"
+    {% if form_id %}
+      form="{{ form_id }}"
+    {% endif %}
+    {% if index %}
+      data-index="{{ index }}"
+    {% endif %}
+  >
+  <button type="button" name="plus" class="quantity__button" aria-label="{{ 'products.increase_quantity' | t: product: title }}">
+    {%- render 'icon', icon: 'plus', size: 18 -%}
+  </button>
+</quantity-input>

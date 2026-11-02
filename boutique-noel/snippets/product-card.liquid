@@ -1,0 +1,67 @@
+{%- comment -%}
+  Carte produit. Ajout direct au panier si le produit n'a qu'une variante, sinon lien vers la fiche.
+  Un seul lien focusable vers le produit (le titre) : l'image et le bouton « Voir le produit » sont retirés de l'ordre de tabulation.
+  Accepte :
+  - product {Object} produit (obligatoire)
+  - section_id {String} identifiant de la section, pour des identifiants uniques (obligatoire)
+  - show_badge {Boolean} badge de réduction si un prix barré réel existe (facultatif)
+  - badge_text {String} étiquette dorée, par exemple « Le plus choisi » (facultatif)
+  - heading_level {String} 'h2' ou 'h3' (défaut : 'h3')
+  - image_sizes {String} attribut sizes des images (facultatif)
+{%- endcomment -%}
+{%- liquid
+  assign card_sizes = image_sizes | default: '(min-width: 990px) 33vw, 50vw'
+  assign card_widths = '360, 540, 720, 900'
+  assign card_variant = product.selected_or_first_available_variant
+  assign card_uid = section_id | append: '-' | append: product.id
+  assign first_media = product.featured_media
+  assign second_media = nil
+  if settings.card_show_secondary_image and product.media.size > 1 and first_media.media_type == 'image'
+    if product.media[1].media_type == 'image'
+      assign second_media = product.media[1]
+    endif
+  endif
+  assign card_form_id = 'CardForm-' | append: card_uid
+  assign card_title_id = 'CardTitle-' | append: card_uid
+-%}
+{%- capture card_title -%}
+  <a href="{{ product.url }}" class="card__link" id="{{ card_title_id }}">{{ product.title | escape }}</a>
+{%- endcapture -%}
+<article class="card product-card">
+  <a href="{{ product.url }}" class="card__media card__media--{{ settings.card_image_ratio }}" tabindex="-1" aria-hidden="true">
+    {%- if first_media -%}
+      {% render 'responsive-image', image: first_media.preview_image, sizes: card_sizes, widths: card_widths, class: 'card__image', decorative: true %}
+      {%- if second_media -%}
+        {% render 'responsive-image', image: second_media.preview_image, sizes: card_sizes, widths: card_widths, class: 'card__image card__image--secondary', decorative: true %}
+      {%- endif -%}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </a>
+  {%- if badge_text != blank -%}
+    <span class="badge badge--gold card__badge">{{ badge_text | escape }}</span>
+  {%- endif -%}
+  <div class="card__body">
+    {%- if heading_level == 'h2' -%}
+      <h2 class="card__title">{{ card_title }}</h2>
+    {%- else -%}
+      <h3 class="card__title">{{ card_title }}</h3>
+    {%- endif -%}
+    {% render 'price', product: product, show_badge: show_badge, class: 'card__price' %}
+    <div class="card__cta">
+      {%- if product.variants.size == 1 and card_variant.available -%}
+        {%- form 'product', product, id: card_form_id, class: 'card__form', data-type: 'add-to-cart-form' -%}
+          <input type="hidden" name="id" value="{{ card_variant.id }}">
+          <p class="card__error" role="alert" data-form-error></p>
+          <button type="submit" name="add" class="button button--primary button--small button--full" aria-describedby="{{ card_title_id }}">
+            <span>{{ 'products.add_to_cart' | t }}</span>
+          </button>
+        {%- endform -%}
+      {%- else -%}
+        <a href="{{ product.url }}" class="button button--secondary button--small button--full" tabindex="-1" aria-hidden="true">
+          {{- 'products.see_product' | t -}}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</article>

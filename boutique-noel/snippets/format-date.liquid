@@ -1,0 +1,19 @@
+{%- comment -%}
+  Date écrite en français, construite à la main : « 8 décembre », « 1er mars 2027 ».
+  Accepte :
+  - value {String|Date} date à afficher, par exemple '2026-12-08' ou article.published_at (obligatoire)
+  - show_year {Boolean} ajoute l'année (défaut : false)
+{%- endcomment -%}
+{%- liquid
+  assign month_names = 'general.months' | t | split: ','
+  assign month_index = value | date: '%-m' | minus: 1
+  assign day_number = value | date: '%-d'
+  if day_number == '1'
+    assign day_number = 'general.first_day' | t
+  endif
+  echo day_number | append: ' ' | append: month_names[month_index]
+  if show_year
+    assign year = value | date: '%Y'
+    echo ' ' | append: year
+  endif
+-%}

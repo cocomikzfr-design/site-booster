@@ -1,0 +1,41 @@
+{%- comment -%}
+  Choix des options d'un produit en pastilles (boutons radio). Ne rend rien pour un produit sans variante.
+  Sans JavaScript, la liste déroulante de buy-buttons prend le relais.
+  Accepte :
+  - product {Object} produit (obligatoire)
+  - section_id {String} identifiant de la section (obligatoire)
+{%- endcomment -%}
+{%- unless product.has_only_default_variant -%}
+  <variant-picker class="variant-picker js-only" data-section="{{ section_id }}">
+    {%- for option in product.options_with_values -%}
+      {%- assign option_index = forloop.index0 -%}
+      <fieldset class="variant-picker__fieldset">
+        <legend class="variant-picker__legend">
+          {{ option.name | escape }} : <span data-option-value>{{ option.selected_value | escape }}</span>
+        </legend>
+        <div class="variant-picker__values">
+          {%- for value in option.values -%}
+            {%- assign input_id = 'Option-' | append: section_id | append: '-' | append: option_index | append: '-' | append: forloop.index0 -%}
+            <input
+              type="radio"
+              id="{{ input_id }}"
+              class="variant-picker__input visually-hidden{% unless value.available %} is-unavailable{% endunless %}"
+              name="Option-{{ section_id }}-{{ option_index }}"
+              value="{{ value.name | escape }}"
+              {% if value.selected %}
+                checked
+              {% endif %}
+            >
+            <label for="{{ input_id }}" class="variant-picker__pill">
+              {{- value.name | escape -}}
+              <span class="visually-hidden" data-unavailable-label{% if value.available %} hidden{% endif %}>({{ 'products.unavailable' | t }})</span>
+            </label>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endfor -%}
+    <script type="application/json" data-variants>
+      {{ product.variants | json }}
+    </script>
+  </variant-picker>
+{%- endunless -%}

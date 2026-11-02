@@ -1,0 +1,67 @@
+{%- comment -%}
+  Formulaire d'ajout au panier (fiche produit, pack mis en avant). Fonctionne aussi sans JavaScript.
+  Accepte :
+  - product {Object} produit (obligatoire)
+  - section_id {String} identifiant de la section (obligatoire)
+  - block {Object} bloc de section : attributs de l'éditeur et réglage show_dynamic_checkout (facultatif)
+  - show_trust {Boolean} ligne de garanties sous le bouton (défaut : true)
+{%- endcomment -%}
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'ProductForm-' | append: section_id
+  assign trust_visible = true
+  if show_trust == false
+    assign trust_visible = false
+  endif
+-%}
+<div class="buy-buttons stack" {{ block.shopify_attributes }}>
+  {%- form 'product', product, id: form_id, class: 'product-form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+    <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+    {%- unless product.has_only_default_variant -%}
+      <noscript>
+        <div class="field">
+          <label for="VariantSelect-{{ section_id }}" class="field__label">{{ product.options | join: ' / ' | escape }}</label>
+          <select id="VariantSelect-{{ section_id }}" name="id" class="field__select">
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}"{% if variant.id == current_variant.id %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>
+                {{- variant.title | escape }} – {{ variant.price | money -}}
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+      </noscript>
+    {%- endunless -%}
+    <p class="product-form__error" role="alert" data-form-error></p>
+    <button
+      type="submit"
+      name="add"
+      class="button button--primary button--full"
+      {% unless current_variant.available %}
+        disabled
+      {% endunless %}
+    >
+      <span data-button-label>
+        {%- if current_variant.available -%}
+          {{ 'products.add_to_cart' | t }}
+        {%- else -%}
+          {{ 'products.sold_out' | t }}
+        {%- endif -%}
+      </span>
+    </button>
+    {%- if block.settings.show_dynamic_checkout -%}
+      {{ form | payment_button }}
+    {%- endif -%}
+  {%- endform -%}
+
+  {%- if trust_visible -%}
+    {% render 'trust-row', layout: 'row' %}
+  {%- endif -%}
+
+  {%- if settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+    <ul class="payment-icons" role="list">
+      {%- for type in shop.enabled_payment_types -%}
+        <li>{{ type | payment_type_svg_tag: class: 'payment-icons__icon' }}</li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</div>

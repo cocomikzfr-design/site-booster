@@ -1,0 +1,10 @@
+{%- comment -%}
+  Contenu de l'icône panier : pictogramme, pastille du nombre d'articles, texte pour les lecteurs d'écran.
+  Rendu par header.liquid et par la section cart-icon-bubble (mise à jour par cart.js).
+  Accepte : rien (utilise l'objet cart).
+{%- endcomment -%}
+{% render 'icon', icon: 'cart', size: 24 %}
+{%- if cart.item_count > 0 -%}
+  <span class="cart-count" aria-hidden="true">{{ cart.item_count }}</span>
+{%- endif -%}
+<span class="visually-hidden">{{ 'header.cart_count' | t: count: cart.item_count }}</span>

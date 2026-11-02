@@ -1,0 +1,82 @@
+{%- comment -%}
+  Compte à rebours jusqu'à la vraie date limite de livraison avant Noël, identique pour tous les visiteurs.
+  Jours, heures et minutes calculés côté serveur (pas de décalage au chargement), puis corrigés par delivery.js.
+  Ne rend rien hors saison, si le réglage est désactivé ou si la date est mal saisie.
+  Accepte :
+  - style {String} 'inline' (défaut) ou 'blocks'
+{%- endcomment -%}
+{%- if settings.season_mode == 'christmas' and settings.show_countdown -%}
+  {%- capture deadline_remaining -%}{% render 'deadline-remaining' %}{%- endcapture -%}
+  {%- if deadline_remaining != blank -%}
+    {%- liquid
+      assign countdown_style = style | default: 'inline'
+      assign remaining = deadline_remaining | plus: 0
+      assign total_minutes = remaining | divided_by: 60
+      assign days = total_minutes | divided_by: 1440
+      assign hours = total_minutes | modulo: 1440 | divided_by: 60
+      assign minutes = total_minutes | modulo: 60
+      assign hours_padded = hours | prepend: '0' | slice: -2, 2
+      assign minutes_padded = minutes | prepend: '0' | slice: -2, 2
+
+      if days < 2
+        assign days_long = 'countdown.days_one' | t
+      else
+        assign days_long = 'countdown.days_long' | t
+      endif
+      if hours < 2
+        assign hours_long = 'countdown.hours_one' | t
+      else
+        assign hours_long = 'countdown.hours_long' | t
+      endif
+      if minutes < 2
+        assign minutes_long = 'countdown.minutes_one' | t
+      else
+        assign minutes_long = 'countdown.minutes_long' | t
+      endif
+
+      if countdown_style == 'blocks'
+        assign days_label = days_long
+        assign hours_label = hours_long
+        assign minutes_label = minutes_long
+      else
+        assign days_label = 'countdown.days' | t
+        assign hours_label = 'countdown.hours' | t
+        assign minutes_label = 'countdown.minutes' | t
+      endif
+    -%}
+    {%- capture deadline_text -%}{% render 'format-date', value: settings.delivery_deadline_date %}{%- endcapture -%}
+    <deadline-countdown
+      class="countdown countdown--{{ countdown_style }}"
+      data-style="{{ countdown_style }}"
+      data-deadline="{{ settings.delivery_deadline_date | escape }} {{ settings.delivery_deadline_time | escape }}"
+    >
+      {%- if remaining > 0 -%}
+        <p class="countdown__intro">
+          {%- render 'icon', icon: 'clock', size: 18 -%}
+          <span>{{ 'countdown.intro' | t: date: deadline_text }}</span>
+        </p>
+        <div class="countdown__digits" aria-hidden="true" data-countdown-digits>
+          <span class="countdown__unit">
+            <span class="countdown__value" data-unit-value="days">{{ days }}</span>
+            <span class="countdown__label" data-unit-label="days">{{ days_label }}</span>
+          </span>
+          {%- if countdown_style == 'blocks' -%}<span class="countdown__sep">:</span>{%- endif -%}
+          <span class="countdown__unit">
+            <span class="countdown__value" data-unit-value="hours">{{ hours_padded }}</span>
+            <span class="countdown__label" data-unit-label="hours">{{ hours_label }}</span>
+          </span>
+          {%- if countdown_style == 'blocks' -%}<span class="countdown__sep">:</span>{%- endif -%}
+          <span class="countdown__unit">
+            <span class="countdown__value" data-unit-value="minutes">{{ minutes_padded }}</span>
+            <span class="countdown__label" data-unit-label="minutes">{{ minutes_label }}</span>
+          </span>
+        </div>
+        <p class="visually-hidden" data-countdown-summary>
+          {{- 'countdown.summary' | t: days: days, days_unit: days_long, hours: hours, hours_unit: hours_long, minutes: minutes, minutes_unit: minutes_long -}}
+        </p>
+      {%- else -%}
+        <p class="countdown__passed">{{ 'countdown.deadline_passed' | t }}</p>
+      {%- endif -%}
+    </deadline-countdown>
+  {%- endif -%}
+{%- endif -%}

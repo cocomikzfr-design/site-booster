@@ -1,0 +1,21 @@
+{%- comment -%}
+  Garanties courtes, toutes présentes dans les politiques de la boutique.
+  Accepte :
+  - layout {String} 'row' (défaut) ou 'stack'
+{%- endcomment -%}
+<ul class="trust-row trust-row--{{ layout | default: 'row' }}" role="list">
+  <li class="trust-row__item">
+    {%- render 'icon', icon: 'shield', size: 20 -%}
+    <span>{{ 'products.secure_payment' | t }}</span>
+  </li>
+  {%- if settings.free_shipping -%}
+    <li class="trust-row__item">
+      {%- render 'icon', icon: 'truck', size: 20 -%}
+      <span>{{ 'products.free_shipping' | t }}</span>
+    </li>
+  {%- endif -%}
+  <li class="trust-row__item">
+    {%- render 'icon', icon: 'return', size: 20 -%}
+    <span>{{ 'products.withdrawal' | t: days: settings.return_days }}</span>
+  </li>
+</ul>

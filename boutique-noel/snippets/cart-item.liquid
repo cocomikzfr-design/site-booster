@@ -1,0 +1,80 @@
+{%- comment -%}
+  Ligne du panier (tiroir et page panier).
+  Sur la page panier, fonctionne aussi sans JavaScript : champ updates[] du formulaire CartForm et lien de suppression.
+  Accepte :
+  - item {Object} ligne du panier (obligatoire)
+  - index {Number} position de la ligne, à partir de 1 (obligatoire)
+  - context {String} 'drawer' ou 'page' (obligatoire)
+{%- endcomment -%}
+{%- liquid
+  assign item_title = item.product.title | escape
+  assign quantity_id = 'Quantity-' | append: context | append: '-' | append: index
+  assign quantity_form = nil
+  if context == 'page'
+    assign quantity_form = 'CartForm'
+  endif
+-%}
+<li class="cart-item" id="CartItem-{{ context }}-{{ index }}" data-line="{{ index }}" data-key="{{ item.key }}">
+  <a href="{{ item.url }}" class="cart-item__media" tabindex="-1" aria-hidden="true">
+    {%- if item.image -%}
+      {{ item.image | image_url: width: 160 | image_tag: widths: '80, 160', sizes: '80px', loading: 'lazy', alt: '', class: 'cart-item__image' }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </a>
+
+  <div class="cart-item__details">
+    <a href="{{ item.url }}" class="cart-item__title">{{ item_title }}</a>
+
+    {%- unless item.product.has_only_default_variant -%}
+      <ul class="cart-item__options" role="list">
+        {%- for option in item.options_with_values -%}
+          <li>{{ option.name | escape }} : {{ option.value | escape }}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endunless -%}
+
+    <p class="cart-item__price text-muted">
+      {%- assign unit_price = item.final_price | money -%}
+      {{ 'cart.price_each' | t: price: unit_price }}
+    </p>
+
+    {%- if item.line_level_discount_allocations.size > 0 -%}
+      <ul class="cart-item__discounts" role="list">
+        {%- for allocation in item.line_level_discount_allocations -%}
+          <li>
+            {%- render 'icon', icon: 'gift', size: 16 -%}
+            {{ allocation.discount_application.title | escape }} (−{{ allocation.amount | money }})
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="cart-item__actions">
+      {% render 'quantity-input',
+        id: quantity_id,
+        name: 'updates[]',
+        value: item.quantity,
+        min: 0,
+        product_title: item.product.title,
+        form_id: quantity_form,
+        index: index
+      %}
+      <a href="{{ item.url_to_remove }}" class="cart-item__remove" data-cart-remove data-index="{{ index }}">
+        {%- render 'icon', icon: 'trash', size: 18 -%}
+        <span>{{ 'cart.remove' | t }}</span>
+        <span class="visually-hidden">{{ 'cart.remove_item' | t: title: item_title }}</span>
+      </a>
+    </div>
+
+    <p class="cart-item__error" role="alert" data-line-error></p>
+  </div>
+
+  <div class="cart-item__total">
+    <span class="visually-hidden">{{ 'cart.line_total' | t }}</span>
+    <span class="cart-item__line-price">{{ item.final_line_price | money }}</span>
+    {%- if item.original_line_price > item.final_line_price -%}
+      <s class="cart-item__compare">{{ item.original_line_price | money }}</s>
+    {%- endif -%}
+  </div>
+</li>

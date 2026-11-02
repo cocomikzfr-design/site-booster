@@ -1,0 +1,37 @@
+{%- comment -%}
+  Liens vers les réseaux sociaux renseignés dans les réglages du thème (les liens vides ne s'affichent pas).
+  Accepte :
+  - class {String} classe CSS supplémentaire (facultatif)
+{%- endcomment -%}
+{%- liquid
+  assign networks = 'tiktok,instagram,facebook,youtube' | split: ','
+  assign has_links = false
+  for network in networks
+    assign setting_key = 'social_' | append: network | append: '_link'
+    if settings[setting_key] != blank
+      assign has_links = true
+    endif
+  endfor
+-%}
+{%- if has_links -%}
+  <ul class="social-links{% if class %} {{ class }}{% endif %}" role="list">
+    {%- for network in networks -%}
+      {%- liquid
+        assign setting_key = 'social_' | append: network | append: '_link'
+        assign social_url = settings[setting_key]
+        assign network_label_key = 'social.' | append: network
+        assign network_label = network_label_key | t
+      -%}
+      {%- if social_url != blank -%}
+        <li>
+          <a href="{{ social_url | escape }}" class="social-links__link" target="_blank" rel="noopener">
+            {%- render 'icon', icon: network -%}
+            <span class="visually-hidden">
+              {{- 'accessibility.social_link' | t: network: network_label, shop: shop.name }} ({{ 'accessibility.new_window' | t -}})
+            </span>
+          </a>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

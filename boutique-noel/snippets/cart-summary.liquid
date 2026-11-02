@@ -1,0 +1,65 @@
+{%- comment -%}
+  Récapitulatif du panier : réductions, sous-total, livraison, note, bouton de paiement, rappel de rétractation.
+  Accepte :
+  - context {String} 'drawer' ou 'page' (obligatoire)
+  - form_id {String} formulaire panier auquel rattacher la note et le bouton « Passer commande » (obligatoire)
+{%- endcomment -%}
+<div class="cart-summary">
+  {%- if cart.cart_level_discount_applications.size > 0 -%}
+    <ul class="cart-summary__discounts" role="list">
+      {%- for discount in cart.cart_level_discount_applications -%}
+        <li class="cart-summary__row">
+          <span class="cart-summary__discount-title">
+            {%- render 'icon', icon: 'gift', size: 18 -%}
+            {{ 'cart.discount' | t }} : {{ discount.title | escape }}
+          </span>
+          <span>−{{ discount.total_allocated_amount | money }}</span>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  <p class="cart-summary__row cart-summary__subtotal">
+    <span>{{ 'cart.subtotal' | t }}</span>
+    <span class="cart-summary__amount" data-cart-subtotal>{{ cart.total_price | money }}</span>
+  </p>
+
+  <p class="cart-summary__shipping text-muted">
+    {%- if settings.free_shipping -%}
+      {{ 'cart.shipping_note' | t }}
+    {%- else -%}
+      {{ 'cart.shipping_note_paid' | t }}
+    {%- endif -%}
+  </p>
+
+  {%- if settings.show_cart_note -%}
+    <div class="field cart-summary__note">
+      <label for="CartNote-{{ context }}" class="field__label">{{ 'cart.note' | t }}</label>
+      <textarea id="CartNote-{{ context }}" name="note" class="field__textarea" form="{{ form_id }}" rows="3">{{ cart.note }}</textarea>
+    </div>
+  {%- endif -%}
+
+  <button type="submit" name="checkout" form="{{ form_id }}" class="button button--primary button--full">
+    {%- render 'icon', icon: 'shield', size: 20 -%}
+    <span>{{ 'cart.checkout' | t }}</span>
+  </button>
+
+  {%- if settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+    <ul class="payment-icons cart-summary__payments" role="list">
+      {%- for type in shop.enabled_payment_types -%}
+        <li>{{ type | payment_type_svg_tag: class: 'payment-icons__icon' }}</li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if context == 'drawer' -%}
+    <a href="{{ routes.cart_url }}" class="button button--ghost button--full cart-summary__view">{{ 'cart.view_cart' | t }}</a>
+  {%- endif -%}
+
+  {%- if settings.show_withdrawal_notice -%}
+    <p class="cart-summary__withdrawal text-muted">
+      {%- render 'icon', icon: 'return', size: 18 -%}
+      <span>{{ 'cart.withdrawal' | t: days: settings.return_days }}</span>
+    </p>
+  {%- endif -%}
+</div>

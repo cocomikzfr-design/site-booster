@@ -1,0 +1,32 @@
+{%- comment -%}
+  Image responsive avec srcset, dimensions réelles (pas de décalage de mise en page) et repli si l'image est vide.
+  Accepte :
+  - image {Object} image ou média Shopify (obligatoire)
+  - sizes {String} attribut sizes (défaut : '100vw')
+  - widths {String} largeurs générées (défaut : '360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048')
+  - loading {String} 'lazy' (défaut) ou 'eager'
+  - fetchpriority {String} 'high' pour l'image principale de la page (facultatif)
+  - class {String} classe CSS (facultatif)
+  - alt {String} texte alternatif (défaut : texte alternatif de l'image)
+  - decorative {Boolean} image purement décorative : alt vide (facultatif)
+  - placeholder {String} illustration de repli : 'product-1' (défaut), 'lifestyle-1', 'lifestyle-2'…
+{%- endcomment -%}
+{%- liquid
+  assign img_sizes = sizes | default: '100vw'
+  assign img_widths = widths | default: '360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048'
+  assign img_loading = loading | default: 'lazy'
+  assign img_class = class | default: ''
+  assign img_alt = alt | default: image.alt | default: ''
+  if decorative
+    assign img_alt = ''
+  endif
+-%}
+{%- if image != blank -%}
+  {%- if fetchpriority != blank -%}
+    {{ image | image_url: width: 2048 | image_tag: widths: img_widths, sizes: img_sizes, loading: img_loading, fetchpriority: fetchpriority, alt: img_alt, class: img_class }}
+  {%- else -%}
+    {{ image | image_url: width: 2048 | image_tag: widths: img_widths, sizes: img_sizes, loading: img_loading, alt: img_alt, class: img_class }}
+  {%- endif -%}
+{%- else -%}
+  {{ placeholder | default: 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+{%- endif -%}

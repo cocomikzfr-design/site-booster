@@ -1,0 +1,65 @@
+{%- comment -%}
+  Prix d'un produit ou d'une variante. Le prix barré n'apparaît que si un vrai prix comparé est renseigné dans l'admin.
+  Accepte :
+  - product {Object} produit (prix le plus bas, « À partir de » si les variantes ont des prix différents)
+  - variant {Object} variante (prioritaire sur product)
+  - show_badge {Boolean} badge de réduction, seulement si le réglage du thème l'autorise (facultatif)
+  - show_taxes {Boolean} mention « Taxes incluses » si la boutique affiche des prix TTC (facultatif)
+  - class {String} classe CSS supplémentaire (facultatif)
+{%- endcomment -%}
+{%- liquid
+  if variant != blank
+    assign current_price = variant.price
+    assign compare_price = variant.compare_at_price
+    assign price_varies = false
+  else
+    assign current_price = product.price
+    assign compare_price = product.compare_at_price
+    assign price_varies = product.price_varies
+  endif
+
+  assign on_sale = false
+  if compare_price > current_price
+    assign on_sale = true
+  endif
+
+  assign badge_allowed = false
+  if show_badge and settings.show_discount_badge
+    assign badge_allowed = true
+  endif
+
+  assign badge_text = ''
+  if badge_allowed and on_sale
+    if settings.discount_badge_style == 'amount'
+      assign saving = compare_price | minus: current_price | money
+      assign badge_text = 'products.save_amount' | t: amount: saving
+    else
+      assign percent = compare_price | minus: current_price | times: 100.0 | divided_by: compare_price | round
+      assign badge_text = 'products.save_percent' | t: percent: percent
+    endif
+  endif
+
+  assign price_money = current_price | money
+-%}
+<div class="price{% if on_sale %} price--on-sale{% endif %}{% if class %} {{ class }}{% endif %}" data-price>
+  <span class="visually-hidden" data-price-label>
+    {%- if on_sale -%}{{ 'products.sale_price' | t }}{%- else -%}{{ 'products.price' | t }}{%- endif -%}
+  </span>
+  <span class="price__current" data-price-current>
+    {%- if price_varies -%}
+      {{ 'products.from_price' | t: price: price_money }}
+    {%- else -%}
+      {{ price_money }}
+    {%- endif -%}
+  </span>
+  <span class="price__compare" data-price-compare{% unless on_sale %} hidden{% endunless %}>
+    <span class="visually-hidden">{{ 'products.regular_price' | t }}</span>
+    <s data-price-compare-value>{% if on_sale %}{{ compare_price | money }}{% endif %}</s>
+  </span>
+  {%- if badge_allowed -%}
+    <span class="badge badge--red" data-price-badge{% unless on_sale %} hidden{% endunless %}>{{ badge_text }}</span>
+  {%- endif -%}
+  {%- if show_taxes and shop.taxes_included -%}
+    <span class="price__taxes">{{ 'products.taxes_included' | t }}</span>
+  {%- endif -%}
+</div>
