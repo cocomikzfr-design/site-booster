@@ -62,7 +62,7 @@
       %}
       <a href="{{ item.url_to_remove }}" class="cart-item__remove" data-cart-remove data-index="{{ index }}">
         {%- render 'icon', icon: 'trash', size: 18 -%}
-        <span>{{ 'cart.remove' | t }}</span>
+        <span aria-hidden="true">{{ 'cart.remove' | t }}</span>
         <span class="visually-hidden">{{ 'cart.remove_item' | t: title: item_title }}</span>
       </a>
     </div>

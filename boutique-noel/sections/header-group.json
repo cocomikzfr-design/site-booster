@@ -1,0 +1,50 @@
+{
+  "type": "header",
+  "name": "Groupe en-tête",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "shipping": {
+          "type": "announcement",
+          "settings": {
+            "text": "Livraison offerte en France et en Belgique",
+            "icon": "truck",
+            "show_countdown": false
+          }
+        },
+        "countdown": {
+          "type": "announcement",
+          "settings": {
+            "text": "Commandez avant le 8 décembre pour recevoir avant Noël",
+            "icon": "clock",
+            "show_countdown": true
+          }
+        },
+        "returns": {
+          "type": "announcement",
+          "settings": {
+            "text": "14 jours pour changer d'avis",
+            "icon": "gift",
+            "show_countdown": false
+          }
+        }
+      },
+      "block_order": ["shipping", "countdown", "returns"],
+      "settings": {
+        "color_scheme": "night-soft"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "logo_position_desktop": "left",
+        "show_search": true,
+        "sticky": true,
+        "color_scheme": "night"
+      }
+    }
+  },
+  "order": ["announcement", "header"]
+}

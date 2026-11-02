@@ -1,0 +1,123 @@
+{%- liquid
+  assign slide_count = 0
+-%}
+{%- capture slides_html -%}
+  <div class="announcement-bar__slides">
+    {%- for block in section.blocks -%}
+      {%- capture slide_content -%}
+        {%- if block.settings.show_countdown -%}
+          {%- render 'deadline-countdown', style: 'inline' -%}
+        {%- elsif block.settings.text != blank -%}
+          {%- if block.settings.icon != 'none' -%}
+            {%- render 'icon', icon: block.settings.icon, size: 18 -%}
+          {%- endif -%}
+          <span>{{ block.settings.text | escape }}</span>
+        {%- endif -%}
+      {%- endcapture -%}
+      {%- if slide_content != blank -%}
+        {%- assign slide_count = slide_count | plus: 1 -%}
+        <div
+          class="announcement-bar__slide{% if slide_count == 1 %} is-active{% endif %}"
+          data-announcement-slide
+          {% if slide_count > 1 %}
+            aria-hidden="true"
+          {% endif %}
+          {{ block.shopify_attributes }}
+        >
+          {{ slide_content }}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+{%- endcapture -%}
+
+{%- if slide_count > 0 -%}
+  <div class="announcement-bar section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+    <announcement-bar class="announcement-bar__inner page-width">
+      {%- if section.settings.link != blank -%}
+        <a href="{{ section.settings.link }}" class="announcement-bar__link">{{ slides_html }}</a>
+      {%- else -%}
+        {{ slides_html }}
+      {%- endif -%}
+      {%- if slide_count > 1 -%}
+        <button
+          type="button"
+          class="icon-button play-toggle announcement-bar__toggle"
+          data-announcement-toggle
+          data-label-pause="{{ 'accessibility.pause_announcements' | t }}"
+          data-label-play="{{ 'accessibility.play_announcements' | t }}"
+          aria-label="{{ 'accessibility.pause_announcements' | t }}"
+        >
+          {%- render 'icon', icon: 'pause', size: 16 -%}
+          {%- render 'icon', icon: 'play', size: 16 -%}
+        </button>
+      {%- endif -%}
+    </announcement-bar>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bandeau d'annonces",
+  "class": "section-announcement-bar",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "night-soft"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Lien sur tout le bandeau",
+      "info": "Facultatif."
+    },
+    {
+      "type": "paragraph",
+      "content": "Avec plusieurs annonces, elles défilent toutes les 5 secondes. Un bouton permet de mettre en pause."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Annonce",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte",
+          "default": "Livraison offerte en France et en Belgique"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "none", "label": "Aucune" },
+            { "value": "truck", "label": "Camion" },
+            { "value": "gift", "label": "Cadeau" },
+            { "value": "clock", "label": "Horloge" },
+            { "value": "snowflake", "label": "Flocon" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_countdown",
+          "label": "Remplacer le texte par le compte à rebours",
+          "info": "Compte à rebours jusqu'à la date limite de livraison avant Noël (Paramètres du thème > Saison de Noël).",
+          "default": false
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

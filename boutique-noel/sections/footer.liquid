@@ -1,0 +1,274 @@
+{%- liquid
+  assign current_year = 'now' | date: '%Y'
+  assign legal_name = settings.legal_entity_name | default: shop.name
+-%}
+{%- style -%}
+  .section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<footer class="footer section section-{{ section.id }} scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {%- if section.blocks.size > 0 -%}
+      <div class="footer__grid">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'brand' -%}
+              <div class="footer__block stack" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="footer__heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                {%- if block.settings.text != blank -%}
+                  <div class="footer__text rte">{{ block.settings.text }}</div>
+                {%- endif -%}
+                {%- if section.settings.show_social -%}
+                  {%- render 'social-links' -%}
+                {%- endif -%}
+              </div>
+
+            {%- when 'menu' -%}
+              {%- assign footer_menu = block.settings.menu -%}
+              {%- if footer_menu.links.size > 0 -%}
+                <div class="footer__block" {{ block.shopify_attributes }}>
+                  <details class="footer__details" data-footer-details>
+                    <summary class="footer__summary">
+                      <h2 class="footer__heading">{{ block.settings.heading | default: footer_menu.title | escape }}</h2>
+                      {%- render 'icon', icon: 'chevron-down', size: 20 -%}
+                    </summary>
+                    <ul class="footer__links" role="list">
+                      {%- for link in footer_menu.links -%}
+                        <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  </details>
+                </div>
+              {%- endif -%}
+
+            {%- when 'contact' -%}
+              <div class="footer__block stack" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="footer__heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                <ul class="footer__contact" role="list">
+                  <li class="footer__contact-item">
+                    {%- render 'icon', icon: 'mail', size: 18 -%}
+                    {%- if settings.support_email != blank -%}
+                      <a href="mailto:{{ settings.support_email | escape }}">{{ settings.support_email | escape }}</a>
+                    {%- else -%}
+                      <span>{{ 'contact.email_missing' | t }}</span>
+                    {%- endif -%}
+                  </li>
+                  {%- if settings.support_hours != blank -%}
+                    <li class="footer__contact-item">
+                      {%- render 'icon', icon: 'clock', size: 18 -%}
+                      <span>{{ settings.support_hours | escape }}</span>
+                    </li>
+                  {%- endif -%}
+                </ul>
+              </div>
+
+            {%- when 'newsletter' -%}
+              <div class="footer__block stack" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="footer__heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                {%- form 'customer', id: 'FooterNewsletter', class: 'stack' -%}
+                  <input type="hidden" name="contact[tags]" value="newsletter">
+                  {%- if form.posted_successfully? -%}
+                    <p class="form-message form-message--success" role="status">
+                      {%- render 'icon', icon: 'check', size: 18 -%}
+                      {{ 'newsletter.success' | t }}
+                    </p>
+                  {%- else -%}
+                    <div class="field{% if form.errors %} field--error{% endif %}">
+                      <label for="FooterNewsletterEmail" class="field__label">{{ 'newsletter.label' | t }}</label>
+                      <div class="footer__newsletter-row">
+                        <input
+                          type="email"
+                          id="FooterNewsletterEmail"
+                          name="contact[email]"
+                          class="field__input"
+                          autocomplete="email"
+                          placeholder="{{ 'newsletter.placeholder' | t }}"
+                          required
+                          {% if form.errors %}
+                            aria-invalid="true" aria-describedby="FooterNewsletterError"
+                          {% endif %}
+                        >
+                        <button type="submit" class="button button--primary button--small">{{ 'newsletter.submit' | t }}</button>
+                      </div>
+                      {%- if form.errors -%}
+                        <p id="FooterNewsletterError" class="field__error" role="alert">{{ 'newsletter.error' | t }}</p>
+                      {%- endif -%}
+                    </div>
+                    <p class="text-xs text-muted">{{ 'newsletter.consent' | t }}</p>
+                  {%- endif -%}
+                {%- endform -%}
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="footer__bottom">
+      {%- if section.settings.show_policies and shop.policies.size > 0 -%}
+        <nav aria-label="{{ 'footer.legal' | t }}">
+          <ul class="footer__policies" role="list">
+            {%- for policy in shop.policies -%}
+              <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+
+      <p>{{ 'footer.withdrawal' | t: days: settings.return_days }}</p>
+
+      {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+        <div>
+          <h2 class="visually-hidden">{{ 'footer.payment_methods' | t }}</h2>
+          <ul class="payment-icons" role="list">
+            {%- for type in shop.enabled_payment_types -%}
+              <li>{{ type | payment_type_svg_tag: class: 'payment-icons__icon' }}</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <p>{{ 'footer.copyright' | t: year: current_year, name: legal_name }}</p>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Pied de page",
+  "class": "section-footer",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "night"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Afficher les moyens de paiement",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Afficher les réseaux sociaux",
+      "info": "Liens à renseigner dans Paramètres du thème > Réseaux sociaux.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policies",
+      "label": "Afficher les liens des politiques",
+      "info": "Textes à saisir dans Paramètres > Politiques.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge en haut",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge en bas",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 32
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Présentation",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Titre",
+          "default": "Noël en Façade"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Texte",
+          "default": "<p>Des décorations lumineuses pour une façade qui brille tout l'hiver.</p>"
+        }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Menu",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Titre",
+          "default": "Boutique"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Service client",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Titre",
+          "default": "Service client"
+        },
+        {
+          "type": "paragraph",
+          "content": "L'e-mail et le délai de réponse se règlent dans Paramètres du thème > Service client."
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Titre",
+          "default": "Restez informé"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

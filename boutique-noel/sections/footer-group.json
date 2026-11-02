@@ -1,0 +1,54 @@
+{
+  "type": "footer",
+  "name": "Groupe pied de page",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "brand": {
+          "type": "brand",
+          "settings": {
+            "heading": "Noël en Façade",
+            "text": "<p>Des décorations lumineuses pour une façade qui brille tout l'hiver.</p>"
+          }
+        },
+        "shop": {
+          "type": "menu",
+          "settings": {
+            "heading": "Boutique",
+            "menu": "main-menu"
+          }
+        },
+        "help": {
+          "type": "menu",
+          "settings": {
+            "heading": "Aide",
+            "menu": "footer"
+          }
+        },
+        "contact": {
+          "type": "contact",
+          "settings": {
+            "heading": "Service client"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Les idées lumineuses de la saison"
+          }
+        }
+      },
+      "block_order": ["brand", "shop", "help", "contact", "newsletter"],
+      "settings": {
+        "color_scheme": "night",
+        "show_payment_icons": true,
+        "show_social": true,
+        "show_policies": true,
+        "padding_top": 64,
+        "padding_bottom": 32
+      }
+    }
+  },
+  "order": ["footer"]
+}

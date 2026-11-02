@@ -1,0 +1,90 @@
+{{ 'section-cart.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign pack = settings.pack_product
+  assign empty_product = section.settings.empty_product
+  assign shop_collection = collections['noel']
+  assign shop_url = routes.all_products_collection_url
+  if shop_collection.products_count > 0
+    assign shop_url = shop_collection.url
+  endif
+-%}
+
+<cart-drawer id="CartDrawer" class="drawer cart-drawer" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle" hidden>
+  <div class="overlay" data-drawer-close></div>
+  <div class="drawer__panel scheme-white">
+    <div class="cart-drawer__inner" data-drawer-inner>
+      <div class="drawer__header">
+        <h2 id="CartDrawerTitle" class="drawer__title" tabindex="-1">
+          {{ 'cart.title' | t }}
+          <span class="drawer__count">({{ 'cart.items' | t: count: cart.item_count }})</span>
+        </h2>
+        <button type="button" class="icon-button" data-drawer-close>
+          {%- render 'icon', icon: 'close' -%}
+          <span class="visually-hidden">{{ 'general.close' | t }}</span>
+        </button>
+      </div>
+
+      {%- if cart.item_count > 0 -%}
+        <div class="drawer__body">
+          {%- capture drawer_countdown -%}{% render 'deadline-countdown', style: 'inline' %}{%- endcapture -%}
+          {%- if drawer_countdown != blank -%}
+            <div class="cart-drawer__countdown">{{ drawer_countdown }}</div>
+          {%- endif -%}
+
+          <form action="{{ routes.cart_url }}" method="post" id="CartDrawerForm" novalidate></form>
+          <ul class="cart-items" role="list" data-cart-items>
+            {%- for item in cart.items -%}
+              {% render 'cart-item', item: item, index: forloop.index, context: 'drawer' %}
+            {%- endfor -%}
+          </ul>
+
+          {% render 'cart-upsell', context: 'drawer' %}
+        </div>
+
+        <div class="drawer__footer">
+          {% render 'cart-summary', context: 'drawer', form_id: 'CartDrawerForm' %}
+        </div>
+      {%- else -%}
+        <div class="drawer__body cart-drawer__empty">
+          <p class="cart-drawer__empty-text">{{ 'cart.empty' | t }}</p>
+          <a href="{{ shop_url }}" class="button button--primary">{{ 'cart.empty_cta' | t }}</a>
+
+          {%- if pack != blank or empty_product != blank -%}
+            <div class="cart-drawer__suggestions">
+              <h3 class="cart-drawer__empty-heading h4">{{ 'cart.empty_suggestions' | t }}</h3>
+              <ul class="cart-drawer__empty-grid" role="list">
+                {%- if pack != blank -%}
+                  <li>
+                    {%- assign pack_badge = 'products.most_chosen' | t -%}
+                    {% render 'product-card', product: pack, section_id: 'cart-drawer', badge_text: pack_badge, heading_level: 'h3', image_sizes: '180px' %}
+                  </li>
+                {%- endif -%}
+                {%- if empty_product != blank and empty_product.id != pack.id -%}
+                  <li>
+                    {% render 'product-card', product: empty_product, section_id: 'cart-drawer', heading_level: 'h3', image_sizes: '180px' %}
+                  </li>
+                {%- endif -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</cart-drawer>
+
+{% schema %}
+{
+  "name": "Tiroir panier",
+  "class": "section-cart-drawer",
+  "settings": [
+    {
+      "type": "product",
+      "id": "empty_product",
+      "label": "Produit montré quand le panier est vide",
+      "info": "S'affiche en plus du pack (Paramètres du thème > Produits). Conseillé : le projecteur."
+    }
+  ]
+}
+{% endschema %}

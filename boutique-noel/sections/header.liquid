@@ -1,0 +1,202 @@
+{%- liquid
+  assign menu = section.settings.menu
+  assign scheme = section.settings.color_scheme
+  assign logo_sizes = '(min-width: 990px) ' | append: settings.logo_width | append: 'px, ' | append: settings.logo_width_mobile | append: 'px'
+  assign shipping_page = pages['livraison']
+  assign contact_page = pages['contact']
+-%}
+<header class="header scheme-{{ scheme }}{% if section.settings.sticky %} header--sticky{% endif %} header--logo-{{ section.settings.logo_position_desktop }}">
+  <div class="header__inner page-width">
+    <button type="button" class="header__icon header__menu-toggle hidden-desktop" aria-expanded="false" aria-controls="MenuDrawer">
+      {%- render 'icon', icon: 'menu' -%}
+      <span class="visually-hidden">{{ 'general.open_menu' | t }}</span>
+    </button>
+
+    <a href="{{ routes.root_url }}" class="header__logo">
+      {%- if settings.logo != blank -%}
+        {{ settings.logo | image_url: width: 480 | image_tag: widths: '120, 240, 360, 480', sizes: logo_sizes, loading: 'eager', alt: shop.name, class: 'header__logo-image' }}
+      {%- else -%}
+        <span class="header__logo-text">{{ shop.name | escape }}</span>
+      {%- endif -%}
+    </a>
+
+    {%- if menu.links.size > 0 -%}
+      <nav class="header__nav hidden-mobile" aria-label="{{ 'general.menu' | t }}">
+        <ul class="header__menu" role="list">
+          {%- for link in menu.links -%}
+            <li>
+              {%- if link.links.size > 0 -%}
+                <details class="header__submenu" data-header-submenu>
+                  <summary class="header__menu-item">
+                    {{- link.title | escape -}}
+                    {%- render 'icon', icon: 'chevron-down', size: 16 -%}
+                  </summary>
+                  <ul class="header__submenu-list" role="list">
+                    {%- for child_link in link.links -%}
+                      <li>
+                        <a
+                          href="{{ child_link.url }}"
+                          class="header__submenu-link"
+                          {% if child_link.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{- child_link.title | escape -}}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </details>
+              {%- else -%}
+                <a
+                  href="{{ link.url }}"
+                  class="header__menu-item"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- link.title | escape -}}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <div class="header__icons">
+      {%- if section.settings.show_search -%}
+        <a href="{{ routes.search_url }}" class="header__icon">
+          {%- render 'icon', icon: 'search' -%}
+          <span class="visually-hidden">{{ 'general.search' | t }}</span>
+        </a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" id="cart-icon-bubble" class="header__icon" data-cart-trigger>
+        {%- render 'cart-icon-content' -%}
+      </a>
+    </div>
+  </div>
+</header>
+
+<menu-drawer id="MenuDrawer" class="menu-drawer" role="dialog" aria-modal="true" aria-label="{{ 'general.menu' | t }}" hidden>
+  <div class="overlay" data-menu-close></div>
+  <div class="menu-drawer__panel scheme-{{ scheme }}">
+    <div class="menu-drawer__header">
+      <p class="menu-drawer__title h4">{{ shop.name | escape }}</p>
+      <button type="button" class="icon-button" data-menu-close>
+        {%- render 'icon', icon: 'close' -%}
+        <span class="visually-hidden">{{ 'general.close_menu' | t }}</span>
+      </button>
+    </div>
+
+    <nav class="menu-drawer__nav" aria-label="{{ 'general.menu' | t }}">
+      <ul class="menu-drawer__list" role="list">
+        {%- for link in menu.links -%}
+          <li>
+            {%- if link.links.size > 0 -%}
+              <details class="menu-drawer__details">
+                <summary class="menu-drawer__link">
+                  {{- link.title | escape -}}
+                  {%- render 'icon', icon: 'chevron-down', size: 20 -%}
+                </summary>
+                <ul class="menu-drawer__sublist" role="list">
+                  {%- for child_link in link.links -%}
+                    <li>
+                      <a
+                        href="{{ child_link.url }}"
+                        class="menu-drawer__sublink"
+                        {% if child_link.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{- child_link.title | escape -}}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+            {%- else -%}
+              <a
+                href="{{ link.url }}"
+                class="menu-drawer__link"
+                {% if link.current %}
+                  aria-current="page"
+                {% endif %}
+              >
+                {{- link.title | escape -}}
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if shipping_page.url != blank or contact_page.url != blank -%}
+        <ul class="menu-drawer__secondary" role="list">
+          {%- if shipping_page.url != blank -%}
+            <li><a href="{{ shipping_page.url }}">{{ shipping_page.title | escape }}</a></li>
+          {%- endif -%}
+          {%- if contact_page.url != blank -%}
+            <li><a href="{{ contact_page.url }}">{{ contact_page.title | escape }}</a></li>
+          {%- endif -%}
+        </ul>
+      {%- endif -%}
+    </nav>
+
+    <div class="menu-drawer__footer">
+      {%- render 'social-links' -%}
+    </div>
+  </div>
+</menu-drawer>
+
+{% schema %}
+{
+  "name": "En-tête",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "logo_position_desktop",
+      "label": "Position du logo sur ordinateur",
+      "options": [
+        { "value": "left", "label": "À gauche" },
+        { "value": "center", "label": "Au centre" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Afficher l'icône de recherche",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "En-tête collant au défilement",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Couleurs",
+      "options": [
+        { "value": "night", "label": "Nuit" },
+        { "value": "night-soft", "label": "Nuit douce" },
+        { "value": "cream", "label": "Crème" },
+        { "value": "white", "label": "Blanc" }
+      ],
+      "default": "night"
+    },
+    {
+      "type": "paragraph",
+      "content": "Le menu mobile ajoute automatiquement les pages « livraison » et « contact » si elles existent."
+    }
+  ]
+}
+{% endschema %}
