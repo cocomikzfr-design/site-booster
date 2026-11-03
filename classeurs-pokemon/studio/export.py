@@ -16,10 +16,12 @@ for num, name in ((25, 'pikachu'), (94, 'ectoplasma')):
     im = Image.open(os.path.join(art, f'{num}.png')).convert('RGBA')
     im.thumbnail((440, 440))
     im.save(os.path.join(dst, name + '.webp'), 'WEBP', quality=86, method=6)
-# Illustrations des cartes rangées dans le classeur qui s'ouvre
-os.makedirs(os.path.join(dst, 'art'), exist_ok=True)
-for num in (1, 3, 4, 6, 7, 9, 25, 26, 54, 94, 129, 130, 131, 133, 134, 135, 136, 143, 145, 146, 150, 151, 155, 175, 197, 249, 250, 257, 384, 778):
-    im = Image.open(os.path.join(art, f'{num}.png')).convert('RGBA')
-    im.thumbnail((260, 260))
-    im.save(os.path.join(dst, 'art', f'{num}.webp'), 'WEBP', quality=84, method=6)
+# Vraies cartes rangées dans le classeur qui s'ouvre (studio/cards.json)
+import json
+picks = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cards.json')))
+os.makedirs(os.path.join(dst, 'cards'), exist_ok=True)
+for key in sorted({k for col, ids in picks.items() if col != 'extra' for k in ids}):
+    im = Image.open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cards', f'{key}.webp')).convert('RGB')
+    im.thumbnail((360, 495))
+    im.save(os.path.join(dst, 'cards', f'{key}.webp'), 'WEBP', quality=82, method=6)
 print('WebP exportés dans', dst)

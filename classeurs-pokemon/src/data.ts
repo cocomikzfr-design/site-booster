@@ -67,77 +67,47 @@ export const SERVICES = [
   },
 ];
 
-// ---------- Cartes rangées dans le classeur qui s'ouvre ----------
+// ---------- Vraies cartes rangées dans le classeur qui s'ouvre ----------
+// Images TCGdex (en français), copiées dans public/images/cards par studio/export.py.
 
-export const CARD_ART = (id: number) => img(`art/${id}.webp`);
+export const CARD_IMG = (key: string) => img(`cards/${key}.webp`);
 
-type CardType = 'electric' | 'fire' | 'water' | 'grass' | 'psychic' | 'ghost' | 'dragon' | 'normal' | 'fairy' | 'ice' | 'dark';
-
-// Couleurs de fond des cartes : [centre, milieu, bord]
-export const TYPE_COLORS: Record<CardType, [string, string, string]> = {
-  electric: ['#fff3a6', '#f6c623', '#c9780c'],
-  fire: ['#ffd0a1', '#f06a2a', '#8f1b0f'],
-  water: ['#c9e7ff', '#4f8ff0', '#1b3c9c'],
-  grass: ['#e2ffc2', '#5fbf4a', '#1f6b34'],
-  psychic: ['#ffd6ec', '#e85a9c', '#7a1f6b'],
-  ghost: ['#e3d3ff', '#7a5bc4', '#2a1857'],
-  dragon: ['#d9d2ff', '#6a46e6', '#25127a'],
-  normal: ['#fbf6e1', '#c9b98a', '#6e6243'],
-  fairy: ['#fff0f7', '#f39acb', '#a54a83'],
-  ice: ['#effcff', '#7fd6ea', '#2a7f9e'],
-  dark: ['#d8d3e0', '#4b4459', '#17131f'],
-};
-
-export const TYPE_LABELS: Record<CardType, string> = {
-  electric: 'Électrik',
-  fire: 'Feu',
-  water: 'Eau',
-  grass: 'Plante',
-  psychic: 'Psy',
-  ghost: 'Spectre',
-  dragon: 'Dragon',
-  normal: 'Normal',
-  fairy: 'Fée',
-  ice: 'Glace',
-  dark: 'Ténèbres',
-};
-
-export const POKEMON: Record<number, { name: string; type: CardType }> = {
-  1: { name: 'Bulbizarre', type: 'grass' },
-  3: { name: 'Florizarre', type: 'grass' },
-  4: { name: 'Salamèche', type: 'fire' },
-  6: { name: 'Dracaufeu', type: 'fire' },
-  7: { name: 'Carapuce', type: 'water' },
-  9: { name: 'Tortank', type: 'water' },
-  25: { name: 'Pikachu', type: 'electric' },
-  26: { name: 'Raichu', type: 'electric' },
-  54: { name: 'Psykokwak', type: 'water' },
-  94: { name: 'Ectoplasma', type: 'ghost' },
-  129: { name: 'Magicarpe', type: 'water' },
-  130: { name: 'Léviator', type: 'water' },
-  131: { name: 'Lokhlass', type: 'ice' },
-  133: { name: 'Évoli', type: 'normal' },
-  134: { name: 'Aquali', type: 'water' },
-  135: { name: 'Voltali', type: 'electric' },
-  136: { name: 'Pyroli', type: 'fire' },
-  143: { name: 'Ronflex', type: 'normal' },
-  145: { name: 'Électhor', type: 'electric' },
-  146: { name: 'Sulfura', type: 'fire' },
-  150: { name: 'Mewtwo', type: 'psychic' },
-  151: { name: 'Mew', type: 'psychic' },
-  155: { name: 'Héricendre', type: 'fire' },
-  175: { name: 'Togepi', type: 'fairy' },
-  197: { name: 'Noctali', type: 'dark' },
-  249: { name: 'Lugia', type: 'psychic' },
-  250: { name: 'Ho-Oh', type: 'fire' },
-  257: { name: 'Braségali', type: 'fire' },
-  384: { name: 'Rayquaza', type: 'dragon' },
-  778: { name: 'Mimiqui', type: 'ghost' },
-};
-
-export const CARD_FRAMES = {
-  silver: 'linear-gradient(140deg,#f4f4f6,#b9bcc4 45%,#f8f8fa 60%,#a6a9b2)',
-  gold: 'linear-gradient(140deg,#fff3c4,#d6a740 40%,#fff0b0 58%,#b8862a)',
+export const CARDS: Record<string, { name: string; rarity: string; set: string; number: string }> = {
+  'base1-10': { name: "Mewtwo", rarity: "Rare", set: "Set de Base", number: '10/102' },
+  'base1-14': { name: "Raichu", rarity: "Rare", set: "Set de Base", number: '14/102' },
+  'base1-15': { name: "Florizarre", rarity: "Rare", set: "Set de Base", number: '15/102' },
+  'base1-16': { name: "Électhor", rarity: "Rare", set: "Set de Base", number: '16/102' },
+  'base1-2': { name: "Tortank", rarity: "Rare", set: "Set de Base", number: '2/102' },
+  'base1-4': { name: "Dracaufeu", rarity: "Rare", set: "Set de Base", number: '4/102' },
+  'base1-58': { name: "Pikachu", rarity: "Commune", set: "Set de Base", number: '58/102' },
+  'base1-6': { name: "Léviator", rarity: "Rare", set: "Set de Base", number: '6/102' },
+  'base3-5': { name: "Ectoplasma", rarity: "Rare", set: "Fossile", number: '5/62' },
+  'sv03.5-026': { name: "Raichu", rarity: "Rare", set: "151", number: '026/165' },
+  'sv03.5-059': { name: "Arcanin", rarity: "Peu Commune", set: "151", number: '059/165' },
+  'sv03.5-071': { name: "Empiflor", rarity: "Peu Commune", set: "151", number: '071/165' },
+  'sv03.5-094': { name: "Ectoplasma", rarity: "Rare", set: "151", number: '094/165' },
+  'sv03.5-131': { name: "Lokhlass", rarity: "Peu Commune", set: "151", number: '131/165' },
+  'sv03.5-134': { name: "Aquali", rarity: "Rare", set: "151", number: '134/165' },
+  'sv03.5-135': { name: "Voltali", rarity: "Rare", set: "151", number: '135/165' },
+  'sv03.5-143': { name: "Ronflex", rarity: "Peu Commune", set: "151", number: '143/165' },
+  'sv03.5-146': { name: "Sulfura", rarity: "Rare", set: "151", number: '146/165' },
+  'sv03.5-150': { name: "Mewtwo", rarity: "Rare", set: "151", number: '150/165' },
+  'sv03.5-166': { name: "Bulbizarre", rarity: "Illustration rare", set: "151", number: '166/165' },
+  'sv03.5-167': { name: "Herbizarre", rarity: "Illustration rare", set: "151", number: '167/165' },
+  'sv03.5-168': { name: "Salamèche", rarity: "Illustration rare", set: "151", number: '168/165' },
+  'sv03.5-169': { name: "Reptincel", rarity: "Illustration rare", set: "151", number: '169/165' },
+  'sv03.5-170': { name: "Carapuce", rarity: "Illustration rare", set: "151", number: '170/165' },
+  'sv03.5-171': { name: "Carabaffe", rarity: "Illustration rare", set: "151", number: '171/165' },
+  'sv03.5-172': { name: "Chenipan", rarity: "Illustration rare", set: "151", number: '172/165' },
+  'sv03.5-173': { name: "Pikachu", rarity: "Illustration rare", set: "151", number: '173/165' },
+  'sv03.5-186': { name: "Feunard-ex", rarity: "Ultra Rare", set: "151", number: '186/165' },
+  'sv03.5-193': { name: "Mew-ex", rarity: "Ultra Rare", set: "151", number: '193/165' },
+  'sv03.5-198': { name: "Florizarre-ex", rarity: "Illustration spéciale rare", set: "151", number: '198/165' },
+  'sv03.5-199': { name: "Dracaufeu-ex", rarity: "Illustration spéciale rare", set: "151", number: '199/165' },
+  'sv03.5-200': { name: "Tortank-ex", rarity: "Illustration spéciale rare", set: "151", number: '200/165' },
+  'sv03.5-201': { name: "Alakazam-ex", rarity: "Illustration spéciale rare", set: "151", number: '201/165' },
+  'sv03.5-202': { name: "Électhor-ex", rarity: "Illustration spéciale rare", set: "151", number: '202/165' },
+  'sv03.5-205': { name: "Mew-ex", rarity: "Hyper rare", set: "151", number: '205/165' },
 };
 
 export type BinderLook = {
@@ -145,9 +115,8 @@ export type BinderLook = {
   shell: string; // couleur du bord intérieur
   spine: string; // couleur du dos
   glow: string; // halo derrière le classeur
-  frame: keyof typeof CARD_FRAMES;
-  left: (number | null)[]; // 4 pochettes de la page de gauche (null = vide)
-  right: (number | null)[]; // 4 pochettes de la page de droite
+  left: (string | null)[]; // 4 pochettes de la page de gauche (null = vide)
+  right: (string | null)[]; // 4 pochettes de la page de droite
 };
 
 // Le classeur vendu (les deux liens AliExpress mènent à ce même classeur).
@@ -174,23 +143,21 @@ const look = (
   id: string,
   shades: [string, string, string],
   glow: string,
-  frame: BinderLook['frame'],
-  left: (number | null)[],
-  right: (number | null)[],
+  cards: string[], // 7 cartes : 4 à gauche, 3 à droite
 ): BinderLook => ({
   cover: img(`cover-${id}.webp`),
   shell: `linear-gradient(160deg,${shades[0]},${shades[1]} 55%,${shades[2]})`,
   spine: `linear-gradient(90deg,${shades[2]},${shades[1]} 60%,${shades[2]})`,
   glow,
-  frame,
-  left,
-  right,
+  left: cards.slice(0, 4),
+  right: [...cards.slice(4, 7), null],
 });
 
+// Tes photos AliExpress, avec de vraies cartes Pokémon à la place des cartes Magic (studio/photos.py)
 const photos = (id: string) => ({
-  top: img(`p-${id}-a.webp`),
-  bottom: img(`p-${id}-b.webp`),
-  tall: img(`p-${id}-c.webp`),
+  top: img(`p-${id}-a.webp`), // zoom sur la couverture
+  bottom: img(`p-${id}-b.webp`), // zoom sur les pages
+  tall: img(`p-${id}-photo.webp`), // photo entière
 });
 
 // Les 5 couleurs, dans l'ordre de tes photos.
@@ -200,34 +167,34 @@ export const COLORS: BinderColor[] = [
     label: 'Rouge',
     swatch: '#a5162b',
     images: photos('rouge'),
-    binder: look('rouge', ['#d02a3e', '#a5162b', '#6e0c1b'], 'rgba(208, 42, 62, 0.35)', 'gold', [6, 4, 146, 250], [136, 155, 257, null]),
+    binder: look('rouge', ['#d02a3e', '#a5162b', '#6e0c1b'], 'rgba(208, 42, 62, 0.35)', ['base1-4', 'sv03.5-168', 'sv03.5-169', 'sv03.5-199', 'sv03.5-059', 'sv03.5-186', 'sv03.5-146']),
   },
   {
     id: 'vert',
     label: 'Vert',
     swatch: '#80ab11',
     images: photos('vert'),
-    binder: look('vert', ['#a9d136', '#80ab11', '#557a06'], 'rgba(128, 171, 17, 0.32)', 'silver', [1, 3, 25, 133], [143, 175, 54, null]),
+    binder: look('vert', ['#a9d136', '#80ab11', '#557a06'], 'rgba(128, 171, 17, 0.32)', ['sv03.5-166', 'sv03.5-167', 'sv03.5-198', 'base1-15', 'sv03.5-071', 'sv03.5-143', 'sv03.5-172']),
   },
   {
     id: 'marine',
     label: 'Bleu marine',
     swatch: '#1d3044',
     images: photos('marine'),
-    binder: look('marine', ['#33507a', '#1d3044', '#0f1a27'], 'rgba(70, 110, 170, 0.3)', 'silver', [94, 197, 150, 151], [249, 384, 778, null]),
+    binder: look('marine', ['#33507a', '#1d3044', '#0f1a27'], 'rgba(70, 110, 170, 0.3)', ['base1-10', 'sv03.5-205', 'base3-5', 'sv03.5-094', 'sv03.5-201', 'sv03.5-150', 'sv03.5-193']),
   },
   {
     id: 'bleu',
     label: 'Bleu',
     swatch: '#346ac0',
     images: photos('bleu'),
-    binder: look('bleu', ['#5a90e4', '#346ac0', '#1f4689'], 'rgba(52, 106, 192, 0.35)', 'silver', [7, 9, 130, 131], [134, 54, 129, null]),
+    binder: look('bleu', ['#5a90e4', '#346ac0', '#1f4689'], 'rgba(52, 106, 192, 0.35)', ['base1-2', 'sv03.5-170', 'sv03.5-171', 'sv03.5-200', 'base1-6', 'sv03.5-131', 'sv03.5-134']),
   },
   {
     id: 'orange',
     label: 'Orange',
     swatch: '#d6692e',
     images: photos('orange'),
-    binder: look('orange', ['#f19456', '#d6692e', '#9a4719'], 'rgba(214, 105, 46, 0.35)', 'gold', [25, 26, 135, 145], [6, 4, 136, null]),
+    binder: look('orange', ['#f19456', '#d6692e', '#9a4719'], 'rgba(214, 105, 46, 0.35)', ['base1-58', 'sv03.5-173', 'sv03.5-026', 'sv03.5-202', 'base1-16', 'sv03.5-135', 'base1-14']),
   },
 ];

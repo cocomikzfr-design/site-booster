@@ -2,3 +2,5 @@ node_modules
 .DS_Store
 studio/art
 studio/out
+studio/cards
+studio/photos-src

@@ -376,6 +376,83 @@ S['corner-binder']={w:340,h:340,transparent:true,html:()=>`<div class="shadow" s
   +card(197,{w:96,x:150,y:30,rot:16,frame:'black'})+card(196,{w:96,x:100,y:24,rot:-6})
   +binder3dPlain({x:70,y:80,w:180,h:240,d:40,rx:-8,ry:-28,rz:5,col:'vert'})};
 
+
+// =====================================================================
+// Vraies cartes (TCGdex, en français) : un identifiant texte comme 'base1-4'
+// =====================================================================
+document.head.insertAdjacentHTML('beforeend',`<style>
+.rcard{position:absolute;aspect-ratio:600/825;border-radius:4.6%/3.4%;overflow:hidden;
+  box-shadow:0 10px 24px rgba(0,0,0,.45),0 2px 5px rgba(0,0,0,.4)}
+.rcard img{display:block;width:100%;height:100%}
+.rcard.holo::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(118deg,transparent 30%,rgba(255,255,255,.28) 44%,transparent 56%)}
+.pocket .rcard{left:5%;top:4%;width:90%}
+</style>`);
+const CARDS = window.CARDS || {};
+const REAL = id => `cards/${id}.webp`;
+const _card = card, _cardRel = cardRel;
+card = function(id, opts={}){
+  if (typeof id !== 'string') return _card(id, opts);
+  const {w=100,x=0,y=0,rot=0,holo=false,z=0,style=''} = opts;
+  return `<div class="rcard${holo?' holo':''}" style="left:${x}px;top:${y}px;width:${w}px;transform:rotate(${rot}deg);z-index:${z};${style}"><img src="${REAL(id)}"></div>`;
+};
+cardRel = function(id, opts={}){
+  if (typeof id !== 'string') return _cardRel(id, opts);
+  return `<div class="rcard${opts.holo?' holo':''}"><img src="${REAL(id)}"></div>`;
+};
+tSingle = function(id, stageBg){
+  const c = CARDS[id] || {name:id, rarity:'', number:''};
+  const big = c.name.length > 7 ? 30 : 42;
+  return bg(stageBg)+`<div style="position:absolute;left:-40px;top:-80px;width:340px;height:340px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.18),transparent)"></div>`
+   +card(id,{w:150,x:228,y:30,rot:8,holo:true})
+   +`<div style="position:absolute;left:28px;top:44px;color:#fff;max-width:190px">
+      <div style="font-weight:300;letter-spacing:.24em;font-size:11px;opacity:.8;text-transform:uppercase">${c.rarity}</div>
+      <div style="font-weight:900;font-size:${big}px;line-height:.95;text-transform:uppercase;margin-top:8px">${c.name}</div>
+      <div style="margin-top:14px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:.8">${c.set} · ${c.number}</div></div>`;
+};
+const PICK = window.PICKS || {};
+for (const col of Object.keys(SETS)) {
+  const ids = PICK[col] || [];
+  if (ids.length >= 7) SETS[col] = {l: ids.slice(0,4), r: [...ids.slice(4,7), null], f: SETS[col].f};
+}
+const tilesReal = [
+  ()=>tPage4(['base1-4','sv03.5-199','base1-2','base1-15'],'#121214',G('#2a2a2e','#0d0d0f')),
+  ()=>tPlainCover('rouge',BACKDROP.rouge),
+  ()=>tFan(['base2-51','sv03.5-134','sv03.5-133','sv03.5-135','sv03.5-136'],G('#8b5cf6','#2b145f')),
+  ()=>tTilt4(['sv03.5-001','sv03.5-004','sv03.5-007','sv03.5-025'],'#0f1115',G('#3ad0a0','#0c4a3c')),
+  ()=>tSingle('sv03.5-205',G('#e6b84a','#4a2f05')),
+  ()=>tSpread4('bleu',G('#2a2a2e','#0d0d0f')),
+  ()=>tPlainCover('bleu',BACKDROP.bleu,8),
+  ()=>tFan(['sv03.5-144','sv03.5-145','sv03.5-146'],G('#4fb3ff','#0d2a5c')),
+  ()=>tTilt4(['sv03.5-166','sv03.5-168','sv03.5-170','sv03.5-173'],'#101014',G('#f6b26b','#7a2e0d')),
+  ()=>tSingle('sv03.5-199',G('#ff7a3d','#3d0b06')),
+  ()=>tPlainCover('vert',BACKDROP.vert,-6),
+  ()=>tFive(G('#3a3a40','#0d0d0f')),
+  ()=>tPage4(['base3-5','sv03.5-094','base1-29','sv03.5-193'],'#0f0d14',G('#3b2a66','#0e0a19'),'silver',5),
+  ()=>tFan(['sv03.5-198','sv03.5-199','sv03.5-200'],G('#ffb3d9','#7a1f5c')),
+  ()=>tPlainCover('orange',BACKDROP.orange,-7),
+  ()=>tSingle('base1-4',G('#c65bd0','#2a0d3d')),
+  ()=>tSpread4('rouge',G('#3a2a2e','#0d0d0f')),
+  ()=>tTilt4(['sv03.5-201','sv03.5-202','sv03.5-186','sv03.5-193'],'#111111',G('#ffd84a','#8a5a06')),
+  ()=>tPlainCover('marine',BACKDROP.marine,6),
+  ()=>tFan(['base1-58','sv03.5-025','sv03.5-173'],G('#9be15d','#1f5c2b')),
+  ()=>tSingle('sv03.5-202',G('#47d18c','#08301c')),
+];
+tilesReal.forEach((f,i)=>S['tile-'+String(i+1).padStart(2,'0')]={w:W,h:H,html:f});
+for (const k of Object.keys(S)) if (/^p-/.test(k)) delete S[k];  // les fiches produit utilisent tes vraies photos
+S['hero-binder']={w:520,h:640,transparent:true,html:()=>{
+  const fan=['sv03.5-193','base1-10','sv03.5-199','sv03.5-173'].map((id,i)=>card(id,{w:150,x:150+i*38,y:40+Math.abs(i-1.5)*14,rot:-18+i*14,holo:i===2})).join('');
+  return `<div class="shadow" style="left:70px;top:560px;width:400px;height:70px"></div>`
+   +`<div style="position:absolute;inset:0">${fan}</div>`
+   +binder3dPlain({x:110,y:150,w:300,h:400,d:60,rx:-6,ry:24,rz:-4,col:'bleu'})
+   +card('sv03.5-205',{w:128,x:356,y:400,rot:14,holo:true,z:20})
+   +card('base1-4',{w:112,x:54,y:440,rot:-16,z:20});
+}};
+S['corner-card']={w:300,h:360,transparent:true,html:()=>card('sv03.5-173',{w:200,x:50,y:44,rot:-12,holo:true})};
+S['corner-binder']={w:340,h:340,transparent:true,html:()=>`<div class="shadow" style="left:40px;top:280px;width:260px;height:50px"></div>`
+  +card('sv03.5-166',{w:96,x:150,y:30,rot:16})+card('sv03.5-198',{w:96,x:100,y:24,rot:-6})
+  +binder3dPlain({x:70,y:80,w:180,h:240,d:40,rx:-8,ry:-28,rz:5,col:'vert'})};
+
 const key=location.hash.slice(1);
 const sc=S[key];
 const st=document.getElementById('stage');

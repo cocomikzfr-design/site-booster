@@ -27,11 +27,18 @@ npm run dev
 
 ## Régénérer les visuels
 
-Les visuels (classeurs, pages de cartes, couvertures) sont dessinés en HTML/CSS dans `studio/studio.html`, puis photographiés avec Playwright :
+Trois sources d'images :
+
+- **Tes photos produit** (AliExpress) : `studio/photos.py` remplace les cartes Magic du classeur ouvert par de vraies cartes Pokémon, remplace le fond blanc par un dégradé de la couleur, et découpe deux zooms (couverture, pages). Il faut numpy, scipy et Pillow.
+- **Les vraies cartes** (en français, base [TCGdex](https://tcgdex.dev)) : la liste par couleur est dans `studio/cards.json`, et `studio/fetch-cards.py` les télécharge.
+- **Les visuels 3D** (bandeau, classeur du haut de page, couvertures de l'animation) : dessinés en HTML/CSS dans `studio/studio.html`, puis photographiés avec Playwright.
 
 ```bash
 ./studio/fetch-art.sh
+python3 studio/fetch-cards.py
+mkdir -p studio/photos-src && for id in S632b52eb4176497187f1635a8223bb36A S194489cbcc4b4045901982cb5d3a707aM Se73ea99b928445baa804543e7f428e71D S430a76d932894e15818ac8d61d9b0c32F S0fa1ed68a6874e188206250cdfb2526fp; do curl -s -o studio/photos-src/$id.jpg https://ae01.alicdn.com/kf/$id.jpg; done
+python3 studio/photos.py studio/photos-src public/images
 node studio/render.cjs
 ```
 
-Les illustrations Pokémon viennent du dépôt [PokeAPI/sprites](https://github.com/PokeAPI/sprites). Pokémon est une marque de Nintendo, Creatures et GAME FREAK.
+Pokémon et les illustrations des cartes appartiennent à Nintendo, Creatures et GAME FREAK.

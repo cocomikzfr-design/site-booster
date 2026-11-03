@@ -10,7 +10,7 @@ import { ChevronsDown } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import { LiveProjectButton } from './Buttons';
 import { useScrollRange } from './useScrollRange';
-import { CARD_ART, CARD_FRAMES, COLORS, POKEMON, PRODUCT, TYPE_COLORS, TYPE_LABELS, type BinderLook } from '../data';
+import { CARD_IMG, CARDS, COLORS, PRODUCT } from '../data';
 
 // Étapes de l'animation (progression du scroll de 0 à 1) :
 // 0.00 → 0.12 le classeur arrive
@@ -161,7 +161,7 @@ export default function OpenBinder({ selected, onSelect, trackRef }: OpenBinderP
         >
           {/* Page de droite (fond du classeur) */}
           <div className="bd-half bd-right absolute inset-0" style={{ background: look.shell }}>
-            <Page ids={look.right} look={look} progress={p} offset={4} />
+            <Page ids={look.right} progress={p} offset={4} />
           </div>
 
           {/* Dos */}
@@ -190,7 +190,7 @@ export default function OpenBinder({ selected, onSelect, trackRef }: OpenBinderP
               className="bd-face bd-half bd-left"
               style={{ background: look.shell, transform: 'rotateY(180deg)' }}
             >
-              <Page ids={look.left} look={look} progress={p} offset={0} />
+              <Page ids={look.left} progress={p} offset={0} />
             </div>
           </motion.div>
         </motion.div>
@@ -228,22 +228,18 @@ export default function OpenBinder({ selected, onSelect, trackRef }: OpenBinderP
 
 function Page({
   ids,
-  look,
   progress,
   offset,
 }: {
-  ids: (number | null)[];
-  look: BinderLook;
+  ids: (string | null)[];
   progress: MotionValue<number>;
   offset: number;
 }) {
   return (
     <div className="bd-page" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gridTemplateRows: 'repeat(2, 1fr)' }}>
-      {ids.map((id, i) => (
+      {ids.map((key, i) => (
         <div key={i} className="pk-pocket">
-          {id !== null && (
-            <PocketCard id={id} frame={look.frame} holo={(offset + i) % 3 === 0} order={offset + i} progress={progress} />
-          )}
+          {key !== null && <PocketCard cardKey={key} holo={(offset + i) % 3 === 0} order={offset + i} progress={progress} />}
         </div>
       ))}
     </div>
@@ -251,14 +247,12 @@ function Page({
 }
 
 function PocketCard({
-  id,
-  frame,
+  cardKey,
   holo,
   order,
   progress,
 }: {
-  id: number;
-  frame: BinderLook['frame'];
+  cardKey: string;
   holo: boolean;
   order: number;
   progress: MotionValue<number>;
@@ -266,32 +260,17 @@ function PocketCard({
   const start = 0.6 + (order / 8) * 0.22;
   const opacity = useScrollRange(progress, [start, start + 0.08], [0.35, 1]);
   const scale = useScrollRange(progress, [start, start + 0.04, start + 0.08], [0.94, 1.04, 1]);
-  const info = POKEMON[id];
-  const [c1, c2, c3] = TYPE_COLORS[info.type];
+  const card = CARDS[cardKey];
 
   return (
-    <motion.div
-      className="pk-card"
-      style={
-        {
-          opacity,
-          scale,
-          '--frame': CARD_FRAMES[frame],
-          '--c1': c1,
-          '--c2': c2,
-          '--c3': c3,
-        } as unknown as CSSProperties
-      }
-    >
-      <div className="pk-win">
-        {holo && <div className="pk-holo" />}
-        <img className="pk-art" src={CARD_ART(id)} alt="" loading="lazy" draggable={false} />
-        <div className="pk-type">{TYPE_LABELS[info.type]}</div>
-        <div className="pk-bar">
-          <span className="pk-name">{info.name}</span>
-          <span className="pk-no">N° {String(id).padStart(3, '0')}</span>
-        </div>
-      </div>
+    <motion.div className={`pk-real${holo ? ' pk-shine' : ''}`} style={{ opacity, scale }}>
+      <img
+        src={CARD_IMG(cardKey)}
+        alt={`${card.name} · ${card.set} ${card.number}`}
+        title={`${card.name} · ${card.rarity}`}
+        loading="lazy"
+        draggable={false}
+      />
     </motion.div>
   );
 }

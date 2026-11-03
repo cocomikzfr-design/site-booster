@@ -15,6 +15,10 @@ const only = process.argv.slice(2);
   fs.mkdirSync(tmp, { recursive: true });
   const browser = await chromium.launch({ args: ['--allow-file-access-from-files'] });
   const page = await (await browser.newContext({ deviceScaleFactor: 2 })).newPage();
+  // Noms des vraies cartes et choix par couleur, lus par studio.html
+  const cards = JSON.parse(fs.readFileSync(path.join(__dirname, 'cards', 'index.json'), 'utf8'));
+  const picks = JSON.parse(fs.readFileSync(path.join(__dirname, 'cards.json'), 'utf8'));
+  await page.addInitScript(([c, p]) => { window.CARDS = c; window.PICKS = p; }, [cards, picks]);
   await page.goto('file://' + studio + '#none');
   const scenes = await page.evaluate(() => window.SCENES);
   for (const [name, s] of Object.entries(scenes)) {
