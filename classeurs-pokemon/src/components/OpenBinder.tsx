@@ -10,7 +10,7 @@ import { ChevronsDown } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import { LiveProjectButton } from './Buttons';
 import { useScrollRange } from './useScrollRange';
-import { CARD_ART, CARD_FRAMES, POKEMON, PRODUCTS, TYPE_COLORS, TYPE_LABELS, type BinderLook } from '../data';
+import { CARD_ART, CARD_FRAMES, COLORS, POKEMON, PRODUCT, TYPE_COLORS, TYPE_LABELS, type BinderLook } from '../data';
 
 // Étapes de l'animation (progression du scroll de 0 à 1) :
 // 0.00 → 0.12 le classeur arrive
@@ -62,8 +62,8 @@ export default function OpenBinder({ selected, onSelect, trackRef }: OpenBinderP
   const t = Math.round(W * 0.07); // épaisseur du classeur
   const tw = W * 0.052; // largeur de la fermeture éclair
 
-  const product = PRODUCTS[selected];
-  const look = product.binder;
+  const color = COLORS[selected];
+  const look = color.binder;
 
   // Caméra
   const scale = useTransform(p, (v) => {
@@ -99,29 +99,34 @@ export default function OpenBinder({ selected, onSelect, trackRef }: OpenBinderP
     '--W': `${W}px`,
     '--r': `${W * 0.07}px`,
     '--tw': `${tw}px`,
-    '--page': look.page,
+    '--page': '#121214',
   } as CSSProperties;
 
   return (
     <div className="sticky top-0 flex h-screen flex-col items-center justify-center gap-5 overflow-hidden sm:gap-6">
-      <div
-        role="group"
-        aria-label="Choisir le classeur à ouvrir"
-        className="relative z-20 flex gap-1 rounded-full border border-[#D7E2EA]/20 p-1"
-      >
-        {PRODUCTS.map((item, i) => (
-          <button
-            key={item.number}
-            type="button"
-            aria-pressed={i === selected}
-            onClick={() => onSelect(i)}
-            className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-medium uppercase tracking-widest transition-colors duration-200 sm:px-6 sm:text-sm ${
-              i === selected ? 'bg-[#D7E2EA] text-[#0C0C0C]' : 'text-[#D7E2EA] hover:bg-[#D7E2EA]/10'
-            }`}
-          >
-            {item.name}
-          </button>
-        ))}
+      <div className="relative z-20 flex flex-col items-center gap-3">
+        <div role="group" aria-label="Choisir la couleur du classeur" className="flex items-center gap-3 sm:gap-4">
+          {COLORS.map((item, i) => (
+            <button
+              key={item.id}
+              type="button"
+              aria-pressed={i === selected}
+              aria-label={item.label}
+              title={item.label}
+              onClick={() => onSelect(i)}
+              className={`h-9 w-9 rounded-full transition-transform duration-200 hover:scale-110 sm:h-11 sm:w-11 ${
+                i === selected ? 'scale-110 ring-2 ring-[#D7E2EA] ring-offset-4 ring-offset-[#0C0C0C]' : ''
+              }`}
+              style={{
+                background: `radial-gradient(circle at 35% 30%, rgba(255,255,255,.35), transparent 55%), ${item.swatch}`,
+                boxShadow: 'inset 0 -3px 6px rgba(0,0,0,.35)',
+              }}
+            />
+          ))}
+        </div>
+        <span className="text-xs uppercase tracking-widest text-[#D7E2EA]/70 sm:text-sm" aria-live="polite">
+          {color.label}
+        </span>
       </div>
 
       <div className="relative" style={{ width: W * 2, height: stageH, perspective: W * 6 }}>
@@ -137,7 +142,7 @@ export default function OpenBinder({ selected, onSelect, trackRef }: OpenBinderP
 
         <motion.div
           role="img"
-          aria-label={`${product.name} qui s'ouvre et montre ses pages de cartes`}
+          aria-label={`${PRODUCT.name} ${color.label.toLowerCase()} qui s'ouvre et montre ses pages de cartes`}
           className="absolute"
           style={{
             ...vars,
@@ -156,7 +161,7 @@ export default function OpenBinder({ selected, onSelect, trackRef }: OpenBinderP
         >
           {/* Page de droite (fond du classeur) */}
           <div className="bd-half bd-right absolute inset-0" style={{ background: look.shell }}>
-            <Page ids={look.right} look={look} progress={p} offset={9} />
+            <Page ids={look.right} look={look} progress={p} offset={4} />
           </div>
 
           {/* Dos */}
@@ -207,15 +212,15 @@ export default function OpenBinder({ selected, onSelect, trackRef }: OpenBinderP
         style={{ opacity: infoOpacity, y: infoY }}
       >
         <div className="flex flex-col items-center sm:items-end">
-          <span className="text-xs uppercase tracking-widest text-[#D7E2EA]/60">{product.category}</span>
+          <span className="text-xs uppercase tracking-widest text-[#D7E2EA]/60">{PRODUCT.specs}</span>
           <span className="flex items-baseline gap-2 text-[#D7E2EA]">
             <span className="font-medium uppercase" style={{ fontSize: 'clamp(1rem, 2vw, 1.6rem)' }}>
-              {product.name}
+              {PRODUCT.name} {color.label.toLowerCase()}
             </span>
-            {product.price && <span className="text-base font-semibold sm:text-xl">{product.price}</span>}
+            {PRODUCT.price && <span className="text-base font-semibold sm:text-xl">{PRODUCT.price}</span>}
           </span>
         </div>
-        <LiveProjectButton href={product.url} label={product.price ? 'Voir le produit' : 'Voir le prix'} />
+        <LiveProjectButton href={PRODUCT.url} label={PRODUCT.price ? 'Voir le produit' : 'Voir le prix'} />
       </motion.div>
     </div>
   );
@@ -233,11 +238,11 @@ function Page({
   offset: number;
 }) {
   return (
-    <div className="bd-page">
+    <div className="bd-page" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gridTemplateRows: 'repeat(2, 1fr)' }}>
       {ids.map((id, i) => (
         <div key={i} className="pk-pocket">
           {id !== null && (
-            <PocketCard id={id} frame={look.frame} holo={(offset + i) % 4 === 0} order={offset + i} progress={progress} />
+            <PocketCard id={id} frame={look.frame} holo={(offset + i) % 3 === 0} order={offset + i} progress={progress} />
           )}
         </div>
       ))}
@@ -258,7 +263,7 @@ function PocketCard({
   order: number;
   progress: MotionValue<number>;
 }) {
-  const start = 0.6 + (order / 18) * 0.22;
+  const start = 0.6 + (order / 8) * 0.22;
   const opacity = useScrollRange(progress, [start, start + 0.08], [0.35, 1]);
   const scale = useScrollRange(progress, [start, start + 0.04, start + 0.08], [0.94, 1.04, 1]);
   const info = POKEMON[id];

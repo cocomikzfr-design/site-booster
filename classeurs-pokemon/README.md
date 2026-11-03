@@ -4,15 +4,16 @@ Site vitrine pour des classeurs de cartes Pokémon (React, TypeScript, Tailwind 
 
 Sections : accueil avec classeur 3D aimanté, bandeau d'images qui défile au scroll, À propos (texte qui s'éclaire lettre par lettre), Avantages, Produits et Contact.
 
-Dans Produits, un classeur en 3D s'ouvre quand on fait défiler la page : la tirette descend, la couverture pivote sur le dos, puis les cartes s'allument une par une. On choisit le classeur (Éclair ou Flamme) avec les boutons au-dessus, ou avec « Ouvrir le classeur » sur chaque fiche produit, qui fait défiler la page toute seule. Le réglage du classeur (couverture, couleurs, cartes rangées) est dans `binder` de chaque produit, dans `src/data.ts`.
+Le classeur vendu : zippé, 160 cartes, 4 pochettes par page, en 5 couleurs (rouge, vert, bleu marine, bleu, orange). Dans Produits, il s'ouvre en 3D quand on fait défiler la page : la tirette descend, la couverture pivote sur le dos, puis les cartes s'allument une par une. Les pastilles de couleur au-dessus changent le classeur, et « Ouvrir le classeur » sur chaque fiche lance l'ouverture de cette couleur.
 
 ## Modifier le contenu
 
 Tout est dans `src/data.ts` : textes, nom de la boutique, adresse e-mail, produits, prix et liens.
 
-- Prix du produit 02 : remplacer `price: null` par le prix, par exemple `'14,90 €'`.
+- Prix, nom, caractéristiques et lien : `PRODUCT`.
+- Couleurs et cartes rangées dans chaque classeur : `COLORS`.
 - Adresse de contact : `CONTACT_EMAIL`.
-- Photos produit : remplacer `public/images/p1-a.webp`, `p1-b.webp`, `p1-c.webp` (produit 01) et `p2-*.webp` (produit 02) par tes photos, avec les mêmes noms.
+- Photos produit : remplacer `public/images/p-<couleur>-a.webp`, `-b.webp` et `-c.webp` par tes photos, avec les mêmes noms.
 
 ## Lancer en local
 

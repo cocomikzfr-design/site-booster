@@ -18,9 +18,9 @@ export const NAV_LINKS = [
 
 export const HERO = {
   heading: 'Classeurs',
-  tagline: 'des classeurs pensés pour protéger et sublimer ta collection de cartes pokémon',
+  tagline: 'des classeurs zippés de 160 cartes pour protéger et sublimer ta collection pokémon',
   image: img('hero-binder.webp'),
-  imageAlt: 'Classeur jaune fermé avec Pikachu sur la couverture, entouré de cartes',
+  imageAlt: 'Classeur zippé bleu, fermé, entouré de cartes Pokémon',
 };
 
 // 21 visuels du bandeau qui défile : 11 sur la première ligne, 10 sur la seconde.
@@ -48,7 +48,7 @@ export const SERVICES = [
   {
     title: 'Rangement',
     description:
-      'Classe ta collection par série, par type ou par rareté et retrouve n’importe quelle carte en quelques secondes.',
+      'Jusqu’à 160 cartes, 4 par page : classe ta collection par série, par type ou par rareté et retrouve chaque carte en quelques secondes.',
   },
   {
     title: 'Présentation',
@@ -58,7 +58,7 @@ export const SERVICES = [
   {
     title: 'Transport',
     description:
-      'Un format pratique à glisser dans ton sac pour les échanges, les tournois et les après-midis entre dresseurs.',
+      'La fermeture éclair fait le tour du classeur : tes cartes restent en place, même au fond du sac les jours d’échange.',
   },
   {
     title: 'Petit prix',
@@ -71,7 +71,7 @@ export const SERVICES = [
 
 export const CARD_ART = (id: number) => img(`art/${id}.webp`);
 
-type CardType = 'electric' | 'fire' | 'water' | 'grass' | 'psychic' | 'ghost' | 'dragon' | 'normal' | 'fairy';
+type CardType = 'electric' | 'fire' | 'water' | 'grass' | 'psychic' | 'ghost' | 'dragon' | 'normal' | 'fairy' | 'ice' | 'dark';
 
 // Couleurs de fond des cartes : [centre, milieu, bord]
 export const TYPE_COLORS: Record<CardType, [string, string, string]> = {
@@ -84,6 +84,8 @@ export const TYPE_COLORS: Record<CardType, [string, string, string]> = {
   dragon: ['#d9d2ff', '#6a46e6', '#25127a'],
   normal: ['#fbf6e1', '#c9b98a', '#6e6243'],
   fairy: ['#fff0f7', '#f39acb', '#a54a83'],
+  ice: ['#effcff', '#7fd6ea', '#2a7f9e'],
+  dark: ['#d8d3e0', '#4b4459', '#17131f'],
 };
 
 export const TYPE_LABELS: Record<CardType, string> = {
@@ -96,36 +98,41 @@ export const TYPE_LABELS: Record<CardType, string> = {
   dragon: 'Dragon',
   normal: 'Normal',
   fairy: 'Fée',
+  ice: 'Glace',
+  dark: 'Ténèbres',
 };
 
 export const POKEMON: Record<number, { name: string; type: CardType }> = {
   1: { name: 'Bulbizarre', type: 'grass' },
+  3: { name: 'Florizarre', type: 'grass' },
   4: { name: 'Salamèche', type: 'fire' },
   6: { name: 'Dracaufeu', type: 'fire' },
   7: { name: 'Carapuce', type: 'water' },
+  9: { name: 'Tortank', type: 'water' },
   25: { name: 'Pikachu', type: 'electric' },
   26: { name: 'Raichu', type: 'electric' },
-  39: { name: 'Rondoudou', type: 'fairy' },
-  52: { name: 'Miaouss', type: 'normal' },
   54: { name: 'Psykokwak', type: 'water' },
   94: { name: 'Ectoplasma', type: 'ghost' },
   129: { name: 'Magicarpe', type: 'water' },
+  130: { name: 'Léviator', type: 'water' },
+  131: { name: 'Lokhlass', type: 'ice' },
   133: { name: 'Évoli', type: 'normal' },
+  134: { name: 'Aquali', type: 'water' },
   135: { name: 'Voltali', type: 'electric' },
   136: { name: 'Pyroli', type: 'fire' },
   143: { name: 'Ronflex', type: 'normal' },
   145: { name: 'Électhor', type: 'electric' },
   146: { name: 'Sulfura', type: 'fire' },
-  149: { name: 'Dracolosse', type: 'dragon' },
   150: { name: 'Mewtwo', type: 'psychic' },
   151: { name: 'Mew', type: 'psychic' },
   155: { name: 'Héricendre', type: 'fire' },
   175: { name: 'Togepi', type: 'fairy' },
+  197: { name: 'Noctali', type: 'dark' },
   249: { name: 'Lugia', type: 'psychic' },
   250: { name: 'Ho-Oh', type: 'fire' },
   257: { name: 'Braségali', type: 'fire' },
   384: { name: 'Rayquaza', type: 'dragon' },
-  445: { name: 'Carchacrok', type: 'dragon' },
+  778: { name: 'Mimiqui', type: 'ghost' },
 };
 
 export const CARD_FRAMES = {
@@ -135,64 +142,92 @@ export const CARD_FRAMES = {
 
 export type BinderLook = {
   cover: string; // image de la couverture (sans tirette)
-  shell: string; // couleur de l'intérieur du classeur
+  shell: string; // couleur du bord intérieur
   spine: string; // couleur du dos
   glow: string; // halo derrière le classeur
-  page: string; // fond des pages
   frame: keyof typeof CARD_FRAMES;
-  left: (number | null)[]; // 9 pochettes de la page de gauche (null = vide)
-  right: (number | null)[]; // 9 pochettes de la page de droite
+  left: (number | null)[]; // 4 pochettes de la page de gauche (null = vide)
+  right: (number | null)[]; // 4 pochettes de la page de droite
 };
 
-export type Product = {
-  number: string;
-  category: string;
-  name: string;
-  price: string | null; // null = pas de prix affiché
-  oldPrice?: string;
-  url: string;
+// Le classeur vendu (les deux liens AliExpress mènent à ce même classeur).
+// Prix : celui indiqué dans ton premier lien (12,88 € au lieu de 17,30 €).
+export const PRODUCT = {
+  name: 'Classeur zippé',
+  specs: '160 cartes · 4 pochettes par page',
+  price: '12,88 €' as string | null,
+  oldPrice: '17,30 €',
+  url: 'https://nl.aliexpress.com/item/1005007540143317.html',
+  // Deuxième lien du même classeur, gardé ici au cas où.
+  altUrl: 'https://nl.aliexpress.com/item/1005010806342830.html',
+};
+
+export type BinderColor = {
+  id: string;
+  label: string;
+  swatch: string; // couleur du bouton de choix
   images: { top: string; bottom: string; tall: string };
   binder: BinderLook;
 };
 
-// Prix du produit 01 : celui indiqué dans ton lien AliExpress (12,88 € au lieu de 17,30 €).
-// Prix du produit 02 : inconnu pour l'instant, remplace null par "XX,XX €".
-export const PRODUCTS: Product[] = [
+const look = (
+  id: string,
+  shades: [string, string, string],
+  glow: string,
+  frame: BinderLook['frame'],
+  left: (number | null)[],
+  right: (number | null)[],
+): BinderLook => ({
+  cover: img(`cover-${id}.webp`),
+  shell: `linear-gradient(160deg,${shades[0]},${shades[1]} 55%,${shades[2]})`,
+  spine: `linear-gradient(90deg,${shades[2]},${shades[1]} 60%,${shades[2]})`,
+  glow,
+  frame,
+  left,
+  right,
+});
+
+const photos = (id: string) => ({
+  top: img(`p-${id}-a.webp`),
+  bottom: img(`p-${id}-b.webp`),
+  tall: img(`p-${id}-c.webp`),
+});
+
+// Les 5 couleurs, dans l'ordre de tes photos.
+export const COLORS: BinderColor[] = [
   {
-    number: '01',
-    category: 'Classeur de cartes',
-    name: 'Classeur Éclair',
-    price: '12,88 €',
-    oldPrice: '17,30 €',
-    url: 'https://nl.aliexpress.com/item/1005007540143317.html',
-    images: { top: img('p1-a.webp'), bottom: img('p1-b.webp'), tall: img('p1-c.webp') },
-    binder: {
-      cover: img('cover-eclair.webp'),
-      shell: 'linear-gradient(160deg,#ffd84a,#f2b318 55%,#d98e0a)',
-      spine: 'linear-gradient(90deg,#8a5806,#f0b21c 60%,#b8770a)',
-      glow: 'rgba(242, 179, 24, 0.35)',
-      page: '#121214',
-      frame: 'silver',
-      left: [25, 26, 135, 145, null, 25, 133, 52, 39],
-      right: [143, 175, 129, 54, 7, 1, 4, null, null],
-    },
+    id: 'rouge',
+    label: 'Rouge',
+    swatch: '#a5162b',
+    images: photos('rouge'),
+    binder: look('rouge', ['#d02a3e', '#a5162b', '#6e0c1b'], 'rgba(208, 42, 62, 0.35)', 'gold', [6, 4, 146, 250], [136, 155, 257, null]),
   },
   {
-    number: '02',
-    category: 'Classeur de cartes',
-    name: 'Classeur Flamme',
-    price: null,
-    url: 'https://nl.aliexpress.com/item/1005010806342830.html',
-    images: { top: img('p2-a.webp'), bottom: img('p2-b.webp'), tall: img('p2-c.webp') },
-    binder: {
-      cover: img('cover-flamme.webp'),
-      shell: 'linear-gradient(160deg,#e8452c,#b81f16 55%,#7d120c)',
-      spine: 'linear-gradient(90deg,#3d0805,#a81b12 60%,#5e0d08)',
-      glow: 'rgba(232, 69, 44, 0.35)',
-      page: '#140e0e',
-      frame: 'gold',
-      left: [6, 4, 146, 250, 136, 155, 257, null, 6],
-      right: [149, 384, 445, 150, 151, null, 249, 94, null],
-    },
+    id: 'vert',
+    label: 'Vert',
+    swatch: '#80ab11',
+    images: photos('vert'),
+    binder: look('vert', ['#a9d136', '#80ab11', '#557a06'], 'rgba(128, 171, 17, 0.32)', 'silver', [1, 3, 25, 133], [143, 175, 54, null]),
+  },
+  {
+    id: 'marine',
+    label: 'Bleu marine',
+    swatch: '#1d3044',
+    images: photos('marine'),
+    binder: look('marine', ['#33507a', '#1d3044', '#0f1a27'], 'rgba(70, 110, 170, 0.3)', 'silver', [94, 197, 150, 151], [249, 384, 778, null]),
+  },
+  {
+    id: 'bleu',
+    label: 'Bleu',
+    swatch: '#346ac0',
+    images: photos('bleu'),
+    binder: look('bleu', ['#5a90e4', '#346ac0', '#1f4689'], 'rgba(52, 106, 192, 0.35)', 'silver', [7, 9, 130, 131], [134, 54, 129, null]),
+  },
+  {
+    id: 'orange',
+    label: 'Orange',
+    swatch: '#d6692e',
+    images: photos('orange'),
+    binder: look('orange', ['#f19456', '#d6692e', '#9a4719'], 'rgba(214, 105, 46, 0.35)', 'gold', [25, 26, 135, 145], [6, 4, 136, null]),
   },
 ];

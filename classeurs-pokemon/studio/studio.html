@@ -255,6 +255,127 @@ S['p2-c']={w:1300,h:1160,html:()=>productC('red',[6,4,146,250,136,155,257,null,6
 S['cover-eclair']={w:420,h:567,transparent:true,html:()=>coverOf('yellow',{w:420,h:567,art:25,pull:false})};
 S['cover-flamme']={w:420,h:567,transparent:true,html:()=>coverOf('red',{w:420,h:567,art:6,pull:false})};
 
+
+// =====================================================================
+// Vrai classeur : zippé, 160 cartes, 4 pochettes par page, 5 couleurs
+// =====================================================================
+document.head.insertAdjacentHTML('beforeend',`<style>
+.pc .teeth{border-color:rgba(0,0,0,.38)}
+.pc .star{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);overflow:visible;
+  filter:drop-shadow(0 -1px 0 rgba(255,255,255,.22)) drop-shadow(0 2px 1px rgba(0,0,0,.35))}
+.pc::after{background:radial-gradient(120% 90% at 20% 8%,rgba(255,255,255,.22),transparent 55%),linear-gradient(180deg,transparent 55%,rgba(0,0,0,.25))}
+</style>`);
+const BINDERS = {
+  rouge:  {c:['#d02a3e','#a5162b','#6e0c1b'], sp:'linear-gradient(90deg,#4f0712,#a5162b 60%,#6e0c1b)'},
+  vert:   {c:['#a9d136','#80ab11','#557a06'], sp:'linear-gradient(90deg,#3a5404,#80ab11 60%,#557a06)'},
+  marine: {c:['#33507a','#1d3044','#0f1a27'], sp:'linear-gradient(90deg,#080f17,#1d3044 60%,#0f1a27)'},
+  bleu:   {c:['#5a90e4','#346ac0','#1f4689'], sp:'linear-gradient(90deg,#14305f,#346ac0 60%,#1f4689)'},
+  orange: {c:['#f19456','#d6692e','#9a4719'], sp:'linear-gradient(90deg,#6b300f,#d6692e 60%,#9a4719)'},
+};
+const STAR = `<svg class="star" viewBox="0 0 100 100" fill="none"><path d="M50 6 L61.8 36.6 L94.5 38.4 L69 59.1 L77.5 90.8 L50 72.8 L22.5 90.8 L31 59.1 L5.5 38.4 L38.2 36.6 Z" fill="rgba(0,0,0,.10)" stroke="rgba(0,0,0,.22)" stroke-width="2.2" stroke-linejoin="round"/></svg>`;
+function plainCover(col,{w=300,h=400,x=0,y=0,rot=0,pull=true,style=''}={}){
+  const [l,m,d]=BINDERS[col].c; const tw=Math.max(8,Math.round(w*0.052));
+  return `<div class="cover pc" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;--cv:linear-gradient(160deg,${l},${m} 55%,${d});--tape:${d};--tw:${tw}px;transform:rotate(${rot}deg);${style}">
+    ${STAR.replace('class="star"',`class="star" style="width:${Math.round(w*0.24)}px"`)}
+    <div class="tape"></div><div class="teeth"></div>${pull?'<div class="pull"></div>':''}</div>`;
+}
+function binder3dPlain({x=0,y=0,w=320,h=420,d=64,rx=-7,ry=26,rz=-3,col='bleu'}={}){
+  const sp=BINDERS[col].sp;
+  return `<div class="p3" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;transform:perspective(1700px) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg)">
+    <div class="face spine" style="left:${-d/2}px;top:0;width:${d}px;height:${h}px;--sp:${sp};transform:rotateY(-90deg)"></div>
+    <div class="face spine" style="left:0;top:${-d/2}px;width:${w}px;height:${d}px;--sp:${sp};transform:rotateX(90deg)"></div>
+    <div class="face" style="left:0;top:0;width:${w}px;height:${h}px;transform:translateZ(${d/2}px)">${plainCover(col,{w,h})}</div>
+  </div>`;
+}
+function shellHalf(col,ids,{side='left',pw=190,pg='#121214',frame='silver',tw=22,holoFrom=0}={}){
+  const [l,m,d]=BINDERS[col].c; const ph=Math.round(pw*88/63*1.06); const cw=Math.round(pw*1.06);
+  const r=side==='left'?'40px 0 0 40px':'0 40px 40px 0';
+  const bl=side==='left'?'':'border-left:0;'; const br=side==='left'?'border-right:0;':'';
+  const cells=ids.map((id,i)=>inPocket(id,{frame,holo:(holoFrom+i)%3===0,ps:`width:${cw}px;height:${ph}px`})).join('');
+  return `<div style="position:relative;padding:${tw+12}px;${side==='left'?'padding-right:14px':'padding-left:14px'};border-radius:${r};background:linear-gradient(160deg,${l},${m} 55%,${d})">
+    <div style="position:absolute;inset:0;border-radius:inherit;border:${tw}px solid #151517;${bl}${br}"></div>
+    <div style="position:absolute;inset:7px;border-radius:inherit;border:8px dashed #b9bcc2;${bl}${br}${side==='left'?'right:0':'left:0'}"></div>
+    <div class="page" style="position:relative;padding:18px;gap:14px;grid-template-columns:repeat(2,${cw}px);--pg:${pg}">${cells}</div></div>`;
+}
+const SETS = {
+  rouge:  {l:[6,4,146,250],   r:[136,155,257,null], f:'gold'},
+  vert:   {l:[1,3,25,133],    r:[143,175,54,null],  f:'silver'},
+  marine: {l:[94,197,150,151],r:[249,384,778,null], f:'silver'},
+  bleu:   {l:[7,9,130,131],   r:[134,54,129,null],  f:'silver'},
+  orange: {l:[25,26,135,145], r:[6,4,136,null],     f:'gold'},
+};
+const BACKDROP = {
+  rouge:G('#ff8a8a','#4a0812'), vert:G('#e3f59a','#3d5a05'), marine:G('#8aa6c8','#0b1420'),
+  bleu:G('#a8c8ff','#12306a'), orange:G('#ffc9a0','#6b2a0b'),
+};
+function pA(col,rot=-6){ return bg(BACKDROP[col])+`<div class="shadow" style="left:120px;top:420px;width:680px;height:120px"></div>`+plainCover(col,{w:560,h:740,x:180,y:-150,rot}); }
+function pB(col){ const st=SETS[col]; return bg(BACKDROP[col])+page([...st.l,...st.r.slice(0,2)],{cols:2,cw:300,gap:22,pad:28,x:110,y:-180,pg:'#121214',frame:st.f,holoEvery:3,style:'transform:perspective(1400px) rotateX(22deg) rotateZ(-10deg);transform-origin:50% 50%;box-shadow:0 60px 80px rgba(0,0,0,.55)'}); }
+function pC(col){ const st=SETS[col];
+  return bg(BACKDROP[col])+`<div class="shadow" style="left:80px;top:880px;width:1140px;height:220px"></div>`
+   +`<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) perspective(2200px) rotateX(26deg) rotateZ(-7deg)">
+      <div style="display:flex;box-shadow:0 50px 80px rgba(0,0,0,.55);border-radius:40px">
+        ${shellHalf(col,st.l,{side:'left',pw:200,frame:st.f})}
+        <div style="width:28px;background:linear-gradient(90deg,rgba(0,0,0,.6),rgba(255,255,255,.1),rgba(0,0,0,.6)),#151517"></div>
+        ${shellHalf(col,st.r,{side:'right',pw:200,frame:st.f,holoFrom:4})}
+      </div></div>`;
+}
+// Tuiles du bandeau
+function tPage4(ids,pg,stageBg,frame,rot=-6){ return bg(stageBg)+page(ids,{cols:2,cw:150,gap:14,pad:18,x:40,y:-60,pg,frame,holoEvery:3,style:`transform:rotate(${rot}deg);transform-origin:50% 50%`}); }
+function tTilt4(ids,pg,stageBg,frame){ return bg(stageBg)+page(ids,{cols:2,cw:118,gap:12,pad:16,x:120,y:-40,pg,frame,holoEvery:3,style:'transform:perspective(900px) rotateX(38deg) rotateZ(-24deg);transform-origin:50% 50%;box-shadow:0 40px 60px rgba(0,0,0,.6)'}); }
+function tPlainCover(col,stageBg,rot=-9){ return bg(stageBg)+`<div class="shadow" style="left:60px;top:200px;width:320px;height:70px"></div>`+plainCover(col,{w:250,h:330,x:86,y:-30,rot}); }
+function tFive(stageBg){
+  const cols=['rouge','vert','marine','bleu','orange'];
+  return bg(stageBg)+`<div class="shadow" style="left:20px;top:215px;width:380px;height:50px"></div>`
+   +cols.map((c,i)=>plainCover(c,{w:120,h:162,x:22+i*72,y:52+(i%2)*8,rot:-8+i*4,pull:false,style:`z-index:${i}`})).join('');
+}
+function tSpread4(col,stageBg){ const st=SETS[col];
+  return bg(stageBg)+`<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.36) perspective(1400px) rotateX(18deg) rotateZ(-5deg)">
+    <div style="display:flex;box-shadow:0 50px 80px rgba(0,0,0,.6);border-radius:40px">${shellHalf(col,st.l,{side:'left',pw:200,frame:st.f})}
+    <div style="width:28px;background:#151517"></div>${shellHalf(col,st.r,{side:'right',pw:200,frame:st.f,holoFrom:4})}</div></div>`;
+}
+const tiles4 = [
+  ()=>tPage4([25,6,150,94],'#121214',G('#2a2a2e','#0d0d0f'),'silver'),
+  ()=>tPlainCover('rouge',BACKDROP.rouge),
+  ()=>tFan([134,136,133,135,196],G('#8b5cf6','#2b145f'),'silver'),
+  ()=>tTilt4([1,4,7,25],'#0f1115',G('#3ad0a0','#0c4a3c'),'silver'),
+  ()=>tSingle(150,G('#c65bd0','#2a0d3d'),'gold'),
+  ()=>tSpread4('bleu',G('#2a2a2e','#0d0d0f')),
+  ()=>tPlainCover('bleu',BACKDROP.bleu,8),
+  ()=>tFan([144,145,146],G('#4fb3ff','#0d2a5c'),'gold'),
+  ()=>tTilt4([249,250,384,151],'#101014',G('#f6b26b','#7a2e0d'),'gold'),
+  ()=>tSingle(143,G('#7fb6a5','#1c3b35'),'silver'),
+  ()=>tPlainCover('vert',BACKDROP.vert,-6),
+  ()=>tFive(G('#3a3a40','#0d0d0f')),
+  ()=>tPage4([94,778,887,197],'#0f0d14',G('#3b2a66','#0e0a19'),'black',5),
+  ()=>tFan([700,175,39,282],G('#ffb3d9','#7a1f5c'),'rainbow'),
+  ()=>tPlainCover('orange',BACKDROP.orange,-7),
+  ()=>tSingle(6,G('#ff7a3d','#3d0b06'),'gold'),
+  ()=>tSpread4('rouge',G('#3a2a2e','#0d0d0f')),
+  ()=>tTilt4([448,658,257,155],'#111111',G('#ffd84a','#8a5a06'),'silver'),
+  ()=>tPlainCover('marine',BACKDROP.marine,6),
+  ()=>tFan([1,4,7],G('#9be15d','#1f5c2b'),'silver'),
+  ()=>tSingle(384,G('#47d18c','#08301c'),'gold'),
+];
+tiles4.forEach((f,i)=>S['tile-'+String(i+1).padStart(2,'0')]={w:W,h:H,html:f});
+for (const k of Object.keys(S)) if (/^(p[12]-|cover-(eclair|flamme))/.test(k)) delete S[k];
+for (const col of Object.keys(BINDERS)) {
+  S[`cover-${col}`]={w:420,h:567,transparent:true,html:()=>plainCover(col,{w:420,h:567,pull:false})};
+  S[`p-${col}-a`]={w:900,h:520,html:()=>pA(col)};
+  S[`p-${col}-b`]={w:900,h:700,html:()=>pB(col)};
+  S[`p-${col}-c`]={w:1300,h:1160,html:()=>pC(col)};
+}
+S['hero-binder']={w:520,h:640,transparent:true,html:()=>{
+  const fan=[94,150,6,25].map((id,i)=>card(id,{w:150,x:150+i*38,y:40+Math.abs(i-1.5)*14,rot:-18+i*14,frame:i===2?'gold':'silver',holo:i===3})).join('');
+  return `<div class="shadow" style="left:70px;top:560px;width:400px;height:70px"></div>`
+   +`<div style="position:absolute;inset:0">${fan}</div>`
+   +binder3dPlain({x:110,y:150,w:300,h:400,d:60,rx:-6,ry:24,rz:-4,col:'bleu'})
+   +card(133,{w:128,x:356,y:400,rot:14,frame:'rainbow',holo:true,z:20})
+   +card(4,{w:112,x:54,y:440,rot:-16,frame:'silver',z:20});
+}};
+S['corner-binder']={w:340,h:340,transparent:true,html:()=>`<div class="shadow" style="left:40px;top:280px;width:260px;height:50px"></div>`
+  +card(197,{w:96,x:150,y:30,rot:16,frame:'black'})+card(196,{w:96,x:100,y:24,rot:-6})
+  +binder3dPlain({x:70,y:80,w:180,h:240,d:40,rx:-8,ry:-28,rz:5,col:'vert'})};
+
 const key=location.hash.slice(1);
 const sc=S[key];
 const st=document.getElementById('stage');

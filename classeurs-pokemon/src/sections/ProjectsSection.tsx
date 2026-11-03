@@ -5,7 +5,7 @@ import FadeIn from '../components/FadeIn';
 import OpenBinder, { OPEN_AT } from '../components/OpenBinder';
 import { useScrollRange } from '../components/useScrollRange';
 import { LiveProjectButton } from '../components/Buttons';
-import { PRODUCTS, type Product } from '../data';
+import { COLORS, PRODUCT, type BinderColor } from '../data';
 
 const IMAGE_RADIUS = 'rounded-[40px] sm:rounded-[50px] md:rounded-[60px]';
 
@@ -59,12 +59,12 @@ export default function ProjectsSection() {
       </div>
 
       <div ref={containerRef} className="mx-auto mt-10 max-w-6xl">
-        {PRODUCTS.map((product, i) => (
+        {COLORS.map((color, i) => (
           <ProjectCard
-            key={product.number}
-            product={product}
+            key={color.id}
+            color={color}
             index={i}
-            total={PRODUCTS.length}
+            total={COLORS.length}
             progress={scrollYProgress}
             onOpen={() => openBinder(i)}
           />
@@ -75,13 +75,13 @@ export default function ProjectsSection() {
 }
 
 function ProjectCard({
-  product,
+  color,
   index,
   total,
   progress,
   onOpen,
 }: {
-  product: Product;
+  color: BinderColor;
   index: number;
   total: number;
   progress: MotionValue<number>;
@@ -102,23 +102,28 @@ function ProjectCard({
               className="hero-heading font-black leading-none [font-variant-numeric:tabular-nums]"
               style={{ fontSize: 'clamp(3rem, 10vw, 140px)' }}
             >
-              {product.number}
+              {String(index + 1).padStart(2, '0')}
             </span>
             <div className="flex min-w-0 flex-col gap-1 pb-1 sm:pb-3">
               <span className="text-xs uppercase tracking-widest text-[#D7E2EA]/60 sm:text-sm">
-                {product.category}
+                {PRODUCT.name} · {PRODUCT.specs}
               </span>
               <h3
                 className="font-medium uppercase leading-tight text-[#D7E2EA]"
                 style={{ fontSize: 'clamp(1rem, 2.2vw, 2.1rem)' }}
               >
-                {product.name}
+                <span
+                  aria-hidden="true"
+                  className="mr-3 inline-block h-[0.7em] w-[0.7em] rounded-full align-[0.05em]"
+                  style={{ background: color.swatch, boxShadow: '0 0 0 2px rgba(215,226,234,.35)' }}
+                />
+                {color.label}
               </h3>
-              {product.price && (
+              {PRODUCT.price && (
                 <p className="flex items-baseline gap-2 text-[#D7E2EA]">
-                  <span className="text-lg font-semibold sm:text-2xl">{product.price}</span>
-                  {product.oldPrice && (
-                    <s className="text-sm font-light opacity-50 sm:text-base">{product.oldPrice}</s>
+                  <span className="text-lg font-semibold sm:text-2xl">{PRODUCT.price}</span>
+                  {PRODUCT.oldPrice && (
+                    <s className="text-sm font-light opacity-50 sm:text-base">{PRODUCT.oldPrice}</s>
                   )}
                 </p>
               )}
@@ -134,8 +139,8 @@ function ProjectCard({
               Ouvrir le classeur
             </button>
             <LiveProjectButton
-              href={product.url}
-              label={product.price ? 'Voir le produit' : 'Voir le prix'}
+              href={PRODUCT.url}
+              label={PRODUCT.price ? 'Voir le produit' : 'Voir le prix'}
             />
           </div>
         </div>
@@ -143,15 +148,15 @@ function ProjectCard({
         <div className="flex gap-3 sm:gap-4">
           <div className="flex w-[40%] flex-col gap-3 sm:gap-4">
             <img
-              src={product.images.top}
-              alt={`${product.name} : couverture`}
+              src={color.images.top}
+              alt={`${PRODUCT.name} ${color.label.toLowerCase()} : couverture`}
               loading="lazy"
               className={`w-full object-cover ${IMAGE_RADIUS}`}
               style={{ height: 'min(clamp(130px, 16vw, 230px), 22vh)' }}
             />
             <img
-              src={product.images.bottom}
-              alt={`${product.name} : page avec cartes rangées`}
+              src={color.images.bottom}
+              alt={`${PRODUCT.name} ${color.label.toLowerCase()} : page de 4 pochettes avec des cartes`}
               loading="lazy"
               className={`w-full object-cover ${IMAGE_RADIUS}`}
               style={{ height: 'min(clamp(160px, 22vw, 340px), 32vh)' }}
@@ -159,8 +164,8 @@ function ProjectCard({
           </div>
           <div className="w-[60%]">
             <img
-              src={product.images.tall}
-              alt={`${product.name} ouvert, cartes rangées dans les pochettes`}
+              src={color.images.tall}
+              alt={`${PRODUCT.name} ${color.label.toLowerCase()} ouvert, cartes rangées dans les pochettes`}
               loading="lazy"
               className={`h-full w-full object-cover ${IMAGE_RADIUS}`}
             />

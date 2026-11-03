@@ -18,7 +18,7 @@ for num, name in ((25, 'pikachu'), (94, 'ectoplasma')):
     im.save(os.path.join(dst, name + '.webp'), 'WEBP', quality=86, method=6)
 # Illustrations des cartes rangées dans le classeur qui s'ouvre
 os.makedirs(os.path.join(dst, 'art'), exist_ok=True)
-for num in (1, 4, 6, 7, 25, 26, 39, 52, 54, 94, 129, 133, 135, 136, 143, 145, 146, 149, 150, 151, 155, 175, 249, 250, 257, 384, 445):
+for num in (1, 3, 4, 6, 7, 9, 25, 26, 54, 94, 129, 130, 131, 133, 134, 135, 136, 143, 145, 146, 150, 151, 155, 175, 197, 249, 250, 257, 384, 778):
     im = Image.open(os.path.join(art, f'{num}.png')).convert('RGBA')
     im.thumbnail((260, 260))
     im.save(os.path.join(dst, 'art', f'{num}.webp'), 'WEBP', quality=84, method=6)
