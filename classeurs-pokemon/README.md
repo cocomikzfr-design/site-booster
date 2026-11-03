@@ -2,7 +2,9 @@
 
 Site vitrine pour des classeurs de cartes Pokémon (React, TypeScript, Tailwind CSS, Framer Motion, Lucide).
 
-Sections : accueil avec classeur 3D aimanté, bandeau d'images qui défile au scroll, À propos (texte qui s'éclaire lettre par lettre), Avantages, Produits (cartes empilées au scroll) et Contact.
+Sections : accueil avec classeur 3D aimanté, bandeau d'images qui défile au scroll, À propos (texte qui s'éclaire lettre par lettre), Avantages, Produits et Contact.
+
+Dans Produits, un classeur en 3D s'ouvre quand on fait défiler la page : la tirette descend, la couverture pivote sur le dos, puis les cartes s'allument une par une. On choisit le classeur (Éclair ou Flamme) avec les boutons au-dessus, ou avec « Ouvrir le classeur » sur chaque fiche produit, qui fait défiler la page toute seule. Le réglage du classeur (couverture, couleurs, cartes rangées) est dans `binder` de chaque produit, dans `src/data.ts`.
 
 ## Modifier le contenu
 

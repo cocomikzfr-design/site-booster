@@ -125,12 +125,12 @@ function page(ids,{cols=3,cw=120,gap=10,pad=14,x=0,y=0,pg='#111113',frame='silve
   const cells=ids.map((id,i)=>inPocket(id,{frame,holo:holoEvery&&i%holoEvery===0,ps:`width:${pw}px;height:${ch}px`})).join('');
   return `<div class="page" style="left:${x}px;top:${y}px;padding:${pad}px;gap:${gap}px;grid-template-columns:repeat(${cols},${pw}px);--pg:${pg};${style}">${cells}</div>`;
 }
-function cover({w=300,h=400,x=0,y=0,cv='#f2c230',tape='#151517',e=['#fff7c2','#f39c12'],art=25,label='COLLECTOR',sub='CARD BINDER',lc='#fff',rot=0,style=''}={}){
+function cover({w=300,h=400,x=0,y=0,cv='#f2c230',tape='#151517',e=['#fff7c2','#f39c12'],art=25,label='COLLECTOR',sub='CARD BINDER',lc='#fff',rot=0,style='',pull=true}={}){
   const tw=Math.max(8,Math.round(w*0.052));
   return `<div class="cover" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;--cv:${cv};--tape:${tape};--tw:${tw}px;--e1:${e[0]};--e2:${e[1]};--ls:${Math.round(w*0.062)}px;--lc:${lc};transform:rotate(${rot}deg);${style}">
     <div class="emb"><img src="${ART(art)}"></div>
     <div class="lbl">${label}<small>${sub}</small></div>
-    <div class="tape"></div><div class="teeth"></div><div class="pull"></div></div>`;
+    <div class="tape"></div><div class="teeth"></div>${pull?'<div class="pull"></div>':''}</div>`;
 }
 const COVERS = {
   yellow:{cv:'linear-gradient(160deg,#ffd84a,#f2b318 55%,#d98e0a)',e:['#fff9d1','#ffb52e'],sp:'linear-gradient(90deg,#b8770a,#f0b21c)',lc:'#3a2600'},
@@ -250,6 +250,10 @@ S['p1-c']={w:1300,h:1160,html:()=>productC('yellow',[25,26,135,145,null,25,133,5
 S['p2-a']={w:900,h:520,html:()=>productA('red',6,G('#ff8a4a','#5a0f08'),7)};
 S['p2-b']={w:900,h:700,html:()=>productB([6,4,146,250,136,155,257,6,4],G('#ff7a3d','#4a0b05'),'#140d0d','gold')};
 S['p2-c']={w:1300,h:1160,html:()=>productC('red',[6,4,146,250,136,155,257,null,6, 149,384,445,150,151,null,249,94,null],G('#ff9a5a','#3d0806'),'#140e0e','gold')};
+
+// ---------- couvertures pour l'animation d'ouverture (sans tirette : elle est animée dans le site) ----------
+S['cover-eclair']={w:420,h:567,transparent:true,html:()=>coverOf('yellow',{w:420,h:567,art:25,pull:false})};
+S['cover-flamme']={w:420,h:567,transparent:true,html:()=>coverOf('red',{w:420,h:567,art:6,pull:false})};
 
 const key=location.hash.slice(1);
 const sc=S[key];

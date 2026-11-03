@@ -7,12 +7,19 @@ TRANSPARENT = {'hero-binder', 'corner-card', 'corner-binder'}
 for p in sorted(glob.glob(os.path.join(src, '*.png'))):
     name = os.path.basename(p)[:-4]
     im = Image.open(p)
-    if name not in TRANSPARENT:
+    transparent = name in TRANSPARENT or name.startswith('cover-')
+    if not transparent:
         im = im.convert('RGB')
-    im.save(os.path.join(dst, name + '.webp'), 'WEBP', quality=86 if name in TRANSPARENT else 80, method=6)
+    im.save(os.path.join(dst, name + '.webp'), 'WEBP', quality=86 if transparent else 80, method=6)
 # Décorations de la section « À propos »
 for num, name in ((25, 'pikachu'), (94, 'ectoplasma')):
     im = Image.open(os.path.join(art, f'{num}.png')).convert('RGBA')
     im.thumbnail((440, 440))
     im.save(os.path.join(dst, name + '.webp'), 'WEBP', quality=86, method=6)
+# Illustrations des cartes rangées dans le classeur qui s'ouvre
+os.makedirs(os.path.join(dst, 'art'), exist_ok=True)
+for num in (1, 4, 6, 7, 25, 26, 39, 52, 54, 94, 129, 133, 135, 136, 143, 145, 146, 149, 150, 151, 155, 175, 249, 250, 257, 384, 445):
+    im = Image.open(os.path.join(art, f'{num}.png')).convert('RGBA')
+    im.thumbnail((260, 260))
+    im.save(os.path.join(dst, 'art', f'{num}.webp'), 'WEBP', quality=84, method=6)
 print('WebP exportés dans', dst)

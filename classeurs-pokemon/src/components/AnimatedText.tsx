@@ -1,5 +1,6 @@
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useScroll, type MotionValue } from 'framer-motion';
 import { useRef, type CSSProperties } from 'react';
+import { useScrollRange } from './useScrollRange';
 
 type AnimatedTextProps = {
   text: string;
@@ -37,7 +38,7 @@ function Char({
   progress: MotionValue<number>;
   range: [number, number];
 }) {
-  const opacity = useTransform(progress, range, [0.2, 1]);
+  const opacity = useScrollRange(progress, range, [0.2, 1]);
   return (
     <span className="relative" aria-hidden="true">
       <span className="invisible">{children}</span>

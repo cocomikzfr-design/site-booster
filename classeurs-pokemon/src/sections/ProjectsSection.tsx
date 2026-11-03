@@ -1,6 +1,9 @@
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import { useRef } from 'react';
+import { animate, motion, useScroll, type MotionValue } from 'framer-motion';
+import { BookOpen } from 'lucide-react';
+import { useRef, useState } from 'react';
 import FadeIn from '../components/FadeIn';
+import OpenBinder, { OPEN_AT } from '../components/OpenBinder';
+import { useScrollRange } from '../components/useScrollRange';
 import { LiveProjectButton } from '../components/Buttons';
 import { PRODUCTS, type Product } from '../data';
 
@@ -8,10 +11,34 @@ const IMAGE_RADIUS = 'rounded-[40px] sm:rounded-[50px] md:rounded-[60px]';
 
 export default function ProjectsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [selected, setSelected] = useState(0);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   });
+
+  // Bouton « Ouvrir le classeur » : on remonte au classeur fermé puis on fait défiler
+  // la page tout seul jusqu'à ce qu'il soit ouvert.
+  const openBinder = (index: number) => {
+    setSelected(index);
+    const track = trackRef.current;
+    if (!track) return;
+    const start = track.getBoundingClientRect().top + window.scrollY;
+    const end = start + (track.offsetHeight - window.innerHeight) * OPEN_AT;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.scrollTo({ top: end, behavior: 'auto' });
+      return;
+    }
+    window.scrollTo({ top: start, behavior: 'instant' as ScrollBehavior });
+    requestAnimationFrame(() => {
+      animate(start, end, {
+        duration: 3.4,
+        ease: 'easeInOut',
+        onUpdate: (y) => window.scrollTo({ top: y, behavior: 'instant' as ScrollBehavior }),
+      });
+    });
+  };
 
   return (
     <section
@@ -27,7 +54,11 @@ export default function ProjectsSection() {
         Produits
       </FadeIn>
 
-      <div ref={containerRef} className="mx-auto max-w-6xl">
+      <div ref={trackRef} className="relative -mx-5 h-[320vh] motion-reduce:h-auto sm:-mx-8 md:-mx-10">
+        <OpenBinder selected={selected} onSelect={setSelected} trackRef={trackRef} />
+      </div>
+
+      <div ref={containerRef} className="mx-auto mt-10 max-w-6xl">
         {PRODUCTS.map((product, i) => (
           <ProjectCard
             key={product.number}
@@ -35,6 +66,7 @@ export default function ProjectsSection() {
             index={i}
             total={PRODUCTS.length}
             progress={scrollYProgress}
+            onOpen={() => openBinder(i)}
           />
         ))}
       </div>
@@ -47,14 +79,16 @@ function ProjectCard({
   index,
   total,
   progress,
+  onOpen,
 }: {
   product: Product;
   index: number;
   total: number;
   progress: MotionValue<number>;
+  onOpen: () => void;
 }) {
   const targetScale = 1 - (total - 1 - index) * 0.03;
-  const scale = useTransform(progress, [index / total, 1], [1, targetScale]);
+  const scale = useScrollRange(progress, [index / total, 1], [1, targetScale]);
 
   return (
     <div className="sticky top-24 h-[85vh] md:top-32">
@@ -90,7 +124,15 @@ function ProjectCard({
               )}
             </div>
           </div>
-          <div className="pb-1 sm:pb-3">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pb-1 sm:pb-3">
+            <button
+              type="button"
+              onClick={onOpen}
+              className="inline-flex items-center gap-2 whitespace-nowrap text-sm font-medium uppercase tracking-widest text-[#D7E2EA] underline-offset-[6px] transition-opacity duration-200 hover:underline sm:text-base"
+            >
+              <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
+              Ouvrir le classeur
+            </button>
             <LiveProjectButton
               href={product.url}
               label={product.price ? 'Voir le produit' : 'Voir le prix'}
